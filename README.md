@@ -20,6 +20,7 @@ There are a few absolute paths in `examples/quickstart/main.cpp`. You'll have to
 
 ## Ideas
 [x] GUI with [ImGui](https://github.com/ocornut/imgui) or [GTK+](https://gtk.org/)
+[] Setup Exhale to properly generate Sphinx documentation
 [] Store config in YAML using [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 [] Implement ECS. References: [EntityX](https://github.com/alecthomas/entityx), [EntityPlus](https://github.com/Yelnats321/EntityPlus)
 [] Better image handling with [graphicsmagick](http://www.graphicsmagick.org/)

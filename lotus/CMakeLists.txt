@@ -1,6 +1,5 @@
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-# Improve this to not use glob?
 set(SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/stb_image.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/glad.c

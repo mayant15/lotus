@@ -31,13 +31,13 @@ public:
     void newFrame();
 
     // TODO: Input system should call these after the usual registered callbacks
-    IMGUI_IMPL_API void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
-    IMGUI_IMPL_API void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+    void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-    IMGUI_IMPL_API void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-    IMGUI_IMPL_API void charCallback(GLFWwindow* window, unsigned int c);
+    void charCallback(GLFWwindow* window, unsigned int c);
 
     void render();
 

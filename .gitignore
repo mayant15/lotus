@@ -1,11 +1,16 @@
 build/
 CMakeFiles/
 .idea/
+docs/doxygen/
+docs/sphinx/
+docs/api/
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeScripts
 Testing
 Makefile
+!docs/Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
