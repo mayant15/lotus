@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "stb_image.h"
@@ -18,7 +19,7 @@ void scroll_callback(GLFWwindow*, double, double);
 
 
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
-
+#define RESOURCE(x) lotus::resource(__FILE__, x)
 /**
  * Print out an error message with file name and line number
  */
@@ -67,6 +68,7 @@ Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 
 int main()
 {
+    lotus::init();
     GLRenderer renderer;
     renderer.setViewport(0, 0, 800, 600);
     GLFWwindow* window = renderer.getActiveWindow();
@@ -93,12 +95,12 @@ int main()
     // Create the shader to be used
     // TODO: Change the path here to something on your PC
     Shader shader(
-            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/standard.vsh",
-            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/diffuse.fsh"
+            RESOURCE("shaders/standard.vsh"),
+            RESOURCE("shaders/diffuse.fsh")
     );
 
 //    Model backpack("/home/priyansh/code/learnopengl/resources/backpack/backpack.obj");
-    Model cube("/home/priyansh/code/lotus/lotus/resources/untitled.obj");
+    Model cube(RESOURCE("mesh/untitled.obj"));
 
 
     bool showWireframe = false;

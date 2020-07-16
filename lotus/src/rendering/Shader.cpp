@@ -5,7 +5,7 @@
 
 #include "lotus/rendering/Shader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
+Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
     std::string vertexCode;
     std::string fragmentCode;
