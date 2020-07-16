@@ -1,6 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cppcoreguidelines-narrowing-conversions"
-
 #include <iostream>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -66,7 +63,7 @@ float lastFrame = 0.0f;
 float lastX = 400, lastY = 300;
 
 // Create the camera to be used
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 
 int main()
 {
@@ -96,17 +93,13 @@ int main()
     // Create the shader to be used
     // TODO: Change the path here to something on your PC
     Shader shader(
-            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/vertex.glsl",
-            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/fragment.glsl"
-    );
-
-    Shader emissiveShader(
-            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/vertex.glsl",
-            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/emissiveFragment.glsl"
+            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/standard.vsh",
+            "/home/priyansh/code/lotus/lotus/src/rendering/shaders/diffuse.fsh"
     );
 
 //    Model backpack("/home/priyansh/code/learnopengl/resources/backpack/backpack.obj");
-    Model cube("/home/priyansh/code/lotus/lotus/resources/cube.obj");
+    Model cube("/home/priyansh/code/lotus/lotus/resources/untitled.obj");
+
 
     bool showWireframe = false;
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
@@ -118,7 +111,7 @@ int main()
     float specularStrength = 0.5f;
 
     float theta = 60;
-
+    std::cout << camera.getFront()[1] << std::endl;
     // Run the main render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -169,32 +162,56 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
         shader.use();
+
+        // Transforms
         shader.setMat4fv("model", GL_FALSE, glm::value_ptr(model));
         shader.setMat4fv("view", GL_FALSE, glm::value_ptr(view));
         shader.setMat4fv("projection", GL_FALSE, glm::value_ptr(projection));
         shader.setMat3fv("normalMatrix", GL_FALSE, glm::value_ptr(projection));
-        shader.setVec3f("lightColor", lightCol);
-        shader.setVec3f("objectColor", objectCol);
 
-        float time =  glfwGetTime();
+        shader.setVec3f("viewPos", glm::value_ptr(camera.getPosition()));
+
+        // Material. Diffuse is set through a texture
+        shader.setVec3f("material.specular", objectCol);
+        shader.setFloat("material.shininess", 32);
+
+        // Light
+        float time = glfwGetTime();
         float lightX = glm::cos(glm::radians(time * theta)) * 2;
         float lightY = 2.0f;
         float lightZ = glm::sin(glm::radians(time * theta)) * 2;
-        shader.setVec3f("lightPos", glm::value_ptr(glm::vec3(lightX, lightY, lightZ)));
-        shader.setVec3f("viewPos", glm::value_ptr(camera.getPosition()));
-        shader.setFloat("ambientStrength", ambientStrength);
-        shader.setFloat("specularStrength", specularStrength);
-        cube.draw(shader);
-        glCheckError();
 
-        emissiveShader.use();
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(lightX, lightY, lightZ));
-        model = glm::scale(model, glm::vec3(0.2f));
-        normal = glm::mat3(glm::transpose(glm::inverse(model)));
-        emissiveShader.setMat4fv("model", GL_FALSE, glm::value_ptr(model));
-        emissiveShader.setMat4fv("view", GL_FALSE, glm::value_ptr(view));
-        emissiveShader.setMat4fv("projection", GL_FALSE, glm::value_ptr(projection));
-        cube.draw(emissiveShader);
+        DirectionalLight dirLight{};
+        dirLight.direction = glm::vec3(-0.2f, -1.0f, -0.3f);
+        dirLight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
+        dirLight.diffuse = glm::vec3(0.4f, 0.4f, 0.4f);
+        dirLight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
+        shader.setDirectionalLight("dirLight", dirLight);
+
+        PointLight light[1];
+        light[0].position = glm::vec3(lightX, lightY, lightZ);
+        light[0].diffuse = glm::vec3(lightCol[0], lightCol[1], lightCol[2]);
+        light[0].ambient = glm::vec3(ambientStrength);
+        light[0].specular = glm::vec3(specularStrength);
+        light[0].constant = 1.0f;
+        light[0].linear = 0.09f;
+        light[0].quadratic = 0.032f;
+        shader.setPointLightArray("pointLight", light, 1);
+
+        Spotlight spotlight[1];
+        spotlight[0].position = camera.getPosition();
+        spotlight[0].direction = camera.getFront();
+        spotlight[0].diffuse = glm::vec3(1.0f);
+        spotlight[0].ambient = glm::vec3(0.0f);
+        spotlight[0].specular = glm::vec3(1.0f);
+        spotlight[0].constant = 1.0f;
+        spotlight[0].linear = 0.09f;
+        spotlight[0].quadratic = 0.032f;
+        spotlight[0].innerCutOff = glm::cos(glm::radians(12.5f));
+        spotlight[0].outerCutOff = glm::cos(glm::radians(17.5f));
+        shader.setSpotlightArray("spotlight", spotlight, 1);
+
+        cube.draw(shader);
         glCheckError();
 
         gui.render();
@@ -268,5 +285,3 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
 }
-
-#pragma clang diagnostic pop

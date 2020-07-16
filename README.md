@@ -26,3 +26,4 @@ There are a few absolute paths in `examples/quickstart/main.cpp`. You'll have to
 [] Better image handling with [graphicsmagick](http://www.graphicsmagick.org/)
 [] Use a wrapper over a logging library. [glog](https://github.com/google/glog) or [spdlog](https://github.com/gabime/spdlog)
 [] Physics systems. [React](https://www.reactphysics3d.com/), [bullet](https://pybullet.org/wordpress/)
+[] Implement the `#include` directive for GLSL

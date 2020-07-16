@@ -79,4 +79,19 @@ const glm::vec3& Camera::getPosition() const
     return position;
 }
 
+const glm::vec3& Camera::getFront() const
+{
+    return front;
+}
+
+const glm::vec3& Camera::getRight() const
+{
+    return right;
+}
+
+const glm::vec3& Camera::getUp() const
+{
+    return up;
+}
+
 

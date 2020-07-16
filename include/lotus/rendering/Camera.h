@@ -35,7 +35,10 @@ public:
     explicit Camera(glm::vec3 posVec, glm::vec3 worldUpVec = glm::vec3(0.0f, 1.0f, 0.0f));
 
     glm::mat4 GetViewMatrix();
-    [[nodiscard]] const glm::vec3& getPosition() const;
+    const glm::vec3& getPosition() const;
+    const glm::vec3& getFront() const;
+    const glm::vec3& getRight() const;
+    const glm::vec3& getUp() const;
 
     void ProcessKeyboard(CameraMovement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);

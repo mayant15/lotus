@@ -29,7 +29,7 @@ void Mesh::draw(const Shader &shader)
             number = std::to_string(specularNum++);
         }
 
-        shader.setInt(name + number, i);
+        shader.setInt("material." + name + number, i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
 
