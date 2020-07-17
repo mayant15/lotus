@@ -1,9 +1,9 @@
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "lotus/rendering/Shader.h"
+#include "lotus/debug.h"
 
 Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
@@ -23,7 +23,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
     }
     catch (...)
     {
-        std::cout << "ERROR::SHADER::PROGRAM::FILE_NOT_READ\n" << std::endl;
+        LOG_ERROR("Shader Program: File not read.");
     }
     const char* vertexCodeStr = vertexCode.c_str();
     const char* fragmentCodeStr = fragmentCode.c_str();
@@ -40,7 +40,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        LOG_ERROR("Vertex shader compilation failed.\n{}", infoLog);
     };
 
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -50,7 +50,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
     if (!success)
     {
         glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        LOG_ERROR("Fragment shader compilation failed.\n{}", infoLog);
     };
 
     ID = glCreateProgram();
@@ -61,7 +61,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
     if (!success)
     {
         glGetProgramInfoLog(ID, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        LOG_ERROR("Shader program linking failed.\n{}", infoLog);
     }
 
     glDeleteShader(vertex);

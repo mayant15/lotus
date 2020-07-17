@@ -1,9 +1,9 @@
-#include <iostream>
+#include <lotus/debug.h>
 #include "lotus/ui/UIRenderBackend.h"
 
 VkUIRenderBackend::VkUIRenderBackend()
 {
-    std::cout << "Please don't use the Vulkan backend :)" << std::endl;
+    LOG_WARN("Please don't use the Vulkan backend :)");
 }
 
 void VkUIRenderBackend::shutdown()

@@ -12,6 +12,7 @@ set(SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/GUI.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/VkUIRenderBackend.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/engine.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/debug.cpp
 )
 
 add_library(lotus SHARED ${SOURCES})

@@ -1,6 +1,6 @@
-#include <iostream>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <lotus/debug.h>
 #include "stb_image.h"
 #include "lotus/rendering/Model.h"
 
@@ -24,7 +24,7 @@ void Model::loadModel(const std::string& path)
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+        LOG_ERROR("Assimp: {}", importer.GetErrorString());
         return;
     }
     directory = path.substr(0, path.find_last_of('/'));
@@ -155,7 +155,7 @@ unsigned int Model::textureFromFile(const char* name, const std::string& directo
             format = GL_RGBA;
         } else
         {
-            std::cout << "ERROR::MODEL::LOAD_TEXTURE" << std::endl;
+            LOG_ERROR("Cannot load texture. Invalid image color format.");
             throw std::invalid_argument("image color format unknown");
         }
 
@@ -171,7 +171,7 @@ unsigned int Model::textureFromFile(const char* name, const std::string& directo
         stbi_image_free(data);
     } else
     {
-        std::cout << "Texture failed to load at path: " << directory_ << std::endl;
+        LOG_ERROR("Texture failed to load at path: {}", directory_);
         stbi_image_free(data);
     }
 

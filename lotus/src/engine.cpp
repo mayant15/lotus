@@ -1,9 +1,9 @@
-#include <iostream>
 #include <filesystem>
 #include "lotus/engine.h"
+#include "lotus/debug.h"
 
 void lotus::init() {
-    std::cout << "Initializing lotus" << std::endl;
+    LOG_INFO("Initializing lotus...");
 }
 
 std::string lotus::resource(const std::string& root, const std::string& relPath)

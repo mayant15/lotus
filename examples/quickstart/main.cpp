@@ -1,11 +1,9 @@
-#include <iostream>
-
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "stb_image.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "lotus/ui.h"
 #include "lotus/rendering.h"
+#include "lotus/debug.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -18,45 +16,8 @@ void mouse_callback(GLFWwindow* window, double, double);
 void scroll_callback(GLFWwindow*, double, double);
 
 
-#define glCheckError() glCheckError_(__FILE__, __LINE__)
 #define RESOURCE(x) lotus::resource(__FILE__, x)
-/**
- * Print out an error message with file name and line number
- */
-GLenum glCheckError_(const char* file, int line)
-{
-    GLenum errorCode;
-    while ((errorCode = glGetError()) != GL_NO_ERROR)
-    {
-        std::string error;
-        switch (errorCode)
-        {
-            case GL_INVALID_ENUM:
-                error = "INVALID_ENUM";
-                break;
-            case GL_INVALID_VALUE:
-                error = "INVALID_VALUE";
-                break;
-            case GL_INVALID_OPERATION:
-                error = "INVALID_OPERATION";
-                break;
-            case GL_STACK_OVERFLOW:
-                error = "STACK_OVERFLOW";
-                break;
-            case GL_STACK_UNDERFLOW:
-                error = "STACK_UNDERFLOW";
-                break;
-            case GL_OUT_OF_MEMORY:
-                error = "OUT_OF_MEMORY";
-                break;
-            case GL_INVALID_FRAMEBUFFER_OPERATION:
-                error = "INVALID_FRAMEBUFFER_OPERATION";
-                break;
-        }
-        std::cout << error << " | " << file << " (" << line << ")" << std::endl;
-    }
-    return errorCode;
-}
+
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -111,9 +72,8 @@ int main()
     float objectCol[] = {0.5f, 0.5f, 0.5f};
     float ambientStrength = 0.2f;
     float specularStrength = 0.5f;
-
     float theta = 60;
-    std::cout << camera.getFront()[1] << std::endl;
+
     // Run the main render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -127,16 +87,13 @@ int main()
         // Start the Dear ImGui frame
         gui.newFrame();
         {
-
+            // Window
             ImGui::Begin("Options");
             ImGui::Checkbox("Wireframe", &showWireframe);
             ImGui::ColorEdit3("Light", lightCol);
             ImGui::ColorEdit3("Cube", objectCol);
             ImGui::DragFloat("Ambient Strength", &ambientStrength, 0.01f, 0.0f, 1.0f);
             ImGui::DragFloat("Speed", &theta, 0.1f, 0.0f);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-                        ImGui::GetIO().Framerate);
             ImGui::End();
         }
 

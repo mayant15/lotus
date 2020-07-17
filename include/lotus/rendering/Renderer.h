@@ -10,16 +10,13 @@ protected:
 
 public:
     virtual GLFWwindow* getActiveWindow() = 0;
+
     virtual void shutdown() = 0;
 };
 
 class GLRenderer : public Renderer
 {
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-
-    static void
-    debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message,
-                         const void* userParam);
 
 public:
     GLRenderer();
@@ -35,10 +32,6 @@ class VkRenderer : public Renderer
 {
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-
-    static void
-    debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message,
-                         const void* userParam);
 
 public:
     VkRenderer();
