@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "lotus/scene.h"
 
 class Renderer
 {
@@ -12,6 +13,8 @@ public:
     virtual GLFWwindow* getActiveWindow() = 0;
 
     virtual void shutdown() = 0;
+
+    virtual void renderScene(const Scene& scene) = 0;
 };
 
 class GLRenderer : public Renderer
@@ -24,6 +27,8 @@ public:
     void setViewport(int x, int y, int width, int height);
 
     GLFWwindow* getActiveWindow() override;
+
+    void renderScene(const Scene& scene) override;
 
     void shutdown() override;
 };

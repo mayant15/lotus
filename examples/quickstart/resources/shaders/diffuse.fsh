@@ -47,9 +47,10 @@ struct PointLight {
     float quadratic;
 };
 
-uniform DirectionalLight dirLight;
-uniform Spotlight spotlight[NR_SPOT_LIGHTS];
-uniform PointLight pointLight[NR_POINT_LIGHTS];
+//uniform DirectionalLight dirLight;
+//uniform Spotlight spotlight[NR_SPOT_LIGHTS];
+//uniform PointLight pointLight[NR_POINT_LIGHTS];
+uniform PointLight pointLight;
 uniform Material material;
 uniform vec3 viewPos;
 
@@ -65,15 +66,17 @@ void main()
     vec3 norm = normalize(normal);
     vec3 viewDir = normalize(fragPos - viewPos);
 
-    vec3 result = calculateDirectionalLight(dirLight, norm, viewDir);
+//    vec3 result = calculateDirectionalLight(dirLight, norm, viewDir);
 
-    for (uint i = 0; i < NR_POINT_LIGHTS; i++) {
-        result += calculatePointLight(pointLight[i], norm, fragPos, viewDir);
-    }
+//    for (uint i = 0; i < NR_POINT_LIGHTS; i++) {
+//        result += calculatePointLight(pointLight[i], norm, fragPos, viewDir);
+//    }
 
-    for (uint i = 0; i < NR_SPOT_LIGHTS; i++) {
-        result += calculateSpotLight(spotlight[i], norm, fragPos, viewDir);
-    }
+    vec3 result = calculatePointLight(pointLight, norm, fragPos, viewDir);
+
+//    for (uint i = 0; i < NR_SPOT_LIGHTS; i++) {
+//        result += calculateSpotLight(spotlight[i], norm, fragPos, viewDir);
+//    }
 
     fragColor = vec4(result, 1.0f);
 }

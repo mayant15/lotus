@@ -13,6 +13,10 @@ set(SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/VkUIRenderBackend.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/engine.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/debug.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/components/Object.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/components/Actor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/components/MeshComponent.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/Scene.cpp
 )
 
 add_library(lotus SHARED ${SOURCES})

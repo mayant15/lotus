@@ -69,29 +69,32 @@ void Camera::ProcessKeyboard(CameraMovement direction, float deltaTime)
         position -= worldUp * velocity;
 }
 
-glm::mat4 Camera::GetViewMatrix()
+glm::mat4 Camera::GetViewMatrix() const
 {
     return glm::lookAt(position, position + front, up);
 }
 
-const glm::vec3& Camera::getPosition() const
+glm::vec3 Camera::getPosition() const
 {
     return position;
 }
 
-const glm::vec3& Camera::getFront() const
+glm::vec3 Camera::getFront() const
 {
     return front;
 }
 
-const glm::vec3& Camera::getRight() const
+glm::vec3 Camera::getRight() const
 {
     return right;
 }
 
-const glm::vec3& Camera::getUp() const
+glm::vec3 Camera::getUp() const
 {
     return up;
 }
 
-
+float Camera::getFieldOfView() const
+{
+    return glm::radians(fieldOfView);
+}

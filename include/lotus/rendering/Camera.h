@@ -30,15 +30,17 @@ class Camera
     float movementSpeed = 2.5f;
     float mouseSensitivity = 0.1f;
     float zoom = 45.0f;
+    float fieldOfView = 45.0f;
 
 public:
     explicit Camera(glm::vec3 posVec, glm::vec3 worldUpVec = glm::vec3(0.0f, 1.0f, 0.0f));
 
-    glm::mat4 GetViewMatrix();
-    const glm::vec3& getPosition() const;
-    const glm::vec3& getFront() const;
-    const glm::vec3& getRight() const;
-    const glm::vec3& getUp() const;
+    [[nodiscard]] glm::mat4 GetViewMatrix() const;
+    [[nodiscard]] glm::vec3 getPosition() const;
+    [[nodiscard]] glm::vec3 getFront() const;
+    [[nodiscard]] glm::vec3 getRight() const;
+    [[nodiscard]] glm::vec3 getUp() const;
+    [[nodiscard]] float getFieldOfView() const;
 
     void ProcessKeyboard(CameraMovement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);

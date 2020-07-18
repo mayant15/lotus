@@ -1,5 +1,7 @@
 #include <string>
 
+#define RESOURCE(x) lotus::resource(__FILE__, x)
+
 enum class Context {
     OpenGL,
     Vulkan
