@@ -1,4 +1,4 @@
-#include "lotus/ui/GUI.h"
+#include "GUI.h"
 
 const char* GUI::getClipboardText(void* userData)
 {

@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include <memory>
 #include <GLFW/glfw3.h>
-#include "lotus/engine.h"
+#include "lotus/lotus.h"
 #include "UIRenderBackend.h"
 
 #define GLFW_HAS_WINDOW_TOPMOST       (GLFW_VERSION_MAJOR * 1000 + GLFW_VERSION_MINOR * 100 >= 3200) // 3.2+ GLFW_FLOATING
