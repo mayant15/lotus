@@ -93,6 +93,11 @@ int main()
     );
     model->import();
 
+    Lotus::Resource::SRefModel planeModel = std::make_shared<Lotus::Resource::Model>(
+            "/home/priyansh/code/lotus/examples/quickstart/resources/mesh/plane.obj"
+    );
+    planeModel->import();
+
     glCheckError();
 
     Lotus::Scene scene;
@@ -103,6 +108,9 @@ int main()
 
     Lotus::SRefActor actor2 = std::make_shared<Lotus::Actor>(glm::vec3(2.0f, 2.0f, 0.0f), model, shader);
     scene.addActor(actor2);
+
+    Lotus::SRefActor plane = std::make_shared<Lotus::Actor>(glm::vec3(0.0f, -1.11f, 0.0f), planeModel, shader);
+    scene.addActor(plane);
 
     // Camera
     Lotus::SRefCamera camera = std::make_shared<Lotus::LCamera>(glm::vec3(0.0f, 0.0f, 5.0f));
