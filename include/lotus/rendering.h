@@ -3,6 +3,7 @@
 #include <memory>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
+#include "components.h"
 #include "scene.h"
 #include "resources.h"
 #include "config.h"
@@ -31,17 +32,18 @@ namespace Lotus::Rendering
 
         void setMat3fv(const std::string& name, int transpose, const float* value_ptr) const;
 
-        // TODO: Set lights
+        void setPointLight(const std::string& name, const CPointLight& options) const;
 
-//    void setPointLight(const std::string& name, const * options) const;
-//
-//    void setSpotlight(const std::string& name, const Spotlight& options) const;
-//
-//    void setPointLightArray(const std::string& name, const PointLight* lights, unsigned int length) const;
-//
-//    void setSpotlightArray(const std::string& name, const Spotlight* lights, unsigned int length) const;
-//
-//    void setDirectionalLight(const std::string& name, const DirectionalLight& options) const;
+        void setSpotlight(const std::string& name, const CSpotlight& options) const;
+
+        void setDirectionalLight(const std::string& name, const CDirectionalLight& options) const;
+
+        void setPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const;
+
+        void setSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const;
+
+        void setDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const;
+
     };
 
     typedef std::shared_ptr<Shader> SRefShader;

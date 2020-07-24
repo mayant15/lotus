@@ -29,17 +29,17 @@ namespace Lotus
 
     struct CDirectionalLight : CLight
     {
-        glm::vec3 direction;
+        glm::vec3 direction = glm::vec3(0.0f);
     };
 
     struct CSpotlight : CLight
     {
-        glm::vec3 position;
-        glm::vec3 direction;
-        float constant;
-        float linear;
-        float quadratic;
-        float innerCutOff;
-        float outerCutOff;
+        glm::vec3 position = glm::vec3(0.0f);
+        glm::vec3 direction = glm::vec3(0.0f);
+        float constant = 1.0f;
+        float linear = 1.0f;
+        float quadratic = 1.0f;
+        float innerCutOff = 1.0f;
+        float outerCutOff = 1.0f;
     };
 }

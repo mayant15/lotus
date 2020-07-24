@@ -7,6 +7,12 @@
 #include "core.h"
 #include "components.h"
 
+enum class ELight {
+    SPOT,
+    DIR,
+    POINT
+};
+
 // Forward declare required classes
 namespace Lotus::Rendering
 {
@@ -96,31 +102,31 @@ namespace Lotus
     class ALight : public Actor
     {
     public:
-        CPointLight light;
+        CSpotlight light;
 
-        ALight(glm::vec3 position_, const Resource::SRefModel& model_, const Rendering::SRefShader& shader_);
+        ALight(const CSpotlight& light_, const Resource::SRefModel& model_, const Rendering::SRefShader& shader_);
     };
 
     typedef std::shared_ptr<ALight> SRefALight;
 
     class Scene
     {
+    public:
         SRefCamera camera;
         std::vector<SRefActor> actors;
-        std::vector<SRefALight> lights;
+        std::vector<SRefALight> pointLights;
+        std::vector<SRefALight> spotlights;
+        std::vector<SRefALight> dirLights;
 
-    public:
         void addCamera(SRefCamera& camera_);
 
         void addActor(const SRefActor& actor);
 
-        void addLight(const SRefALight& light);
+        void addLight(const SRefALight& light, ELight type);
 
-        const SRefCamera& getCamera() const;
-
-        const std::vector<SRefActor>& getActors() const;
-
-        const std::vector<SRefALight>& getLights() const;
+        std::vector<CPointLight> getPointLightProps() const;
+        std::vector<CSpotlight> getSpotlightProps() const;
+        std::vector<CDirectionalLight> getDirLightProps() const;
     };
 
 }

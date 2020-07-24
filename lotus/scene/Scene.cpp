@@ -12,24 +12,73 @@ namespace Lotus
         actors.push_back(actor);
     }
 
-    void Scene::addLight(const SRefALight& light)
-    {
-        lights.push_back(light);
+    void Scene::addLight(const SRefALight& light, ELight type) {
         actors.push_back(light);
+        switch (type)
+        {
+            case ELight::SPOT:
+                spotlights.push_back(light);
+                break;
+            case ELight::DIR:
+                dirLights.push_back(light);
+                break;
+            case ELight::POINT:
+                pointLights.push_back(light);
+                break;
+        }
     }
 
-    const SRefCamera& Scene::getCamera() const
+    std::vector<CPointLight> Scene::getPointLightProps() const
     {
-        return camera;
+        std::vector<CPointLight> v;
+        for (const SRefALight& light : pointLights)
+        {
+            CPointLight props;
+            props.position = light->light.position;
+            props.constant = light->light.constant;
+            props.linear = light->light.linear;
+            props.quadratic = light->light.quadratic;
+            props.specular = light->light.specular;
+            props.diffuse = light->light.diffuse;
+            props.ambient = light->light.ambient;
+            v.push_back(props);
+        }
+        return v;
     }
 
-    const std::vector<SRefActor>& Scene::getActors() const
+    std::vector<CSpotlight> Scene::getSpotlightProps() const
     {
-        return actors;
+        std::vector<CSpotlight> v;
+        for (const SRefALight& light : spotlights)
+        {
+            CSpotlight props;
+            props.position = light->light.position;
+            props.direction = light->light.direction;
+            props.innerCutOff = light->light.innerCutOff;
+            props.outerCutOff = light->light.outerCutOff;
+            props.constant = light->light.constant;
+            props.linear = light->light.linear;
+            props.quadratic = light->light.quadratic;
+            props.specular = light->light.specular;
+            props.diffuse = light->light.diffuse;
+            props.ambient = light->light.ambient;
+            v.push_back(props);
+        }
+        return v;
     }
 
-    const std::vector<SRefALight>& Scene::getLights() const
+    std::vector<CDirectionalLight> Scene::getDirLightProps() const
     {
-        return lights;
+        std::vector<CDirectionalLight> v;
+        for (const SRefALight& light : dirLights)
+        {
+            CDirectionalLight props;
+            props.direction = light->light.direction;
+            props.specular = light->light.specular;
+            props.diffuse = light->light.diffuse;
+            props.ambient = light->light.ambient;
+            v.push_back(props);
+        }
+        return v;
     }
 }

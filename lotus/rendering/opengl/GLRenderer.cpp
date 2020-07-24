@@ -31,28 +31,23 @@ namespace Lotus::Rendering
     void GLRenderer::renderScene(const Scene& scene)
     {
         // Get camera properties
-        const Lotus::SRefCamera& camera = scene.getCamera();
-        glm::mat4 view = camera->GetViewMatrix();
-        glm::vec3 cameraPos = camera->getPosition();
+        glm::mat4 view = scene.camera->GetViewMatrix();
+        glm::vec3 cameraPos = scene.camera->getPosition();
 
         // Get viewport properties
         int viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
         float width = viewport[2];
         float height = viewport[3];
-        glm::mat4 projection = glm::perspective(camera->getFieldOfView(), width / height, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(scene.camera->getFieldOfView(), width / height, 0.1f, 100.0f);
 
-        // Get the first light
-        std::vector<SRefALight> lights = scene.getLights();
-
-        CPointLight light;
-        if (!lights.empty())
-        {
-            light = lights[0]->light;
-        }
+        // Get scene lights
+        std::vector<CPointLight> pointLights = scene.getPointLightProps();
+        std::vector<CSpotlight> spotlights = scene.getSpotlightProps();
+        std::vector<CDirectionalLight> dirLights = scene.getDirLightProps();
 
         // Render actors
-        const std::vector<SRefActor>& actors = scene.getActors();
+        const std::vector<SRefActor>& actors = scene.actors;
         for (const SRefActor& actor : actors)
         {
             if (actor->isActive)
@@ -66,16 +61,10 @@ namespace Lotus::Rendering
                 shader->setMat4fv("projection", GL_FALSE, glm::value_ptr(projection));
                 shader->setVec3f("viewPos", glm::value_ptr(cameraPos));
 
-                // TODO: Improve light handling
                 // Set lighting
-                std::string name = "pointLight";
-                shader->setFloat(name + ".constant", light.constant);
-                shader->setFloat(name + ".linear", light.linear);
-                shader->setFloat(name + ".quadratic", light.quadratic);
-                shader->setVec3f(name + ".position", glm::value_ptr(light.position));
-                shader->setVec3f(name + ".ambient", glm::value_ptr(light.ambient));
-                shader->setVec3f(name + ".diffuse", glm::value_ptr(light.diffuse));
-                shader->setVec3f(name + ".specular", glm::value_ptr(light.specular));
+                shader->setPointLightArray("pointLight", pointLights);
+                shader->setSpotlightArray("spotlight", spotlights);
+                shader->setDirLightArray("dirLight", dirLights);
 
                 // Set transforms and draw actor
                 CTransform transform = actor->transform;

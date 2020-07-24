@@ -1,5 +1,6 @@
 #include <fstream>
 #include <string>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "lotus/rendering.h"
 #include "lotus/debug.h"
@@ -105,53 +106,65 @@ namespace Lotus::Rendering
         glUniformMatrix3fv(loc, 1, transpose, value_ptr);
     }
 
-//void Shader::setDirectionalLight(const std::string& name, const DirectionalLight& options) const
-//{
-//    setVec3f(name + ".direction", glm::value_ptr(options.direction));
-//    setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
-//    setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
-//    setVec3f(name + ".specular", glm::value_ptr(options.specular));
-//}
-//
-//void Shader::setPointLight(const std::string& name, const PointLight& options) const
-//{
-//    setFloat(name + ".constant", options.constant);
-//    setFloat(name + ".linear", options.linear);
-//    setFloat(name + ".quadratic", options.quadratic);
-//    setVec3f(name + ".position", glm::value_ptr(options.position));
-//    setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
-//    setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
-//    setVec3f(name + ".specular", glm::value_ptr(options.specular));
-//}
-//
-//void Shader::setSpotlight(const std::string& name, const Spotlight& options) const
-//{
-//    setFloat(name + ".constant", options.constant);
-//    setFloat(name + ".linear", options.linear);
-//    setFloat(name + ".quadratic", options.quadratic);
-//    setFloat(name + ".innerCutOff", options.innerCutOff);
-//    setFloat(name + ".outerCutOff", options.outerCutOff);
-//
-//    setVec3f(name + ".direction", glm::value_ptr(options.direction));
-//    setVec3f(name + ".position", glm::value_ptr(options.position));
-//    setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
-//    setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
-//    setVec3f(name + ".specular", glm::value_ptr(options.specular));
-//}
-//
-//void Shader::setPointLightArray(const std::string& name, const PointLight* lights, unsigned int length) const {
-//    for (unsigned int i = 0; i < length; ++i)
-//    {
-//        setPointLight(name + "[" + std::to_string(i) + "]", lights[i]);
-//    }
-//}
-//
-//void Shader::setSpotlightArray(const std::string& name, const Spotlight* lights, unsigned int length) const
-//{
-//    for (unsigned int i = 0; i < length; ++i)
-//    {
-//        setSpotlight(name + "[" + std::to_string(i) + "]", lights[i]);
-//    }
-//}
+    void Shader::setPointLight(const std::string& name, const CPointLight& options) const
+    {
+        setFloat(name + ".constant", options.constant);
+        setFloat(name + ".linear", options.linear);
+        setFloat(name + ".quadratic", options.quadratic);
+        setVec3f(name + ".position", glm::value_ptr(options.position));
+        setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
+        setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
+        setVec3f(name + ".specular", glm::value_ptr(options.specular));
+    }
 
+    void Shader::setSpotlight(const std::string& name, const CSpotlight& options) const
+    {
+        setFloat(name + ".constant", options.constant);
+        setFloat(name + ".linear", options.linear);
+        setFloat(name + ".quadratic", options.quadratic);
+        setFloat(name + ".innerCutOff", options.innerCutOff);
+        setFloat(name + ".outerCutOff", options.outerCutOff);
+
+        setVec3f(name + ".direction", glm::value_ptr(options.direction));
+        setVec3f(name + ".position", glm::value_ptr(options.position));
+        setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
+        setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
+        setVec3f(name + ".specular", glm::value_ptr(options.specular));
+    }
+
+    void Shader::setDirectionalLight(const std::string& name, const CDirectionalLight& options) const
+    {
+        setVec3f(name + ".direction", glm::value_ptr(options.direction));
+        setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
+        setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
+        setVec3f(name + ".specular", glm::value_ptr(options.specular));
+    }
+
+    void Shader::setPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const
+    {
+        unsigned int i = 0;
+        for (const CPointLight& light : lights)
+        {
+            setPointLight(name + "[" + std::to_string(i) + "]", light);
+            i++;
+        }
+    }
+
+    void Shader::setSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const
+    {
+        unsigned int i = 0;
+        for (const CSpotlight& light : lights)
+        {
+            setSpotlight(name + "[" + std::to_string(i) + "]", light);
+        }
+    }
+
+    void Shader::setDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const
+    {
+        unsigned int i = 0;
+        for (const CDirectionalLight& light : lights)
+        {
+            setDirectionalLight(name + "[" + std::to_string(i) + "]", light);
+        }
+    }
 }
