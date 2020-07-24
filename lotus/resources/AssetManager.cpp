@@ -21,6 +21,6 @@ namespace Lotus::Resource
 
     bool AssetManager::exists(const std::string& path)
     {
-        return true;
+        return false;
     }
 }

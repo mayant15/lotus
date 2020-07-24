@@ -3,7 +3,6 @@
 
 #include "lotus/rendering.h"
 #include "lotus/debug.h"
-#include "../debug.hpp"
 
 namespace Lotus::Rendering
 {
@@ -44,7 +43,13 @@ namespace Lotus::Rendering
         glm::mat4 projection = glm::perspective(camera->getFieldOfView(), width / height, 0.1f, 100.0f);
 
         // Get the first light
-        CPointLight light = scene.getLights()[0]->light;
+        std::vector<SRefALight> lights = scene.getLights();
+
+        CPointLight light;
+        if (!lights.empty())
+        {
+            light = lights[0]->light;
+        }
 
         // Render actors
         const std::vector<SRefActor>& actors = scene.getActors();
@@ -53,7 +58,7 @@ namespace Lotus::Rendering
             if (actor->isActive)
             {
                 // TODO: Cache these shaders somewhere? So that lighting and camera properties are set only once?
-                SRefShader shader = actor->getModel().shader;
+                SRefShader shader = actor->model.shader;
                 shader->use();
 
                 // Set camera
@@ -73,13 +78,13 @@ namespace Lotus::Rendering
                 shader->setVec3f(name + ".specular", glm::value_ptr(light.specular));
 
                 // Set transforms and draw actor
-                CTransform transform = actor->getTransform();
+                CTransform transform = actor->transform;
                 glm::mat4 model(1.0f);
-                glm::translate(model, transform.position);
-                glm::rotate(model, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-                glm::rotate(model, transform.rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
-                glm::rotate(model, transform.rotation.z, glm::vec3(1.0f, 0.0f, 0.0f));
-                glm::scale(model, transform.scale);
+                model = glm::translate(model, transform.position);
+                model = glm::rotate(model, transform.rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+                model = glm::rotate(model, transform.rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));
+                model = glm::rotate(model, transform.rotation.z, glm::vec3(1.0f, 0.0f, 0.0f));
+                model = glm::scale(model, transform.scale);
                 shader->setMat4fv("model", GL_FALSE, glm::value_ptr(model));
 
                 // Material. Diffuse is set through a texture
@@ -87,12 +92,13 @@ namespace Lotus::Rendering
                 shader->setVec3f("material.specular", specular);
                 shader->setFloat("material.shininess", 32);
 
-                renderModel(actor->getModel().model, shader);
+                renderModel(actor->model.model, shader);
             }
         }
     }
 
-    void GLRenderer::renderModel(const Resource::SRefModel& model, const SRefShader& shader) {
+    void GLRenderer::renderModel(const Resource::SRefModel& model, const SRefShader& shader)
+    {
         std::vector<Resource::Mesh> meshes = model->getMeshes();
         for (Resource::Mesh& mesh : meshes)
         {
@@ -150,13 +156,14 @@ namespace Lotus::Rendering
         return textureID;
     }
 
-    void GLRenderer::init()
+    void GLRenderer::init(bool isDebug)
     {
         // Initialize and configure GLFW
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, isDebug);
 
         window = std::make_unique<Window>(Lotus::Context::OPEN_GL, 800, 600, "Lotus - OpenGL");
         glfwSetFramebufferSizeCallback(window->getGLWindow(), framebufferSizeCallback);
@@ -169,15 +176,96 @@ namespace Lotus::Rendering
         }
 
         // Enable debug output
-        glEnable(GL_DEBUG_OUTPUT);
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(debugMessageCallback, nullptr);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        int flags;
+        glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+        if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+        {
+            LOG_INFO("Setting up a debug context...");
+            glEnable(GL_DEBUG_OUTPUT);
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            glDebugMessageCallback(debugMessageCallback, nullptr);
+            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        }
 
         // Enable depth testing with the z-buffer
         glEnable(GL_DEPTH_TEST);
 
         // Enable stencil test
         glEnable(GL_STENCIL_TEST);
+    }
+
+    void GLRenderer::debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+                                          const GLchar* message, const void* userParam)
+    {
+        // ignore non-significant error/warning codes
+//        if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
+        std::string sourceString;
+        std::string typeString;
+        switch (source)
+        {
+            case GL_DEBUG_SOURCE_API:
+                sourceString = "Source: API";
+                break;
+            case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+                sourceString = "Source: Window System";
+                break;
+            case GL_DEBUG_SOURCE_SHADER_COMPILER:
+                sourceString = "Source: Shader Compiler";
+                break;
+            case GL_DEBUG_SOURCE_THIRD_PARTY:
+                sourceString = "Source: Third Party";
+                break;
+            case GL_DEBUG_SOURCE_APPLICATION:
+                sourceString = "Source: Application";
+                break;
+            case GL_DEBUG_SOURCE_OTHER:
+                sourceString = "Source: Other";
+                break;
+        }
+        switch (type)
+        {
+            case GL_DEBUG_TYPE_ERROR:
+                typeString = "Type: Error";
+                break;
+            case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+                typeString = "Type: Deprecated Behaviour";
+                break;
+            case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+                typeString = "Type: Undefined Behaviour";
+                break;
+            case GL_DEBUG_TYPE_PORTABILITY:
+                typeString = "Type: Portability";
+                break;
+            case GL_DEBUG_TYPE_PERFORMANCE:
+                typeString = "Type: Performance";
+                break;
+            case GL_DEBUG_TYPE_MARKER:
+                typeString = "Type: Marker";
+                break;
+            case GL_DEBUG_TYPE_PUSH_GROUP:
+                typeString = "Type: Push Group";
+                break;
+            case GL_DEBUG_TYPE_POP_GROUP:
+                typeString = "Type: Pop Group";
+                break;
+            case GL_DEBUG_TYPE_OTHER:
+                typeString = "Type: Other";
+                break;
+        }
+        switch (severity)
+        {
+            case GL_DEBUG_SEVERITY_HIGH:
+                LOG_ERROR ("({}): {}. {}. {}", id, message, sourceString, typeString);
+                break;
+            case GL_DEBUG_SEVERITY_MEDIUM:
+                LOG_WARN  ("({}): {}. {}. {}", id, message, sourceString, typeString);
+                break;
+            case GL_DEBUG_SEVERITY_LOW:
+                LOG_WARN  ("({}): {}. {}. {}", id, message, sourceString, typeString);
+                break;
+            case GL_DEBUG_SEVERITY_NOTIFICATION:
+                LOG_INFO  ("({}): {}. {}. {}", id, message, sourceString, typeString);
+                break;
+        }
     }
 }

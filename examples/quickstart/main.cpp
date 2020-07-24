@@ -3,11 +3,53 @@
 #include <glm/glm.hpp>
 
 #include "lotus/lotus.h"
+#include "lotus/debug.h"
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 float lastX = 400, lastY = 300;
+
+#define glCheckError() glCheckError_(__FILE__, __LINE__)
+
+/**
+ * Print out an error message with file name and line number
+ */
+GLenum glCheckError_(const char* file, int line)
+{
+    GLenum errorCode;
+    while ((errorCode = glGetError()) != GL_NO_ERROR)
+    {
+        std::string error;
+        switch (errorCode)
+        {
+            case GL_INVALID_ENUM:
+                error = "INVALID_ENUM";
+                break;
+            case GL_INVALID_VALUE:
+                error = "INVALID_VALUE";
+                break;
+            case GL_INVALID_OPERATION:
+                error = "INVALID_OPERATION";
+                break;
+            case GL_STACK_OVERFLOW:
+                error = "STACK_OVERFLOW";
+                break;
+            case GL_STACK_UNDERFLOW:
+                error = "STACK_UNDERFLOW";
+                break;
+            case GL_OUT_OF_MEMORY:
+                error = "OUT_OF_MEMORY";
+                break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                error = "INVALID_FRAMEBUFFER_OPERATION";
+                break;
+        }
+        LOG_ERROR("{} | {} ({})", error, file, line);
+    }
+    return errorCode;
+}
+
 
 namespace LR = Lotus::Rendering;
 
@@ -18,7 +60,7 @@ int main()
 
     // Then choose the renderer and initialize that
     LR::GLRenderer& renderer = LR::GLRenderer::get();
-    renderer.init();
+    renderer.init(true);
 
     // Set the viewport dimensions
     renderer.setViewport(0, 0, 800, 600);
@@ -51,21 +93,28 @@ int main()
     );
     model->import();
 
+    glCheckError();
+
     Lotus::Scene scene;
 
     Lotus::SRefActor actor = std::make_shared<Lotus::Actor>(ORIGIN, model, shader);
     scene.addActor(actor);
 
+    Lotus::SRefActor actor2 = std::make_shared<Lotus::Actor>(glm::vec3(2.0f, 2.0f, 0.0f), model, shader);
+    scene.addActor(actor2);
+
     Lotus::SRefCamera camera = std::make_shared<Lotus::LCamera>(glm::vec3(0.0f, 0.0f, 5.0f));
     scene.addCamera(camera);
 
-    Lotus::SRefALight light = std::make_shared<Lotus::ALight>(glm::vec3(2.0f, 2.0f, 2.0f), model, whiteShader);
+    Lotus::SRefALight light = std::make_shared<Lotus::ALight>(glm::vec3(-3.0f, 3.0f, 0.0f), model, whiteShader);
+    light->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
     scene.addLight(light);
 
     // Run the main render loop
     GLFWwindow* pWindow = window->getGLWindow();
     while (!glfwWindowShouldClose(pWindow))
     {
+        glCheckError();
         glfwPollEvents();
         if (glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS)
         {
@@ -104,10 +153,13 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+        glCheckError();
         renderer.renderScene(scene);
+        glCheckError();
         glfwSwapBuffers(pWindow);
     }
 
+    glCheckError();
     renderer.shutdown();
     return 0;
 }

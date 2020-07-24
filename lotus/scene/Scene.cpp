@@ -15,6 +15,7 @@ namespace Lotus
     void Scene::addLight(const SRefALight& light)
     {
         lights.push_back(light);
+        actors.push_back(light);
     }
 
     const SRefCamera& Scene::getCamera() const

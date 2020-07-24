@@ -113,8 +113,6 @@ namespace Lotus::Resource
         std::string directory;
         bool flipTextureY;
 
-        void loadModel(const std::string& path);
-
         void processNode(const aiNode* node, const aiScene* scene);
 
         Mesh processMesh(const aiMesh* mesh, const aiScene* scene);

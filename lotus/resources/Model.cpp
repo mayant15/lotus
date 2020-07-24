@@ -3,7 +3,6 @@
 
 #include "lotus/debug.h"
 #include "lotus/resources.h"
-#include "lotus/rendering.h"
 #include "stb_image.h"
 
 namespace Lotus::Resource
@@ -13,12 +12,6 @@ namespace Lotus::Resource
         flipTextureY = flipTextureY_;
         path = path_;
     }
-
-    // TODO: Move to the renderer
-//    void Model::draw(const Shader& shader)
-//    {
-
-//    }
 
     int Model::import()
     {

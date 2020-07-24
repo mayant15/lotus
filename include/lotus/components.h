@@ -14,17 +14,17 @@ namespace Lotus
 
     struct CLight : IComponent
     {
-        glm::vec3 ambient;
-        glm::vec3 diffuse;
-        glm::vec3 specular;
+        glm::vec3 ambient = glm::vec3(1.0f);
+        glm::vec3 diffuse = glm::vec3(1.0f);
+        glm::vec3 specular = glm::vec3(1.0f);
     };
 
     struct CPointLight : CLight
     {
-        glm::vec3 position;
-        float constant;
-        float linear;
-        float quadratic;
+        glm::vec3 position = glm::vec3(0.0f);
+        float constant = 1.0f;
+        float linear = 1.0f;
+        float quadratic = 1.0f;
     };
 
     struct CDirectionalLight : CLight

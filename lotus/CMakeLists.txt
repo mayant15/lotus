@@ -10,7 +10,6 @@ set(SOURCES
         rendering/directx/DxRenderer.cpp
         rendering/Shader.cpp
         rendering/Window.cpp
-        rendering/debug.hpp
 
         resources/stb_image.cpp
         resources/Mesh.cpp

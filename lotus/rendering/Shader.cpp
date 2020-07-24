@@ -1,6 +1,5 @@
 #include <fstream>
 #include <string>
-#include <glm/gtc/type_ptr.hpp>
 
 #include "lotus/rendering.h"
 #include "lotus/debug.h"
@@ -29,7 +28,6 @@ namespace Lotus::Rendering
         }
         const char* vertexCodeStr = vertexCode.c_str();
         const char* fragmentCodeStr = fragmentCode.c_str();
-
 
         uint vertex, fragment;
         int success;

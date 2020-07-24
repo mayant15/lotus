@@ -22,16 +22,6 @@ namespace Lotus
         model.shader = shader_;
     }
 
-    const CModel& Actor::getModel() const
-    {
-        return model;
-    }
-
-    const CTransform& Actor::getTransform() const
-    {
-        return transform;
-    }
-
     // TODO:
     void Actor::update()
     {

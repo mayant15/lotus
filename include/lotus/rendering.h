@@ -66,7 +66,7 @@ namespace Lotus::Rendering
     public:
         virtual URefWindow& getActiveWindow() = 0;
 
-        virtual void init() = 0;
+        virtual void init(bool isDebug) = 0;
 
         virtual void renderScene(const Lotus::Scene& scene) = 0;
 
@@ -79,8 +79,9 @@ namespace Lotus::Rendering
         GLRenderer() = default;
 
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-
-    private:
+        static void debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+                                  const GLchar* message,
+                                  const void* userParam);
 
         void renderModel(const Resource::SRefModel& model, const SRefShader& shader);
 
@@ -96,7 +97,7 @@ namespace Lotus::Rendering
 
         URefWindow& getActiveWindow() override;
 
-        void init() override;
+        void init(bool isDebug) override;
 
         void renderScene(const Scene& scene) override;
 

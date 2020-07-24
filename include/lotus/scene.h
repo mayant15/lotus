@@ -80,20 +80,15 @@ namespace Lotus
 
     class Actor : public LObject
     {
-    protected:
+    public:
         CTransform transform;
         CModel model;
 
-    public:
         Actor(glm::vec3 position_, const Resource::SRefModel& model_, const Rendering::SRefShader& shader_);
 
         void update() override;
 
         void start() override;
-
-        const CModel& getModel() const;
-
-        const CTransform& getTransform() const;
     };
 
     typedef std::shared_ptr<Actor> SRefActor;
