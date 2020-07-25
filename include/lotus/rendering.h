@@ -77,6 +77,14 @@ namespace Lotus::Rendering
 
     class GLRenderer : public IRenderer
     {
+        // Framebuffer object
+        unsigned int FBO = 0;
+
+        // Texture used as a color buffer
+        unsigned int texColorBuffer = 0;
+
+        // Render buffer object for depth and stencil buffers
+        unsigned int RBO = 0;
 
         GLRenderer() = default;
 

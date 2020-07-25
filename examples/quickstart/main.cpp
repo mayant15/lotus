@@ -62,6 +62,8 @@ int main()
     LR::GLRenderer& renderer = LR::GLRenderer::get();
     renderer.init(true);
 
+    glCheckError();
+
     // Set the viewport dimensions
     renderer.setViewport(0, 0, 800, 600);
 
@@ -98,6 +100,11 @@ int main()
     );
     planeModel->import();
 
+//    Lotus::Resource::SRefModel backpackModel = std::make_shared<Lotus::Resource::Model>(
+//            "/home/priyansh/Desktop/backpack/backpack.obj"
+//    );
+//    backpackModel->import();
+
     glCheckError();
 
     Lotus::Scene scene;
@@ -118,43 +125,30 @@ int main()
 
     // Lights
     Lotus::CSpotlight light;
-    light.diffuse = glm::vec3(0.5f);
+    light.diffuse = glm::vec3(0.9375f, 0.99375f, 0.148f); // yellow
     light.ambient = glm::vec3(0.2f);
     light.specular = glm::vec3(0.5f);
     light.constant = 1.0f;
     light.linear = 0.09f;
     light.quadratic = 0.032f;
-    light.innerCutOff = glm::cos(glm::radians(12.5f));
-    light.outerCutOff = glm::cos(glm::radians(17.5f));
+    light.innerCutOff = glm::cos(glm::radians(30.0f));
+    light.outerCutOff = glm::cos(glm::radians(32.5f));
 
-    light.direction = glm::vec3(-1.0f, -1.0f, 0.0f);
-    Lotus::SRefALight light1 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
-    light1->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
-    scene.addLight(light1, ELight::DIR);
+//    light.direction = glm::vec3(-1.0f, -1.0f, 0.0f);
+//    Lotus::SRefALight light1 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
+//    light1->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
+//    scene.addLight(light1, ELight::DIR);
 
-//    light.direction = glm::vec3(0.0f, 0.0f, -1.0f);
-//    light.position = glm::vec3(0.0f, 0.0f, 5.0f);
-//    Lotus::SRefALight light2 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
-//    light2->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
-//    scene.addLight(light2, ELight::SPOT);
-
-    light.direction = glm::vec3(0.0f, -1.0f, 0.0f);
-    light.position = glm::vec3(0.0f, 2.0f, 0.0f);
-    light.diffuse = glm::vec3(1.0f, 0.0f, 0.0f);
+    light.direction = glm::vec3(-0.2f, -1.0f, 0.0f);
+    light.position = glm::vec3(3.0f, 5.0f, 0.0f);
     Lotus::SRefALight light3 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
     light3->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
     scene.addLight(light3, ELight::SPOT);
 
-    light.position = glm::vec3(4.0f, 2.0f, 0.0f);
-    light.diffuse = glm::vec3(1.0f);
+    light.position = glm::vec3(-2.0f, 2.0f, 2.0f);
     Lotus::SRefALight light4 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
     light4->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
     scene.addLight(light4, ELight::POINT);
-
-    light.position = glm::vec3(-2.0f, 2.0f, 0.0f);
-    Lotus::SRefALight light5 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
-    light5->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
-    scene.addLight(light5, ELight::POINT);
 
     // Run the main render loop
     GLFWwindow* pWindow = window->getGLWindow();

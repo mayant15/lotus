@@ -147,6 +147,9 @@ namespace Lotus::Rendering
 
     void GLRenderer::init(bool isDebug)
     {
+        unsigned int width = 800;
+        unsigned int height = 600;
+
         // Initialize and configure GLFW
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -154,7 +157,7 @@ namespace Lotus::Rendering
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, isDebug);
 
-        window = std::make_unique<Window>(Lotus::Context::OPEN_GL, 800, 600, "Lotus - OpenGL");
+        window = std::make_unique<Window>(Lotus::Context::OPEN_GL, width, height, "Lotus - OpenGL");
         glfwSetFramebufferSizeCallback(window->getGLWindow(), framebufferSizeCallback);
 
         // Initialize GLAD
@@ -163,6 +166,46 @@ namespace Lotus::Rendering
             LOG_ERROR("Failed to initialize GLAD");
             return;
         }
+
+        // Enable depth options
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_STENCIL_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Setup framebuffer targets
+        glGenFramebuffers(1, &FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
+        // Create color buffer
+        glGenTextures(1, &texColorBuffer);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // attach it to the FBO
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+
+        // create depth/stencil renderbuffer objects
+        glGenRenderbuffers(1, &RBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+        // attach it to the FBO
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+        // setup completed?
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            LOG_ERROR("Framebuffer is not complete");
+        }
+
+        // Unbind the FBO now that everything has been set up
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // Enable debug output
         int flags;
@@ -175,19 +218,13 @@ namespace Lotus::Rendering
             glDebugMessageCallback(debugMessageCallback, nullptr);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }
-
-        // Enable depth testing with the z-buffer
-        glEnable(GL_DEPTH_TEST);
-
-        // Enable stencil test
-        glEnable(GL_STENCIL_TEST);
     }
 
     void GLRenderer::debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
                                           const GLchar* message, const void* userParam)
     {
         // ignore non-significant error/warning codes
-//        if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
+        if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
         std::string sourceString;
         std::string typeString;
         switch (source)
