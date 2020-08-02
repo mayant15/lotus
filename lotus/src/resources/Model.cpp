@@ -5,7 +5,7 @@
 #include "lotus/resources.h"
 #include "stb_image.h"
 
-namespace Lotus::Resource
+namespace Lotus
 {
     Model::Model(const std::string& path_, bool flipTextureY_)
     {
@@ -51,21 +51,22 @@ namespace Lotus::Resource
 
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
         {
-            glm::vec3 position;
-            position.x = mesh->mVertices[i].x;
-            position.y = mesh->mVertices[i].y;
-            position.z = mesh->mVertices[i].z;
+            Vector3f position(
+                    mesh->mVertices[i].x,
+                    mesh->mVertices[i].y,
+                    mesh->mVertices[i].z
+            );
 
-            glm::vec3 normal;
-            normal.x = mesh->mNormals[i].x;
-            normal.y = mesh->mNormals[i].y;
-            normal.z = mesh->mNormals[i].z;
+            Vector3f normal(
+                    mesh->mNormals[i].x,
+                    mesh->mNormals[i].y,
+                    mesh->mNormals[i].z
+            );
 
-            glm::vec2 texCoords(0.0f, 0.0f);
+            Vector2f texCoords(0.0f);
             if (mesh->mTextureCoords[0])
             {
-                texCoords.x = mesh->mTextureCoords[0][i].x;
-                texCoords.y = mesh->mTextureCoords[0][i].y;
+                texCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
             }
 
             Vertex vertex{position, normal, texCoords};
@@ -84,12 +85,13 @@ namespace Lotus::Resource
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
             // Append diffuse maps
-            std::vector<SRefTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE_TEXTURE);
+            std::vector<SRefTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE,
+                                                                        DIFFUSE_TEXTURE);
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
             // Append specular maps
             std::vector<SRefTexture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR,
-                                                                     SPECULAR_TEXTURE);
+                                                                         SPECULAR_TEXTURE);
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
 

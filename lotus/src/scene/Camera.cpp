@@ -1,32 +1,30 @@
-#include <glm/ext/matrix_transform.hpp>
 #include "lotus/scene.h"
 #include "lotus/physics.h"
 
 namespace Lotus
 {
-    LCamera::LCamera(glm::vec3 position_)
+    ACamera::ACamera(Vector3f position_) : AActor(position_)
     {
-        position = position_;
+        transform.rotation = Vector3f(0.0f, 180.0f, 0.0f);
         updateCameraVectors();
     }
 
-    void LCamera::updateCameraVectors()
+    void ACamera::updateCameraVectors()
     {
         // calculate the new Front vector
-        glm::vec3 frontVec;
-        frontVec.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        frontVec.y = sin(glm::radians(pitch));
-        frontVec.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front = glm::normalize(frontVec);
+        float x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        float y = sin(glm::radians(pitch));
+        float z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = LNormalize(Vector3f(x, y, z));
 
         // also re-calculate the Right and Up vector
         // normalize the vectors, because their length gets closer to 0 the more you look
         // up or down which results in slower movement.
-        right = glm::normalize(glm::cross(front, UP));
-        up = glm::normalize(glm::cross(right, front));
+        right = LNormalize(LCross(front, UP));
+        up = LNormalize(LCross(right, front));
     }
 
-    void LCamera::ProcessMouseScroll(float yoffset)
+    void ACamera::ProcessMouseScroll(float yoffset)
     {
         zoom -= (float) yoffset;
         if (zoom < 1.0f)
@@ -35,7 +33,7 @@ namespace Lotus
             zoom = 45.0f;
     }
 
-    void LCamera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch)
+    void ACamera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch)
     {
         xoffset *= mouseSensitivity;
         yoffset *= mouseSensitivity;
@@ -56,61 +54,61 @@ namespace Lotus
         updateCameraVectors();
     }
 
-    void LCamera::ProcessKeyboard(glm::vec3 direction, float deltaTime)
+    void ACamera::ProcessKeyboard(Vector3f direction, float deltaTime)
     {
         float velocity = movementSpeed * deltaTime;
         if (direction == FORWARD)
-            position += front * velocity;
+            transform.position += front * velocity;
         if (direction == BACKWARD)
-            position -= front * velocity;
+            transform.position -= front * velocity;
         if (direction == LEFT)
-            position -= right * velocity;
+            transform.position -= right * velocity;
         if (direction == RIGHT)
-            position += right * velocity;
+            transform.position += right * velocity;
         if (direction == UP)
-            position += UP * velocity;
+            transform.position += UP * velocity;
         if (direction == DOWN)
-            position -= UP * velocity;
+            transform.position -= UP * velocity;
     }
 
-    glm::mat4 LCamera::GetViewMatrix() const
+    Matrix4f ACamera::GetViewMatrix() const
     {
-        return glm::lookAt(position, position + front, up);
+        return LLookAt(transform.position, transform.position + front, up);
     }
 
-    glm::vec3 LCamera::getPosition() const
+    Vector3f ACamera::getPosition() const
     {
-        return position;
+        return transform.position;
     }
 
-    glm::vec3 LCamera::getFront() const
+    Vector3f ACamera::getFront() const
     {
         return front;
     }
 
-    glm::vec3 LCamera::getRight() const
+    Vector3f ACamera::getRight() const
     {
         return right;
     }
 
-    glm::vec3 LCamera::getUp() const
+    Vector3f ACamera::getUp() const
     {
         return up;
     }
 
-    float LCamera::getFieldOfView() const
+    float ACamera::getFieldOfView() const
     {
         return glm::radians(fieldOfView);
     }
 
     // TODO:
-    void LCamera::start()
+    void ACamera::start()
     {
 
     }
 
     // TODO:
-    void LCamera::update()
+    void ACamera::update()
     {
 
     }

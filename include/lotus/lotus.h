@@ -4,10 +4,9 @@
 
 #include "core.h"
 #include "physics.h"
-#include "components.h"
-#include "rendering.h"
-#include "resources.h"
 #include "scene.h"
+#include "resources.h"
+#include "rendering.h"
 #include "python.h"
 
 //namespace Lotus {

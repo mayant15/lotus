@@ -11,15 +11,17 @@ set(SOURCES
         src/lotus.cpp
         src/Object.cpp
 
+        src/physics/math/operations.cpp
+
         src/python/Interpreter.cpp
         src/python/module.cpp
 
         src/rendering/opengl/glad.c
         src/rendering/opengl/GLRenderer.cpp
-        src/rendering/vulkan/VkRenderer.cpp
-        src/rendering/directx/DxRenderer.cpp
         src/rendering/Shader.cpp
         src/rendering/Window.cpp
+        src/rendering/AModel.cpp
+        src/rendering/Renderer.cpp
 
         src/resources/stb_image.cpp
         src/resources/Mesh.cpp
@@ -30,6 +32,8 @@ set(SOURCES
         src/scene/Scene.cpp
         src/scene/Actor.cpp
         src/scene/Camera.cpp
+
+#        src/tools/logger.cpp
 )
 
 add_library(lotus SHARED ${SOURCES})

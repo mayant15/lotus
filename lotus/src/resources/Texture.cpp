@@ -1,9 +1,9 @@
 #include "lotus/debug.h"
 #include "lotus/resources.h"
-#include "lotus/rendering.h"
+#include "rendering/GLRenderer.h"
 #include "stb_image.h"
 
-namespace Lotus::Resource
+namespace Lotus
 {
     Texture::Texture(const std::string& path_, const std::string& type_) {
         path = path_;
@@ -43,7 +43,7 @@ namespace Lotus::Resource
         }
 
         // TODO: Make API independent. Fire an event?
-        Lotus::Rendering::GLRenderer& renderer = Lotus::Rendering::GLRenderer::get();
+        GLRenderer& renderer = GLRenderer::get();
         unsigned int textureID = renderer.createTexture(data, width, height, format);
 
         id = textureID;

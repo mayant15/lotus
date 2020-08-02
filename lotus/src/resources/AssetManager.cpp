@@ -1,7 +1,7 @@
 #include "lotus/debug.h"
 #include "lotus/resources.h"
 
-namespace Lotus::Resource
+namespace Lotus
 {
     AssetManager& AssetManager::get()
     {

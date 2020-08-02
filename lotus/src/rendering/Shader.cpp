@@ -1,12 +1,9 @@
 #include <fstream>
-#include <string>
-#include <glm/gtc/type_ptr.hpp>
-
 #include "glad/glad.h"
 #include "lotus/rendering.h"
 #include "lotus/debug.h"
 
-namespace Lotus::Rendering
+namespace Lotus
 {
     Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
     {
@@ -90,21 +87,22 @@ namespace Lotus::Rendering
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
 
-    void Shader::setVec3f(const std::string& name, const float* value_ptr) const
+
+    void Shader::setVec3f(const std::string& name, const Vector3f& vec) const
     {
-        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, value_ptr);
+        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, vec.getValuePtr());
     }
 
-    void Shader::setMat4fv(const std::string& name, GLboolean transpose, const float* value_ptr) const
+    void Shader::setMat3f(const std::string& name, int transpose, const Matrix3f& mat) const
     {
-        uint loc = glGetUniformLocation(ID, name.c_str());
-        glUniformMatrix4fv(loc, 1, transpose, value_ptr);
+        unsigned int loc = glGetUniformLocation(ID, name.c_str());
+        glUniformMatrix3fv(loc, 1, transpose, mat.getValuePtr());
     }
 
-    void Shader::setMat3fv(const std::string& name, int transpose, const float* value_ptr) const
+    void Shader::setMat4f(const std::string& name, bool transpose, const Matrix4f& mat) const
     {
-        uint loc = glGetUniformLocation(ID, name.c_str());
-        glUniformMatrix3fv(loc, 1, transpose, value_ptr);
+        unsigned int loc = glGetUniformLocation(ID, name.c_str());
+        glUniformMatrix4fv(loc, 1, transpose, mat.getValuePtr());
     }
 
     void Shader::setPointLight(const std::string& name, const CPointLight& options) const
@@ -112,10 +110,10 @@ namespace Lotus::Rendering
         setFloat(name + ".constant", options.constant);
         setFloat(name + ".linear", options.linear);
         setFloat(name + ".quadratic", options.quadratic);
-        setVec3f(name + ".position", glm::value_ptr(options.position));
-        setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
-        setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
-        setVec3f(name + ".specular", glm::value_ptr(options.specular));
+        setVec3f(name + ".position", options.position);
+        setVec3f(name + ".ambient", options.ambient);
+        setVec3f(name + ".diffuse", options.diffuse);
+        setVec3f(name + ".specular", options.specular);
     }
 
     void Shader::setSpotlight(const std::string& name, const CSpotlight& options) const
@@ -126,19 +124,19 @@ namespace Lotus::Rendering
         setFloat(name + ".innerCutOff", options.innerCutOff);
         setFloat(name + ".outerCutOff", options.outerCutOff);
 
-        setVec3f(name + ".direction", glm::value_ptr(options.direction));
-        setVec3f(name + ".position", glm::value_ptr(options.position));
-        setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
-        setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
-        setVec3f(name + ".specular", glm::value_ptr(options.specular));
+        setVec3f(name + ".direction", options.direction);
+        setVec3f(name + ".position", options.position);
+        setVec3f(name + ".ambient", options.ambient);
+        setVec3f(name + ".diffuse", options.diffuse);
+        setVec3f(name + ".specular", options.specular);
     }
 
     void Shader::setDirectionalLight(const std::string& name, const CDirectionalLight& options) const
     {
-        setVec3f(name + ".direction", glm::value_ptr(options.direction));
-        setVec3f(name + ".ambient", glm::value_ptr(options.ambient));
-        setVec3f(name + ".diffuse", glm::value_ptr(options.diffuse));
-        setVec3f(name + ".specular", glm::value_ptr(options.specular));
+        setVec3f(name + ".direction", options.direction);
+        setVec3f(name + ".ambient", options.ambient);
+        setVec3f(name + ".diffuse", options.diffuse);
+        setVec3f(name + ".specular", options.specular);
     }
 
     void Shader::setPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const
@@ -168,4 +166,6 @@ namespace Lotus::Rendering
             setDirectionalLight(name + "[" + std::to_string(i) + "]", light);
         }
     }
+
+
 }

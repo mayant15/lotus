@@ -44,13 +44,10 @@ GLenum glCheckError_(const char* file, int line)
                 error = "INVALID_FRAMEBUFFER_OPERATION";
                 break;
         }
-        LOG_ERROR("{} | {} ({})", error, file, line);
+        LOG_ERROR("{} | {} ( {} )", error, file, line);
     }
     return errorCode;
 }
-
-
-namespace LR = Lotus::Rendering;
 
 int main()
 {
@@ -58,15 +55,13 @@ int main()
     Lotus::init();
 
     // Then choose the renderer and initialize that
-    LR::GLRenderer& renderer = LR::GLRenderer::get();
+    Lotus::Renderer renderer(Lotus::EContext::OPEN_GL);
     renderer.init(true);
 
     glCheckError();
 
     // Set the viewport dimensions
     renderer.setViewport(0, 0, 800, 600);
-
-    LR::URefWindow& window = renderer.getActiveWindow();
 
     // Capture mouse
 //    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -78,23 +73,23 @@ int main()
 //    glfwSetScrollCallback(window, scroll_callback);
 
     // Create the shaders to be used
-    LR::SRefShader shader = std::make_shared<LR::Shader>(
+    Lotus::SRefShader shader = std::make_shared<Lotus::Shader>(
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/standard.vsh",
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/diffuse.fsh"
     );
 
-    LR::SRefShader whiteShader = std::make_shared<LR::Shader>(
+    Lotus::SRefShader whiteShader = std::make_shared<Lotus::Shader>(
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/standard.vsh",
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/emission.fsh"
     );
 
     // Initialize and import the model
-    Lotus::Resource::SRefModel model = std::make_shared<Lotus::Resource::Model>(
+    Lotus::SRefModel model = std::make_shared<Lotus::Model>(
             "/home/priyansh/code/lotus/examples/quickstart/resources/mesh/untitled.obj"
     );
     model->import();
 
-    Lotus::Resource::SRefModel planeModel = std::make_shared<Lotus::Resource::Model>(
+    Lotus::SRefModel planeModel = std::make_shared<Lotus::Model>(
             "/home/priyansh/code/lotus/examples/quickstart/resources/mesh/plane.obj"
     );
     planeModel->import();
@@ -109,17 +104,17 @@ int main()
     Lotus::Scene scene;
 
     // Actors
-    Lotus::SRefActor actor = std::make_shared<Lotus::Actor>(ORIGIN, model, shader);
-    scene.addActor(actor);
-
-    Lotus::SRefActor actor2 = std::make_shared<Lotus::Actor>(glm::vec3(2.0f, 2.0f, 0.0f), model, shader);
-    scene.addActor(actor2);
-
-    Lotus::SRefActor plane = std::make_shared<Lotus::Actor>(glm::vec3(0.0f, -1.11f, 0.0f), planeModel, shader);
-    scene.addActor(plane);
+//    Lotus::SRefActor actor = std::make_shared<Lotus::AActor>(ORIGIN, model, shader);
+//    scene.addActor(actor);
+//
+//    Lotus::SRefActor actor2 = std::make_shared<Lotus::AActor>(glm::vec3(2.0f, 2.0f, 0.0f), model, shader);
+//    scene.addActor(actor2);
+//
+//    Lotus::SRefActor plane = std::make_shared<Lotus::AActor>(glm::vec3(0.0f, -1.11f, 0.0f), planeModel, shader);
+//    scene.addActor(plane);
 
     // Camera
-    Lotus::SRefCamera camera = std::make_shared<Lotus::LCamera>(glm::vec3(0.0f, 0.0f, 5.0f));
+    Lotus::SRefCamera camera = std::make_shared<Lotus::ACamera>(glm::vec3(0.0f, 0.0f, 5.0f));
     scene.addCamera(camera);
 
     // Lights
@@ -140,64 +135,60 @@ int main()
 
     light.direction = glm::vec3(-0.2f, -1.0f, 0.0f);
     light.position = glm::vec3(3.0f, 5.0f, 0.0f);
-    Lotus::SRefALight light3 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
+    Lotus::SRefALight light3 = std::make_shared<Lotus::ALight>(light);
     light3->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
     scene.addLight(light3, ELight::SPOT);
 
     light.position = glm::vec3(-2.0f, 2.0f, 2.0f);
-    Lotus::SRefALight light4 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
+    Lotus::SRefALight light4 = std::make_shared<Lotus::ALight>(light);
     light4->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
     scene.addLight(light4, ELight::POINT);
 
     exec_file("/home/priyansh/code/lotus/examples/quickstart/resources/scripts/hello.py");
 
     // Run the main render loop
-    GLFWwindow* pWindow = window->getGLWindow();
-    while (!glfwWindowShouldClose(pWindow))
+    Lotus::run();
+    double start_time = glfwGetTime();
+    double current_time = start_time;
+    while (current_time - start_time < 5)
     {
-        glCheckError();
-        glfwPollEvents();
-        if (glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS)
-        {
-            camera->ProcessKeyboard(FORWARD, deltaTime);
-        }
-        if (glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS)
-        {
-            camera->ProcessKeyboard(BACKWARD, deltaTime);
-        }
-        if (glfwGetKey(pWindow, GLFW_KEY_E) == GLFW_PRESS)
-        {
-            camera->ProcessKeyboard(UP, deltaTime);
-        }
-        if (glfwGetKey(pWindow, GLFW_KEY_Q) == GLFW_PRESS)
-        {
-            camera->ProcessKeyboard(DOWN, deltaTime);
-        }
-        if (glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS)
-        {
-            camera->ProcessKeyboard(RIGHT, deltaTime);
-        }
-        if (glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS)
-        {
-            camera->ProcessKeyboard(LEFT, deltaTime);
-        }
-        if (glfwGetKey(pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        {
-            glfwSetWindowShouldClose(pWindow, true);
-        }
-
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        current_time = glfwGetTime();
+//        if (glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS)
+//        {
+//            camera->ProcessKeyboard(FORWARD, deltaTime);
+//        }
+//        if (glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS)
+//        {
+//            camera->ProcessKeyboard(BACKWARD, deltaTime);
+//        }
+//        if (glfwGetKey(pWindow, GLFW_KEY_E) == GLFW_PRESS)
+//        {
+//            camera->ProcessKeyboard(UP, deltaTime);
+//        }
+//        if (glfwGetKey(pWindow, GLFW_KEY_Q) == GLFW_PRESS)
+//        {
+//            camera->ProcessKeyboard(DOWN, deltaTime);
+//        }
+//        if (glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS)
+//        {
+//            camera->ProcessKeyboard(RIGHT, deltaTime);
+//        }
+//        if (glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS)
+//        {
+//            camera->ProcessKeyboard(LEFT, deltaTime);
+//        }
+//        if (glfwGetKey(pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+//        {
+//            glfwSetWindowShouldClose(pWindow, true);
+//        }
+//
+//        float currentFrame = glfwGetTime();
+//        deltaTime = currentFrame - lastFrame;
+//        lastFrame = currentFrame;
 
         // Rendering
-        glClearColor(0.2f, 0.3f, 0.3, 0.5f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-        glCheckError();
         renderer.renderScene(scene);
-        glCheckError();
-        glfwSwapBuffers(pWindow);
+        renderer.update();
     }
 
     glCheckError();

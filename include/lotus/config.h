@@ -9,7 +9,7 @@
 
 namespace Lotus
 {
-    enum class Context {
+    enum class EContext {
         OPEN_GL,
         DIRECTX,
         VULKAN

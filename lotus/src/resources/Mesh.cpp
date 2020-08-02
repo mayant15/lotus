@@ -1,7 +1,7 @@
 #include "lotus/resources.h"
 #include "glad/glad.h"
 
-namespace Lotus::Resource
+namespace Lotus
 {
     Mesh::Mesh(std::vector<Vertex> vertices_, std::vector<unsigned int> indices_, std::vector<SRefTexture> textures_)
     {

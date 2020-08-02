@@ -1,11 +1,9 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <memory>
-
+#include <vector>
 #include "core.h"
-#include "components.h"
+#include "physics.h"
 
 enum class ELight {
     SPOT,
@@ -13,31 +11,67 @@ enum class ELight {
     POINT
 };
 
-// Forward declare required classes
-namespace Lotus::Rendering
-{
-    class Shader;
-
-    typedef std::shared_ptr<Shader> SRefShader;
-}
-
-namespace Lotus::Resource
-{
-    class Model;
-
-    typedef std::shared_ptr<Model> SRefModel;
-}
-
 namespace Lotus
 {
-    class LCamera : LObject
+    struct CTransform : IComponent
     {
-        glm::vec3 position;
+        Vector3f position = Vector3f(0.0f, 0.0f, 0.0f);
+        // In Degrees
+        Vector3f rotation = Vector3f(0.0f, 0.0f, 0.0f);
+        Vector3f scale = Vector3f(1.0f, 1.0f, 1.0f);
+    };
 
+    struct CLight : IComponent
+    {
+        Vector3f ambient = Vector3f(1.0f);
+        Vector3f diffuse = Vector3f(1.0f);
+        Vector3f specular = Vector3f(1.0f);
+    };
+
+    struct CPointLight : CLight
+    {
+        Vector3f position = Vector3f(0.0f);
+        float constant = 1.0f;
+        float linear = 1.0f;
+        float quadratic = 1.0f;
+    };
+
+    struct CDirectionalLight : CLight
+    {
+        Vector3f direction = Vector3f(0.0f);
+    };
+
+    struct CSpotlight : CLight
+    {
+        Vector3f position = Vector3f(0.0f);
+        Vector3f direction = Vector3f(0.0f);
+        float constant = 1.0f;
+        float linear = 1.0f;
+        float quadratic = 1.0f;
+        float innerCutOff = 1.0f;
+        float outerCutOff = 1.0f;
+    };
+
+    class AActor : public LObject
+    {
+    public:
+        CTransform transform;
+
+        AActor(Vector3f position_);
+
+        void update() override;
+
+        void start() override;
+    };
+
+    typedef std::shared_ptr<AActor> SRefActor;
+
+    class ACamera : AActor
+    {
         // Local vectors
-        glm::vec3 front;
-        glm::vec3 up;
-        glm::vec3 right;
+        Vector3f front;
+        Vector3f up;
+        Vector3f right;
 
         float yaw = -90.0f;
         float pitch = 0.0f;
@@ -48,25 +82,25 @@ namespace Lotus
         float fieldOfView = 45.0f;
 
     public:
-        LCamera(glm::vec3 position_);
+        ACamera(Vector3f position_);
 
         void start() override;
 
         void update() override;
 
-        glm::mat4 GetViewMatrix() const;
+        Matrix4f GetViewMatrix() const;
 
-        glm::vec3 getPosition() const;
+        Vector3f getPosition() const;
 
-        glm::vec3 getFront() const;
+        Vector3f getFront() const;
 
-        glm::vec3 getRight() const;
+        Vector3f getRight() const;
 
-        glm::vec3 getUp() const;
+        Vector3f getUp() const;
 
         float getFieldOfView() const;
 
-        void ProcessKeyboard(glm::vec3 direction, float deltaTime);
+        void ProcessKeyboard(Vector3f direction, float deltaTime);
 
         void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
 
@@ -76,35 +110,14 @@ namespace Lotus
         void updateCameraVectors();
     };
 
-    typedef std::shared_ptr<LCamera> SRefCamera;
+    typedef std::shared_ptr<ACamera> SRefCamera;
 
-    struct CModel : IComponent
-    {
-        Resource::SRefModel model;
-        Rendering::SRefShader shader;
-    };
-
-    class Actor : public LObject
-    {
-    public:
-        CTransform transform;
-        CModel model;
-
-        Actor(glm::vec3 position_, const Resource::SRefModel& model_, const Rendering::SRefShader& shader_);
-
-        void update() override;
-
-        void start() override;
-    };
-
-    typedef std::shared_ptr<Actor> SRefActor;
-
-    class ALight : public Actor
+    class ALight : public AActor
     {
     public:
         CSpotlight light;
 
-        ALight(const CSpotlight& light_, const Resource::SRefModel& model_, const Rendering::SRefShader& shader_);
+        ALight(const CSpotlight& light_);
     };
 
     typedef std::shared_ptr<ALight> SRefALight;
@@ -128,5 +141,4 @@ namespace Lotus
         std::vector<CSpotlight> getSpotlightProps() const;
         std::vector<CDirectionalLight> getDirLightProps() const;
     };
-
 }

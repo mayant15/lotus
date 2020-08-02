@@ -1,10 +1,9 @@
 #pragma once
 
-#include <string>
 #include <vector>
 #include <memory>
-#include <glm/glm.hpp>
 #include <assimp/scene.h>
+#include "physics.h"
 
 #define DIFFUSE_TEXTURE "texture_diffuse"
 #define SPECULAR_TEXTURE "texture_specular"
@@ -22,7 +21,7 @@
 #define IMPORT_ERR_CODE -1
 #define IMPORT_SUCCESS_CODE -2
 
-namespace Lotus::Resource
+namespace Lotus
 {
     class AssetManager
     {
@@ -68,9 +67,9 @@ namespace Lotus::Resource
 
     struct Vertex
     {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texCoords;
+        Vector3f position;
+        Vector3f normal;
+        Vector2f texCoords;
     };
 
     // TODO: Make this a resource?
@@ -117,4 +116,6 @@ namespace Lotus::Resource
         std::vector<SRefTexture>
         loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName);
     };
+
+    typedef std::shared_ptr<Model> SRefModel;
 }
