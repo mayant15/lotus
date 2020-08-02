@@ -8,6 +8,7 @@ An in-house game engine
 
 ## Build
 
+Clone with `git clone --recurse-submodules` to get all submodules. Then in the root of the repo, do
 ```shell script
 mkdir build && cd build
 conan install ..
@@ -19,11 +20,13 @@ You should now have an output library file at `build/lib/` and the example execu
 There are a few absolute paths in `examples/quickstart/main.cpp`. You'll have to whatever works on your computer, till we come up with a better solution.
 
 ## Ideas
-[x] GUI with [ImGui](https://github.com/ocornut/imgui) or [GTK+](https://gtk.org/)
-[] Setup Exhale to properly generate Sphinx documentation
-[] Store config in YAML using [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-[] Implement ECS. References: [EntityX](https://github.com/alecthomas/entityx), [EntityPlus](https://github.com/Yelnats321/EntityPlus)
-[] Better image handling with [graphicsmagick](http://www.graphicsmagick.org/)
-[] Use a wrapper over a logging library. [glog](https://github.com/google/glog) or [spdlog](https://github.com/gabime/spdlog)
-[] Physics systems. [React](https://www.reactphysics3d.com/), [bullet](https://pybullet.org/wordpress/)
-[] Implement the `#include` directive for GLSL
+- [ ] Manage scenes with Doom-style BSP
+- [ ] Multipass rendering for a better lighting solution with the scene graph
+- [ ] Store scenes on disk with gLTF
+- [ ] Implement python subclasses for scene nodes
+- [ ] Editor GUI with [ImGui](https://github.com/ocornut/imgui) or [GTK+](https://gtk.org/)
+- [ ] Setup Exhale to properly generate Sphinx documentation
+- [ ] Store config in YAML using [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [ ] ECS with EnTT
+- [ ] Physics systems with [bullet](https://pybullet.org/wordpress/)
+- [ ] Implement the `#include` directive for GLSL

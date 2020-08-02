@@ -3,16 +3,11 @@
 
 namespace Lotus
 {
-    void Renderer::init(bool isDebug)
+    void Renderer::init(Lotus::EContext context_, bool isDebug)
     {
+        context = context_;
         GLRenderer& renderer = GLRenderer::get();
         renderer.init(isDebug);
-    }
-
-    void Renderer::renderScene(const Lotus::Scene& scene)
-    {
-        GLRenderer& renderer = GLRenderer::get();
-        renderer.renderScene(scene);
     }
 
     void Renderer::shutdown()
@@ -31,5 +26,29 @@ namespace Lotus
     {
         GLRenderer& renderer = GLRenderer::get();
         renderer.update();
+    }
+
+    Renderer& Renderer::get()
+    {
+        static Renderer instance;
+        return instance;
+    }
+
+    void Renderer::renderModel(const SRefModel& model, const SRefShader& shader)
+    {
+        GLRenderer& renderer = GLRenderer::get();
+        renderer.renderModel(model, shader);
+    }
+
+    void Renderer::prepareFrame(const SRefACamera& camera)
+    {
+        GLRenderer& renderer = GLRenderer::get();
+        renderer.prepareFrame(camera);
+    }
+
+    void Renderer::swapBuffer()
+    {
+        GLRenderer& renderer = GLRenderer::get();
+        renderer.swapBuffer();
     }
 }

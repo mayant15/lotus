@@ -2,10 +2,12 @@
 
 #include <memory>
 #include <vector>
+#include <unordered_map>
 #include "core.h"
 #include "physics.h"
 
-enum class ELight {
+enum class ELight
+{
     SPOT,
     DIR,
     POINT
@@ -54,6 +56,9 @@ namespace Lotus
 
     class AActor : public LObject
     {
+    protected:
+        std::vector<std::shared_ptr<AActor>> children;
+
     public:
         CTransform transform;
 
@@ -62,9 +67,11 @@ namespace Lotus
         void update() override;
 
         void start() override;
+
+        void addChild(const std::shared_ptr<AActor>& child);
     };
 
-    typedef std::shared_ptr<AActor> SRefActor;
+    typedef std::shared_ptr<AActor> SRefAActor;
 
     class ACamera : AActor
     {
@@ -110,7 +117,7 @@ namespace Lotus
         void updateCameraVectors();
     };
 
-    typedef std::shared_ptr<ACamera> SRefCamera;
+    typedef std::shared_ptr<ACamera> SRefACamera;
 
     class ALight : public AActor
     {
@@ -124,21 +131,11 @@ namespace Lotus
 
     class Scene
     {
+    private:
+        SRefAActor root;
     public:
-        SRefCamera camera;
-        std::vector<SRefActor> actors;
-        std::vector<SRefALight> pointLights;
-        std::vector<SRefALight> spotlights;
-        std::vector<SRefALight> dirLights;
-
-        void addCamera(SRefCamera& camera_);
-
-        void addActor(const SRefActor& actor);
-
-        void addLight(const SRefALight& light, ELight type);
-
-        std::vector<CPointLight> getPointLightProps() const;
-        std::vector<CSpotlight> getSpotlightProps() const;
-        std::vector<CDirectionalLight> getDirLightProps() const;
+        Scene();
+        void update();
+        SRefAActor getRoot() const;
     };
 }

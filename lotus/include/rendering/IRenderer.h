@@ -14,8 +14,6 @@ public:
 
     virtual void init(bool isDebug) = 0;
 
-    virtual void renderScene(const Lotus::Scene& scene) = 0;
-
     virtual void update() = 0;
 
     virtual void shutdown() = 0;

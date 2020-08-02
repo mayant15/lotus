@@ -90,19 +90,19 @@ namespace Lotus
 
     void Shader::setVec3f(const std::string& name, const Vector3f& vec) const
     {
-        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, vec.getValuePtr());
+        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, valuePtr(vec));
     }
 
     void Shader::setMat3f(const std::string& name, int transpose, const Matrix3f& mat) const
     {
         unsigned int loc = glGetUniformLocation(ID, name.c_str());
-        glUniformMatrix3fv(loc, 1, transpose, mat.getValuePtr());
+        glUniformMatrix3fv(loc, 1, transpose, valuePtr(mat));
     }
 
     void Shader::setMat4f(const std::string& name, bool transpose, const Matrix4f& mat) const
     {
         unsigned int loc = glGetUniformLocation(ID, name.c_str());
-        glUniformMatrix4fv(loc, 1, transpose, mat.getValuePtr());
+        glUniformMatrix4fv(loc, 1, transpose, valuePtr(mat));
     }
 
     void Shader::setPointLight(const std::string& name, const CPointLight& options) const

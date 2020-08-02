@@ -7,24 +7,6 @@
 
 namespace Lotus
 {
-    class Renderer
-    {
-    private:
-        Lotus::EContext context;
-        Renderer() = default;
-    public:
-        Renderer(Lotus::EContext context_) : context(context_) {};
-        Renderer(const Renderer& ) = delete;
-        Renderer& operator=(const Renderer& ) = delete;
-
-        void setViewport(int x, int y, int width, int height);
-        void init(bool isDebug);
-        void renderScene(const Lotus::Scene& scene);
-        void shutdown();
-
-        void update();
-    };
-
     class Shader
     {
     public:
@@ -62,6 +44,35 @@ namespace Lotus
 
     typedef std::shared_ptr<Shader> SRefShader;
 
+    class Renderer
+    {
+    private:
+        Lotus::EContext context;
+
+        Renderer() = default;
+
+    public:
+        Renderer(const Renderer&) = delete;
+
+        Renderer& operator=(const Renderer&) = delete;
+
+        static Renderer& get();
+
+        void setViewport(int x, int y, int width, int height);
+
+        void init(Lotus::EContext context_, bool isDebug);
+
+        void renderModel(const SRefModel& model, const SRefShader& shader);
+
+        void shutdown();
+
+        void update();
+
+        void prepareFrame(const SRefACamera& camera);
+
+        void swapBuffer();
+    };
+
     struct CModel : IComponent
     {
         SRefModel model;
@@ -72,6 +83,13 @@ namespace Lotus
     {
     public:
         CModel model;
+
         AModel(const Vector3f& position_, const SRefModel& model_, const SRefShader& shader_);
+
+        void update() override;
+
+        void start() override;
     };
+
+    typedef std::shared_ptr<AModel> SRefAModel;
 }

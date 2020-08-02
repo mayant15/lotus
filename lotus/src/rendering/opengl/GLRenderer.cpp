@@ -23,101 +23,62 @@ void GLRenderer::shutdown()
     glfwTerminate();
 }
 
-void GLRenderer::renderScene(const Lotus::Scene& scene)
+void GLRenderer::prepareFrame(const Lotus::SRefACamera& camera)
 {
     glClearColor(0.2f, 0.3f, 0.3, 0.5f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     // Get camera properties
-    Matrix4f view = scene.camera->GetViewMatrix();
-    Vector3f cameraPos = scene.camera->getPosition();
+    view = camera->GetViewMatrix();
+    cameraPos = camera->getPosition();
 
     // Get viewport properties
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     float width = viewport[2];
     float height = viewport[3];
-    Matrix4f projection = Lotus::LPerspective(scene.camera->getFieldOfView(), width / height, 0.1f, 100.0f);
-
-    // Get scene lights
-    std::vector<Lotus::CPointLight> pointLights = scene.getPointLightProps();
-    std::vector<Lotus::CSpotlight> spotlights = scene.getSpotlightProps();
-    std::vector<Lotus::CDirectionalLight> dirLights = scene.getDirLightProps();
-
-    // Render actors
-    const std::vector<Lotus::SRefActor>& actors = scene.actors;
-    for (const Lotus::SRefActor& actor : actors)
-    {
-        if (actor->isActive)
-        {
-//            // TODO: Cache these shaders somewhere? So that lighting and camera properties are set only once?
-//            Lotus::SRefShader shader = actor->model.shader;
-//            shader->use();
-//
-//            // Set camera
-//            shader->setMat4f("view", GL_FALSE, view);
-//            shader->setMat4f("projection", GL_FALSE, projection);
-//            shader->setVec3f("viewPos", cameraPos);
-//
-//            // Set lighting
-//            shader->setPointLightArray("pointLight", pointLights);
-//            shader->setSpotlightArray("spotlight", spotlights);
-//            shader->setDirLightArray("dirLight", dirLights);
-//
-//            // Set transforms and draw actor
-//            Lotus::CTransform transform = actor->transform;
-//            Matrix4f model(1.0f);
-//            model = Lotus::LTranslate(model, transform.position);
-//            model = Lotus::LRotate(model, transform.rotation.x(), glm::vec3(1.0f, 0.0f, 0.0f));
-//            model = Lotus::LRotate(model, transform.rotation.y(), glm::vec3(1.0f, 0.0f, 0.0f));
-//            model = Lotus::LRotate(model, transform.rotation.z(), glm::vec3(1.0f, 0.0f, 0.0f));
-//            model = Lotus::LScale(model, transform.scale);
-//            shader->setMat4f("model", GL_FALSE, model);
-//
-//            // Material. Diffuse is set through a texture
-//            Vector3f specular(0.5f);
-//            shader->setVec3f("material.specular", specular);
-//            shader->setFloat("material.shininess", 32);
-//
-//            renderModel(actor->model.model, shader);
-        }
-    }
+    projection = Lotus::LPerspective(camera->getFieldOfView(), width / height, 0.1f, 100.0f);
 }
 
 void GLRenderer::renderModel(const Lotus::SRefModel& model, const Lotus::SRefShader& shader)
 {
-//    std::vector<Lotus::Resource::Mesh> meshes = model->getMeshes();
-//    for (Lotus::Resource::Mesh& mesh : meshes)
-//    {
-//        // Setup textures
-//        unsigned int diffuseNum = 1;
-//        unsigned int specularNum = 1;
-//        for (unsigned int i = 0; i < mesh.textures.size(); ++i)
-//        {
-//            glActiveTexture(GL_TEXTURE0 + i);
-//            std::string number;
-//            std::string name = mesh.textures[i]->type;
-//            if (name == DIFFUSE_TEXTURE)
-//            {
-//                number = std::to_string(diffuseNum++);
-//            }
-//            else if (name == SPECULAR_TEXTURE)
-//            {
-//                number = std::to_string(specularNum++);
-//            }
-//
-//            shader->setInt("material." + name + number, i);
-//            glBindTexture(GL_TEXTURE_2D, mesh.textures[i]->id);
-//        }
-//
-//        // Reset the active texture
-//        glActiveTexture(GL_TEXTURE0);
-//
-//        glBindVertexArray(mesh.VAO);
-//
-//        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
-//        glBindVertexArray(0);
-//    }
+    // Set camera
+    shader->setMat4f("view", false, view);
+    shader->setMat4f("projection", GL_FALSE, projection);
+    shader->setVec3f("viewPos", cameraPos);
+
+    std::vector<Lotus::Mesh> meshes = model->getMeshes();
+    for (Lotus::Mesh& mesh : meshes)
+    {
+        // Setup textures
+        unsigned int diffuseNum = 1;
+        unsigned int specularNum = 1;
+        for (unsigned int i = 0; i < mesh.textures.size(); ++i)
+        {
+            glActiveTexture(GL_TEXTURE0 + i);
+            std::string number;
+            std::string name = mesh.textures[i]->type;
+            if (name == DIFFUSE_TEXTURE)
+            {
+                number = std::to_string(diffuseNum++);
+            }
+            else if (name == SPECULAR_TEXTURE)
+            {
+                number = std::to_string(specularNum++);
+            }
+
+            shader->setInt("material." + name + number, i);
+            glBindTexture(GL_TEXTURE_2D, mesh.textures[i]->id);
+        }
+
+        // Reset the active texture
+        glActiveTexture(GL_TEXTURE0);
+
+        glBindVertexArray(mesh.VAO);
+
+        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
+        glBindVertexArray(0);
+    }
 }
 
 GLRenderer& GLRenderer::get()
@@ -145,7 +106,7 @@ unsigned int GLRenderer::createTexture(unsigned char* data, int width, int heigh
 
 void GLRenderer::init(bool isDebug)
 {
-    unsigned int width = 800;
+    unsigned int width = 1024;
     unsigned int height = 600;
 
     // Initialize and configure GLFW
@@ -299,4 +260,10 @@ void GLRenderer::update()
     glfwPollEvents();
     glfwSwapBuffers(window->getGLWindow());
 }
+
+void GLRenderer::swapBuffer()
+{
+    glfwSwapBuffers(window->getGLWindow());
+}
+
 
