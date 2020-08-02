@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include "components.h"
 #include "scene.h"

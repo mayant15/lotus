@@ -1,4 +1,5 @@
 #include "lotus/resources.h"
+#include "glad/glad.h"
 
 namespace Lotus::Resource
 {

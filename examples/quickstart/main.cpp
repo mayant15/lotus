@@ -1,4 +1,3 @@
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
@@ -149,6 +148,8 @@ int main()
     Lotus::SRefALight light4 = std::make_shared<Lotus::ALight>(light, model, whiteShader);
     light4->transform.scale = glm::vec3 (0.2f, 0.2f, 0.2f);
     scene.addLight(light4, ELight::POINT);
+
+    exec_file("/home/priyansh/code/lotus/examples/quickstart/resources/scripts/hello.py");
 
     // Run the main render loop
     GLFWwindow* pWindow = window->getGLWindow();

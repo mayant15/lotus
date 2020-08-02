@@ -8,6 +8,7 @@
 #include "rendering.h"
 #include "resources.h"
 #include "scene.h"
+#include "python.h"
 
 //namespace Lotus {
 //    std::string resource(const std::string& root, const std::string& relPath);

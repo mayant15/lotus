@@ -10,9 +10,6 @@
 #define SPECULAR_TEXTURE "texture_specular"
 
 #if RENDER_API == OPEN_GL
-
-#include "glad/glad.h"
-
 #define RED GL_RED
 #define RGB GL_RGB
 #define RGBA GL_RGBA

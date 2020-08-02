@@ -2,6 +2,7 @@
 #include <string>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "glad/glad.h"
 #include "lotus/rendering.h"
 #include "lotus/debug.h"
 
