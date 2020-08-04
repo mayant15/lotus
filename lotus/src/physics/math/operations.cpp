@@ -1,4 +1,5 @@
 #include "lotus/physics.h"
+#include "lotus/internal/glm/gtc/type_ptr.hpp"
 
 namespace Lotus
 {

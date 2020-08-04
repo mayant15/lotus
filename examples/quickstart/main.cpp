@@ -108,6 +108,7 @@ int main()
     // Run the main render loop
     double start_time = glfwGetTime();
     double current_time = start_time;
+    Lotus::run();
     while (current_time - start_time < 5)
     {
         current_time = glfwGetTime();

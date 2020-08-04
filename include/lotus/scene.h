@@ -1,17 +1,7 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <unordered_map>
 #include "core.h"
 #include "physics.h"
-
-enum class ELight
-{
-    SPOT,
-    DIR,
-    POINT
-};
 
 namespace Lotus
 {
@@ -54,7 +44,7 @@ namespace Lotus
         float outerCutOff = 1.0f;
     };
 
-    class AActor : public LObject
+    class AActor : public IEntity
     {
     protected:
         std::vector<std::shared_ptr<AActor>> children;
@@ -133,9 +123,12 @@ namespace Lotus
     {
     private:
         SRefAActor root;
+        EntityRegistry registry;
     public:
         Scene();
+
         void update();
+
         SRefAActor getRoot() const;
     };
 }

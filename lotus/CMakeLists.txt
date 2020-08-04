@@ -4,12 +4,12 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # Internal headers
 include_directories(include)
 
-# Build pybind
+# Build dependencies
 add_subdirectory(ext/pybind11)
+#add_subdirectory(ext/entt)
 
 set(SOURCES
         src/lotus.cpp
-        src/Object.cpp
 
         src/physics/math/operations.cpp
 

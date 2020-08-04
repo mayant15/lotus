@@ -4,8 +4,7 @@
 // for just Vector3f for now.
 
 // TODO: Remove glm here to make it a dev dependency only
-#include <glm/gtc/type_ptr.hpp>
-#include "glm/glm.hpp"
+#include "internal/glm/glm.hpp"
 
 typedef glm::ivec2 Vector2i;
 typedef glm::ivec3 Vector3i;

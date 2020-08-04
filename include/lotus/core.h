@@ -1,5 +1,7 @@
 #pragma once
 
+#include "internal/entt.hpp"
+
 namespace Lotus
 {
     void init();
@@ -12,17 +14,15 @@ namespace Lotus
     {
     };
 
-    class LObject
+    typedef entt::registry EntityRegistry;
+    typedef entt::entity EntityID;
+
+    class IEntity
     {
-        // TODO: Component lists?
-
+    protected:
+        EntityID ID{};
     public:
-        bool isActive = true;
-
-        // TODO: Implement
         virtual void start() = 0;
-
         virtual void update() = 0;
     };
-
 }
