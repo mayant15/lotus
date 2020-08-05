@@ -1,9 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-#include <assimp/scene.h>
 #include "physics.h"
+#include "lcommon.h"
+#include <assimp/scene.h>
 
 #define DIFFUSE_TEXTURE "texture_diffuse"
 #define SPECULAR_TEXTURE "texture_specular"
@@ -62,9 +61,6 @@ namespace Lotus
         int import() override;
     };
 
-    typedef std::shared_ptr<Texture> SRefTexture;
-
-
     struct Vertex
     {
         Vector3f position;
@@ -79,7 +75,7 @@ namespace Lotus
     public:
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<SRefTexture> textures;
+        std::vector<SRef<Texture>> textures;
         unsigned int VBO = 0;
         unsigned int EBO = 0;
         unsigned int VAO = 0;
@@ -87,7 +83,7 @@ namespace Lotus
         Mesh(
                 std::vector<Vertex> vertices_,
                 std::vector<unsigned int> indices_,
-                std::vector<SRefTexture> textures_
+                std::vector<SRef<Texture>> textures_
         );
 
     private:
@@ -95,10 +91,10 @@ namespace Lotus
 
     };
 
-    struct Model : IResource
+    struct LModel : IResource
     {
     public:
-        Model(const std::string& path, bool flipTextureY_ = true);
+        LModel(const std::string& path, bool flipTextureY_ = true);
 
         std::vector<Mesh> getMeshes() const;
 
@@ -113,9 +109,7 @@ namespace Lotus
 
         Mesh processMesh(const aiMesh* mesh, const aiScene* scene);
 
-        std::vector<SRefTexture>
+        std::vector<SRef<Texture>>
         loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName);
     };
-
-    typedef std::shared_ptr<Model> SRefModel;
 }

@@ -1,6 +1,6 @@
 #include "lotus/debug.h"
 #include "lotus/resources.h"
-#include "rendering/GLRenderer.h"
+#include "GLRenderer.h"
 #include "stb_image.h"
 
 namespace Lotus
@@ -43,7 +43,7 @@ namespace Lotus
         }
 
         // TODO: Make API independent. Fire an event?
-        GLRenderer& renderer = GLRenderer::get();
+        GLRenderer& renderer = GLRenderer::Get();
         unsigned int textureID = renderer.createTexture(data, width, height, format);
 
         id = textureID;

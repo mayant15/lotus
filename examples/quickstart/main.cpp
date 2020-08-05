@@ -1,12 +1,7 @@
 #include <GLFW/glfw3.h>
-#include <chrono>
+
 #include "lotus/lotus.h"
 #include "lotus/debug.h"
-
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
-
-float lastX = 400, lastY = 300;
 
 //#define glCheckError() glCheckError_(__FILE__, __LINE__)
 //
@@ -51,14 +46,14 @@ float lastX = 400, lastY = 300;
 int main()
 {
     // Have to initialize the engine first
-    Lotus::init();
-
-    // Then choose the renderer and initialize that
-    Lotus::Renderer& renderer = Lotus::Renderer::get();
-    renderer.init(Lotus::EContext::OPEN_GL, true);
-
-    // Set the viewport dimensions
-    renderer.setViewport(0, 0, 1024, 600);
+    Lotus::Engine& engine = Lotus::Engine::Get();
+    Lotus::LotusOp config = {
+            .RenderAPI = Lotus::ERenderAPI::OPEN_GL,
+            .IsDebug = true,
+            .Width = 1024,
+            .Height = 800
+    };
+    engine.Initialize(config);
 
     // Capture mouse
 //    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -75,13 +70,13 @@ int main()
 //            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/diffuse.fsh"
 //    );
 
-    Lotus::SRefShader whiteShader = std::make_shared<Lotus::Shader>(
+    Lotus::SRef<Lotus::LShader> whiteShader = std::make_shared<Lotus::LShader>(
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/standard.vsh",
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/emission.fsh"
     );
 
     // Initialize and import the model
-    Lotus::SRefModel model = std::make_shared<Lotus::Model>(
+    Lotus::SRef<Lotus::LModel> model = std::make_shared<Lotus::LModel>(
             "/home/priyansh/code/lotus/examples/quickstart/resources/mesh/untitled.obj"
     );
     model->import();
@@ -91,33 +86,24 @@ int main()
 //    );
 //    planeModel->import();
 
-    Lotus::Scene scene;
+    Lotus::SceneManager& sceneManager = Lotus::SceneManager::Get();
+    const Lotus::URef<Lotus::Scene>& scene = sceneManager.LoadScene("");
+    Lotus::AActor entity = scene->CreateActor(ORIGIN);
+    Lotus::CMeshRenderer meshRenderer {
+        .Shader = whiteShader,
+        .Model = model
+    };
+    entity.AddComponent<Lotus::CMeshRenderer>(meshRenderer);
 
-    Lotus::SRefAActor root = scene.getRoot();
-
-    // Actors
-    Lotus::SRefAModel box = std::make_shared<Lotus::AModel>(ORIGIN, model, whiteShader);
-    root->addChild(box);
-
-    // Camera
-    Lotus::SRefACamera camera = std::make_shared<Lotus::ACamera>(Vector3f(0.0f, 0.0f, 5.0f));
+    scene->CreateCamera(5.0f * Z_AXIS, true);
 
     // Test out python script
     exec_file("/home/priyansh/code/lotus/examples/quickstart/resources/scripts/hello.py");
 
-    // Run the main render loop
-    double start_time = glfwGetTime();
-    double current_time = start_time;
-    Lotus::run();
-    while (current_time - start_time < 5)
-    {
-        current_time = glfwGetTime();
+    engine.Run();
 
-        // Rendering
-        glfwPollEvents();
-        renderer.prepareFrame(camera);
-        scene.update();
-        renderer.swapBuffer();
+    // Run the main render loop
+
 
 //        if (glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS)
 //        {
@@ -147,9 +133,7 @@ int main()
 //        {
 //            glfwSetWindowShouldClose(pWindow, true);
 //        }
-    }
 
-    renderer.shutdown();
     return 0;
 }
 

@@ -18,6 +18,9 @@
     - *Example:* `typedef std::unique_ptr<Sample> URefSample`
 - Shared pointer typedefs should be prefixed by `SRef`.
     - *Example:* `typedef std::shared_ptr<Sample> SRefSample`
+- Raw pointers should be prefixed by `p`.
+- Private fields should be prefixed by `_` and start with a small letter.
+- Public fields and member functions start with a capital letter.
 - Actors should be prefixed by `A`.
     - *Example:* `ALightSource`, `ABox`
 - Components should be prefixed by `C`.

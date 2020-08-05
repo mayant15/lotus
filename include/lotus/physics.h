@@ -1,32 +1,33 @@
 #pragma once
 
-// TODO: This entire file needs a revamp to make it generic. Implementing core functionality
-// for just Vector3f for now.
-
 // TODO: Remove glm here to make it a dev dependency only
 #include "internal/glm/glm.hpp"
 
 typedef glm::ivec2 Vector2i;
 typedef glm::ivec3 Vector3i;
 typedef glm::ivec4 Vector4i;
-typedef glm::vec2 Vector2f;
-typedef glm::vec3 Vector3f;
-typedef glm::vec4 Vector4f;
+typedef glm::vec2  Vector2f;
+typedef glm::vec3  Vector3f;
+typedef glm::vec4  Vector4f;
 
 typedef glm::imat2x2 Matrix2i;
 typedef glm::imat3x3 Matrix3i;
 typedef glm::imat4x4 Matrix4i;
-typedef glm::mat2 Matrix2f;
-typedef glm::mat3 Matrix3f;
-typedef glm::mat4 Matrix4f;
+typedef glm::mat2    Matrix2f;
+typedef glm::mat3    Matrix3f;
+typedef glm::mat4    Matrix4f;
 
-#define FORWARD  Vector3f( 0.0f,  0.0f, -1.0f)
-#define BACKWARD Vector3f( 0.0f,  0.0f,  1.0f)
+#define FRONT    Vector3f( 0.0f,  0.0f, -1.0f)
+#define BACK     Vector3f( 0.0f,  0.0f,  1.0f)
 #define LEFT     Vector3f(-1.0f,  0.0f,  0.0f)
 #define RIGHT    Vector3f( 1.0f,  0.0f,  0.0f)
 #define UP       Vector3f( 0.0f,  1.0f,  0.0f)
 #define DOWN     Vector3f( 0.0f, -1.0f,  0.0f)
 #define ORIGIN   Vector3f( 0.0f,  0.0f,  0.0f)
+
+#define X_AXIS RIGHT
+#define Y_AXIS UP
+#define Z_AXIS BACK
 
 /**
  * OPERATIONS

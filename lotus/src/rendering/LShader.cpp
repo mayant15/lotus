@@ -1,11 +1,12 @@
-#include <fstream>
 #include "glad/glad.h"
-#include "lotus/rendering.h"
 #include "lotus/debug.h"
+#include "lotus/rendering/LShader.h"
+
+#include <fstream>
 
 namespace Lotus
 {
-    Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
+    LShader::LShader(const std::string& vertexPath, const std::string& fragmentPath)
     {
         std::string vertexCode;
         std::string fragmentCode;
@@ -67,45 +68,45 @@ namespace Lotus
         glDeleteShader(fragment);
     }
 
-    void Shader::use() const
+    void LShader::use() const
     {
         glUseProgram(ID);
     }
 
-    void Shader::setBool(const std::string& name, bool value) const
+    void LShader::setBool(const std::string& name, bool value) const
     {
         glUniform1i(glGetUniformLocation(ID, name.c_str()), (int) value);
     }
 
-    void Shader::setInt(const std::string& name, int value) const
+    void LShader::setInt(const std::string& name, int value) const
     {
         glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
     }
 
-    void Shader::setFloat(const std::string& name, float value) const
+    void LShader::setFloat(const std::string& name, float value) const
     {
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
 
 
-    void Shader::setVec3f(const std::string& name, const Vector3f& vec) const
+    void LShader::setVec3f(const std::string& name, const Vector3f& vec) const
     {
         glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, valuePtr(vec));
     }
 
-    void Shader::setMat3f(const std::string& name, int transpose, const Matrix3f& mat) const
+    void LShader::setMat3f(const std::string& name, bool transpose, const Matrix3f& mat) const
     {
         unsigned int loc = glGetUniformLocation(ID, name.c_str());
         glUniformMatrix3fv(loc, 1, transpose, valuePtr(mat));
     }
 
-    void Shader::setMat4f(const std::string& name, bool transpose, const Matrix4f& mat) const
+    void LShader::setMat4f(const std::string& name, bool transpose, const Matrix4f& mat) const
     {
         unsigned int loc = glGetUniformLocation(ID, name.c_str());
         glUniformMatrix4fv(loc, 1, transpose, valuePtr(mat));
     }
 
-    void Shader::setPointLight(const std::string& name, const CPointLight& options) const
+    void LShader::setPointLight(const std::string& name, const CPointLight& options) const
     {
         setFloat(name + ".constant", options.constant);
         setFloat(name + ".linear", options.linear);
@@ -116,7 +117,7 @@ namespace Lotus
         setVec3f(name + ".specular", options.specular);
     }
 
-    void Shader::setSpotlight(const std::string& name, const CSpotlight& options) const
+    void LShader::setSpotlight(const std::string& name, const CSpotlight& options) const
     {
         setFloat(name + ".constant", options.constant);
         setFloat(name + ".linear", options.linear);
@@ -131,7 +132,7 @@ namespace Lotus
         setVec3f(name + ".specular", options.specular);
     }
 
-    void Shader::setDirectionalLight(const std::string& name, const CDirectionalLight& options) const
+    void LShader::setDirectionalLight(const std::string& name, const CDirectionalLight& options) const
     {
         setVec3f(name + ".direction", options.direction);
         setVec3f(name + ".ambient", options.ambient);
@@ -139,7 +140,7 @@ namespace Lotus
         setVec3f(name + ".specular", options.specular);
     }
 
-    void Shader::setPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const
+    void LShader::setPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const
     {
         unsigned int i = 0;
         for (const CPointLight& light : lights)
@@ -149,7 +150,7 @@ namespace Lotus
         }
     }
 
-    void Shader::setSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const
+    void LShader::setSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const
     {
         unsigned int i = 0;
         for (const CSpotlight& light : lights)
@@ -158,7 +159,7 @@ namespace Lotus
         }
     }
 
-    void Shader::setDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const
+    void LShader::setDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const
     {
         unsigned int i = 0;
         for (const CDirectionalLight& light : lights)

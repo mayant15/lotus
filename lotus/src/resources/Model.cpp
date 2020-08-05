@@ -7,13 +7,13 @@
 
 namespace Lotus
 {
-    Model::Model(const std::string& path_, bool flipTextureY_)
+    LModel::LModel(const std::string& path_, bool flipTextureY_)
     {
         flipTextureY = flipTextureY_;
         path = path_;
     }
 
-    int Model::import()
+    int LModel::import()
     {
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -29,7 +29,7 @@ namespace Lotus
         return IMPORT_SUCCESS_CODE;
     }
 
-    void Model::processNode(const aiNode* node, const aiScene* scene)
+    void LModel::processNode(const aiNode* node, const aiScene* scene)
     {
         for (unsigned int i = 0; i < node->mNumMeshes; ++i)
         {
@@ -43,11 +43,11 @@ namespace Lotus
         }
     }
 
-    Mesh Model::processMesh(const aiMesh* mesh, const aiScene* scene)
+    Mesh LModel::processMesh(const aiMesh* mesh, const aiScene* scene)
     {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<SRefTexture> textures;
+        std::vector<SRef<Texture>> textures;
 
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
         {
@@ -85,12 +85,12 @@ namespace Lotus
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
             // Append diffuse maps
-            std::vector<SRefTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE,
+            std::vector<SRef<Texture>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE,
                                                                         DIFFUSE_TEXTURE);
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
             // Append specular maps
-            std::vector<SRefTexture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR,
+            std::vector<SRef<Texture>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR,
                                                                          SPECULAR_TEXTURE);
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
@@ -98,11 +98,11 @@ namespace Lotus
         return Mesh(vertices, indices, textures);
     }
 
-    std::vector<SRefTexture>
-    Model::loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName)
+    std::vector<SRef<Texture>>
+    LModel::loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName)
     {
         stbi_set_flip_vertically_on_load(flipTextureY);
-        std::vector<SRefTexture> textures;
+        std::vector<SRef<Texture>> textures;
         for (unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
         {
             aiString str;
@@ -114,7 +114,7 @@ namespace Lotus
             {
                 std::string path = str.C_Str();
                 path = directory + '/' + path;
-                SRefTexture texture = std::make_shared<Texture>(path, typeName);
+                SRef<Texture> texture = std::make_shared<Texture>(path, typeName);
                 texture->import();
                 textures.push_back(texture);
             }
@@ -123,7 +123,7 @@ namespace Lotus
         return textures;
     }
 
-    std::vector<Mesh> Model::getMeshes() const
+    std::vector<Mesh> LModel::getMeshes() const
     {
         return meshes;
     }

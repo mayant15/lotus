@@ -11,17 +11,7 @@ namespace Lotus
 
     void ACamera::updateCameraVectors()
     {
-        // calculate the new Front vector
-        float x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        float y = sin(glm::radians(pitch));
-        float z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front = LNormalize(Vector3f(x, y, z));
 
-        // also re-calculate the Right and Up vector
-        // normalize the vectors, because their length gets closer to 0 the more you look
-        // up or down which results in slower movement.
-        right = LNormalize(LCross(front, UP));
-        up = LNormalize(LCross(right, front));
     }
 
     void ACamera::ProcessMouseScroll(float yoffset)

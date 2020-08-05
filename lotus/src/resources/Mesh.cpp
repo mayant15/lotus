@@ -3,7 +3,7 @@
 
 namespace Lotus
 {
-    Mesh::Mesh(std::vector<Vertex> vertices_, std::vector<unsigned int> indices_, std::vector<SRefTexture> textures_)
+    Mesh::Mesh(std::vector<Vertex> vertices_, std::vector<unsigned int> indices_, std::vector<SRef<Texture>> textures_)
     {
         // Since the copy passed to the constructor is going to be destroyed
         // using a move here will be more efficient

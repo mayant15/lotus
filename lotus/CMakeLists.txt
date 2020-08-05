@@ -9,7 +9,7 @@ add_subdirectory(ext/pybind11)
 #add_subdirectory(ext/entt)
 
 set(SOURCES
-        src/lotus.cpp
+        src/Engine.cpp
 
         src/physics/math/operations.cpp
 
@@ -18,10 +18,8 @@ set(SOURCES
 
         src/rendering/opengl/glad.c
         src/rendering/opengl/GLRenderer.cpp
-        src/rendering/Shader.cpp
+        src/rendering/LShader.cpp
         src/rendering/Window.cpp
-        src/rendering/AModel.cpp
-        src/rendering/Renderer.cpp
 
         src/resources/stb_image.cpp
         src/resources/Mesh.cpp
@@ -30,11 +28,12 @@ set(SOURCES
         src/resources/AssetManager.cpp
 
         src/scene/Scene.cpp
-        src/scene/Actor.cpp
-        src/scene/Camera.cpp
+        src/scene/AActor.cpp
+#        src/scene/Camera.cpp
+        src/scene/ACamera.cpp
 
 #        src/tools/logger.cpp
-)
+        src/scene/SceneManager.cpp)
 
 add_library(lotus SHARED ${SOURCES})
 target_link_libraries(lotus ${CONAN_LIBS} pybind11::embed)
