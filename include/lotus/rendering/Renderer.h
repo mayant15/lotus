@@ -10,15 +10,21 @@ namespace Lotus
     {
         bool IsDebug;
         ERenderAPI RenderAPI;
-        unsigned int Width;
-        unsigned int Height;
+        WindowOp WindowOptions;
     };
 
     // TODO: Find a better way to keep this class abstract and enforce override restrictions at the same time
     class Renderer : public ILifecycle
     {
+    protected:
+        URef<Window> _window;
+        RendererOp _options{};
+
     public:
-        virtual URef<Window>& GetActiveWindow() = 0;
+        URef<Window>& GetActiveWindow()
+        {
+            return _window;
+        }
 
         virtual void Initialize(const RendererOp& options)
         {}

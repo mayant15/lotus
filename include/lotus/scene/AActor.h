@@ -10,18 +10,21 @@ namespace Lotus
     class AActor : public Entity
     {
     public:
-        AActor() : AActor(NULL_ENTITY, nullptr) {}
-        AActor(EntityID id) : AActor(id, nullptr) {}
-        AActor(EntityID id, Scene* scene);
+        AActor(EntityID id = NULL_ENTITY, Scene* scene = nullptr) : Entity(id, scene)
+        {}
 
         CTransform& GetTransform();
 
         Vector3f GetAbsolutePosition();
+
         Vector3f GetAbsoluteRotation();
+
         Vector3f GetAbsoluteScale();
 
         Vector3f GetRightVector();
+
         Vector3f GetForwardVector();
+
         Vector3f GetUpVector();
     };
 }

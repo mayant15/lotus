@@ -1,15 +1,35 @@
 #pragma once
-#include <GLFW/glfw3.h>
-#include "lotus/lcommon.h"
+
+#include <functional>
+#include <utility>
 
 namespace Lotus
 {
+    struct WindowOp
+    {
+        std::string Title = "Lotus";
+        uint32_t Width = 1024;
+        uint32_t Height = 720;
+    };
+
+    class Event;
+
+    // Thank you Cherno :)
     class Window
     {
-        GLFWwindow* pGLWindow;
+    protected:
+        WindowOp _options;
     public:
-        Window(ERenderAPI context, unsigned int width, unsigned int height, const std::string& title);
+        Window(WindowOp options) : _options(std::move(options)) {}
 
-        GLFWwindow* getGLWindow();
+        virtual void OnUpdate(float delta) = 0;
+
+        virtual bool IsVSync() const = 0;
+        virtual uint32_t GetWidth() const = 0;
+        virtual uint32_t GetHeight() const = 0;
+        virtual void* GetNativeWindow() const = 0;
+
+        virtual void SetEventCallback(const std::function<void(Event&)>& callback) = 0;
+        virtual void SetVSync(bool enabled) = 0;
     };
 }

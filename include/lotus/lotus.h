@@ -10,6 +10,8 @@
 
 #include "resources.h"
 
+#include "Event.h"
+
 #include "rendering/LShader.h"
 #include "rendering/Renderer.h"
 

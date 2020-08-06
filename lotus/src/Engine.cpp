@@ -1,5 +1,5 @@
 #include "lotus/Engine.h"
-#include "GLRenderer.h"
+#include "rendering/opengl/GLRenderer.h"
 
 namespace Lotus
 {
@@ -9,8 +9,10 @@ namespace Lotus
         RendererOp rendererOp{
                 .IsDebug = options.IsDebug,
                 .RenderAPI = options.RenderAPI,
-                .Width = options.Width,
-                .Height = options.Height
+                .WindowOptions = {
+                        .Width = options.Width,
+                        .Height = options.Height
+                }
         };
         _renderer->Initialize(rendererOp);
     }
@@ -36,12 +38,17 @@ namespace Lotus
             currentTime = glfwGetTime();
             float delta = currentTime - lastTime;
             lastTime = currentTime;
-//        pollEvents();
-//        update();
-//        render();
+
+            // Game logic tick
+            // process physics, AI etc here
+
+            // Render tick. Everything that needs to be done this frame should have been done by now.
             _renderer->OnPreUpdate();
             _renderer->OnUpdate(delta);
             _renderer->OnPostUpdate();
+
+            // Poll for events
+            // _eventSystem.Poll();
         }
 
         Shutdown();

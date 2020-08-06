@@ -2,12 +2,6 @@
 
 namespace Lotus
 {
-    ACamera::ACamera(EntityID id, Scene* scene)
-    {
-        _id = id;
-        _pScene = scene;
-    }
-
     Matrix4f ACamera::GetViewMatrix()
     {
         Vector3f position = GetAbsolutePosition();

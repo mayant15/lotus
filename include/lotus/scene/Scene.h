@@ -8,7 +8,9 @@
 namespace Lotus
 {
     class Entity;
+
     class AActor;
+
     class ACamera;
 
     typedef entt::registry EntityRegistry;
@@ -27,10 +29,12 @@ namespace Lotus
         }
 
         Entity CreateEntity();
+
         AActor CreateActor(const Vector3f& position);
 //        AActor CreateActor(const CTransform& transform);
 
         ACamera CreateCamera(const Vector3f& position, float fov, bool isActive);
+
         ACamera GetActiveCamera();
     };
 
@@ -42,9 +46,8 @@ namespace Lotus
         // is handled by the SceneManage (unique_ptr).
         Scene* _pScene;
     public:
-        Entity() : _id(NULL_ENTITY), _pScene(nullptr) {}
-        Entity(EntityID id) : _id(id), _pScene(nullptr) {}
-        Entity(EntityID id, Scene* scene) : _id(id), _pScene(scene) {}
+        Entity(EntityID id = NULL_ENTITY, Scene* scene = nullptr) : _id(id), _pScene(scene)
+        {}
 
         template<typename T, typename ...Args>
         T& AddComponent(Args&& ...args)

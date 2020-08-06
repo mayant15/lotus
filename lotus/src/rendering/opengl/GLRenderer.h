@@ -1,18 +1,16 @@
 #pragma once
 
-#include <lotus/lotus.h>
+#include "GLWindow.h"
 #include "lotus/rendering/Renderer.h"
+#include "lotus/components/lights.h"
 
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
 GLenum glCheckError_(const char* file, int line);
 
 namespace Lotus
 {
-
     class GLRenderer : public Renderer, public Singleton<GLRenderer>
     {
-        URef<Window> _window;
-        RendererOp _options{};
         // framebuffer object
         unsigned int FBO = 0;
 
@@ -34,16 +32,13 @@ namespace Lotus
         friend class Singleton<GLRenderer>;
         GLRenderer() = default;
 
-        static void framebufferSizeCallback([[maybe_unused]] GLFWwindow* window, int width, int height);
+        static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
         static void debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
                                          const GLchar* message,
                                          const void* userParam);
 
     public:
-
-        URef <Window>& GetActiveWindow() override;
-
         void Initialize(const RendererOp& options) override;
 
         void SetViewport(int x, int y, int width, int height) override;
@@ -62,5 +57,4 @@ namespace Lotus
 
         unsigned int createTexture(unsigned char* data, int width, int height, unsigned int format);
     };
-
 }

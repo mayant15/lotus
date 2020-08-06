@@ -1,13 +1,16 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "hicpp-signed-bitwise"
 
-#include "glad/glad.h"
 #include "lotus/debug.h"
 #include "GLRenderer.h"
+#include "lotus/resources.h"
+#include "lotus/rendering/LShader.h"
+#include "lotus/scene/SceneManager.h"
+#include "lotus/scene/ACamera.h"
 
 namespace Lotus
 {
-    void GLRenderer::Initialize(const Lotus::RendererOp& options)
+    void GLRenderer::Initialize(const RendererOp& options)
     {
         // Initialize and configure GLFW
         glfwInit();
@@ -17,9 +20,8 @@ namespace Lotus
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, options.IsDebug);
 
         _options = options;
-        _window = std::make_unique<Window>(options.RenderAPI, options.Width, options.Height, "Lotus - OpenGL");
-        glfwSetFramebufferSizeCallback(_window->getGLWindow(), framebufferSizeCallback);
-
+        _window = std::make_unique<GLWindow>(options.WindowOptions);
+        glfwSetFramebufferSizeCallback((GLFWwindow*) _window->GetNativeWindow(), framebufferSizeCallback);
 
         // Initialize GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -42,7 +44,8 @@ namespace Lotus
         // Create color buffer
         glGenTextures(1, &texColorBuffer);
         glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, options.Width, options.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, options.WindowOptions.Width, options.WindowOptions.Height, 0, GL_RGB,
+                     GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -53,7 +56,8 @@ namespace Lotus
         // create depth/stencil renderbuffer objects
         glGenRenderbuffers(1, &RBO);
         glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, options.Width, options.Height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, options.WindowOptions.Width,
+                              options.WindowOptions.Height);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
         // attach it to the FBO
@@ -96,11 +100,6 @@ namespace Lotus
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         return textureID;
-    }
-
-    URef<Window>& GLRenderer::GetActiveWindow()
-    {
-        return _window;
     }
 
     void GLRenderer::SetViewport(int x, int y, int width, int height)
@@ -173,9 +172,6 @@ namespace Lotus
 
     void GLRenderer::OnPreUpdate()
     {
-        // TODO: Should be done by the event system
-        glfwPollEvents();
-
         glClearColor(0.2f, 0.3f, 0.8f, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -186,7 +182,7 @@ namespace Lotus
         view = camera.GetViewMatrix();
         cameraPos = camera.GetAbsolutePosition();
 
-        float aspectRatio = (float) _options.Width / _options.Height;
+        float aspectRatio = (float) _options.WindowOptions.Width / _options.WindowOptions.Height;
         projection = Lotus::LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
 
         glCheckError();
@@ -225,7 +221,7 @@ namespace Lotus
         for (auto entity : entityView)
         {
             glCheckError();
-            const auto& [data, transform] = entityView.get<CMeshRenderer, CTransform>(entity);
+            const auto&[data, transform] = entityView.get<CMeshRenderer, CTransform>(entity);
             DrawMesh(data, transform);
             glCheckError();
         }
@@ -233,7 +229,9 @@ namespace Lotus
 
     void GLRenderer::OnPostUpdate()
     {
-        glfwSwapBuffers(_window->getGLWindow());
+        glfwSwapBuffers((GLFWwindow*) _window->GetNativeWindow());
+        // TODO: Should be done by the event system
+        glfwPollEvents();
     }
 
     void GLRenderer::OnPreDestroy()
@@ -243,7 +241,7 @@ namespace Lotus
 
     void GLRenderer::OnDestroy()
     {
-        glfwDestroyWindow(_window->getGLWindow());
+        glfwDestroyWindow((GLFWwindow*) _window->GetNativeWindow());
         glfwTerminate();
     }
 

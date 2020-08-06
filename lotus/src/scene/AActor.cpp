@@ -2,12 +2,6 @@
 
 namespace Lotus
 {
-    AActor::AActor(EntityID id, Scene* scene)
-    {
-        _id = id;
-        _pScene = scene;
-    }
-
     CTransform& AActor::GetTransform()
     {
         return GetComponent<CTransform>();

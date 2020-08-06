@@ -6,7 +6,6 @@ include_directories(include)
 
 # Build dependencies
 add_subdirectory(ext/pybind11)
-#add_subdirectory(ext/entt)
 
 set(SOURCES
         src/Engine.cpp
@@ -16,10 +15,10 @@ set(SOURCES
         src/python/Interpreter.cpp
         src/python/module.cpp
 
+        src/rendering/LShader.cpp
         src/rendering/opengl/glad.c
         src/rendering/opengl/GLRenderer.cpp
-        src/rendering/LShader.cpp
-        src/rendering/Window.cpp
+        src/rendering/opengl/GLWindow.cpp
 
         src/resources/stb_image.cpp
         src/resources/Mesh.cpp
@@ -29,11 +28,11 @@ set(SOURCES
 
         src/scene/Scene.cpp
         src/scene/AActor.cpp
-#        src/scene/Camera.cpp
         src/scene/ACamera.cpp
+        src/scene/SceneManager.cpp
 
-#        src/tools/logger.cpp
-        src/scene/SceneManager.cpp ../include/lotus/components/lights.h ../include/lotus/components/rendering.h ../include/lotus/components/scene.h)
+        src/events/Event.cpp
+)
 
 add_library(lotus SHARED ${SOURCES})
 target_link_libraries(lotus ${CONAN_LIBS} pybind11::embed)

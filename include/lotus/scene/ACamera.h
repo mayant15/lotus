@@ -7,11 +7,11 @@ namespace Lotus
     class ACamera : public AActor
     {
     public:
-        ACamera() : ACamera(NULL_ENTITY, nullptr) {}
-        ACamera(EntityID id) : ACamera(id, nullptr) {}
-        ACamera(EntityID id, Scene* scene);
+        ACamera(EntityID id = NULL_ENTITY, Scene* scene = nullptr) : AActor(id, scene)
+        {}
 
         Matrix4f GetViewMatrix();
+
         float GetFieldOfView();
     };
 }
