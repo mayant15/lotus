@@ -1,47 +1,5 @@
-#include <GLFW/glfw3.h>
-
 #include "lotus/lotus.h"
 #include "lotus/debug.h"
-
-//#define glCheckError() glCheckError_(__FILE__, __LINE__)
-//
-///**
-// * Print out an error message with file name and line number
-// */
-//GLenum glCheckError_(const char* file, int line)
-//{
-//    GLenum errorCode;
-//    while ((errorCode = glGetError()) != GL_NO_ERROR)
-//    {
-//        std::string error;
-//        switch (errorCode)
-//        {
-//            case GL_INVALID_ENUM:
-//                error = "INVALID_ENUM";
-//                break;
-//            case GL_INVALID_VALUE:
-//                error = "INVALID_VALUE";
-//                break;
-//            case GL_INVALID_OPERATION:
-//                error = "INVALID_OPERATION";
-//                break;
-//            case GL_STACK_OVERFLOW:
-//                error = "STACK_OVERFLOW";
-//                break;
-//            case GL_STACK_UNDERFLOW:
-//                error = "STACK_UNDERFLOW";
-//                break;
-//            case GL_OUT_OF_MEMORY:
-//                error = "OUT_OF_MEMORY";
-//                break;
-//            case GL_INVALID_FRAMEBUFFER_OPERATION:
-//                error = "INVALID_FRAMEBUFFER_OPERATION";
-//                break;
-//        }
-//        LOG_ERROR("{} | {} ( {} )", error, file, line);
-//    }
-//    return errorCode;
-//}
 
 int main()
 {
@@ -58,17 +16,11 @@ int main()
     // Capture mouse
 //    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    // Callback for mouse movements
-//    glfwSetCursorPosCallback(window, mouse_callback);
-
-    // Callback for scroll
-//    glfwSetScrollCallback(window, scroll_callback);
-
     // Create the shaders to be used
-//    Lotus::SRefShader shader = std::make_shared<Lotus::Shader>(
-//            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/standard.vsh",
-//            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/diffuse.fsh"
-//    );
+    Lotus::SRef<Lotus::LShader> shader = std::make_shared<Lotus::LShader>(
+            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/standard.vsh",
+            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/diffuse.fsh"
+    );
 
     Lotus::SRef<Lotus::LShader> whiteShader = std::make_shared<Lotus::LShader>(
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/standard.vsh",
@@ -81,21 +33,52 @@ int main()
     );
     model->import();
 
-//    Lotus::SRefModel planeModel = std::make_shared<Lotus::Model>(
-//            "/home/priyansh/code/lotus/examples/quickstart/resources/mesh/plane.obj"
-//    );
-//    planeModel->import();
+    Lotus::SRef<Lotus::LModel> planeModel = std::make_shared<Lotus::LModel>(
+            "/home/priyansh/code/lotus/examples/quickstart/resources/mesh/plane.obj"
+    );
+    planeModel->import();
 
     Lotus::SceneManager& sceneManager = Lotus::SceneManager::Get();
     const Lotus::URef<Lotus::Scene>& scene = sceneManager.LoadScene("");
+
+    // Box
     Lotus::AActor entity = scene->CreateActor(ORIGIN);
     Lotus::CMeshRenderer meshRenderer {
-        .Shader = whiteShader,
+        .Shader = shader,
         .Model = model
     };
     entity.AddComponent<Lotus::CMeshRenderer>(meshRenderer);
 
-    scene->CreateCamera(5.0f * Z_AXIS, true);
+    // Plane
+    Lotus::AActor plane = scene->CreateActor(-2.0f * Y_AXIS);
+    Lotus::CMeshRenderer planeRenderer {
+            .Shader = shader,
+            .Model = planeModel
+    };
+    plane.AddComponent<Lotus::CMeshRenderer>(planeRenderer);
+
+    // Directional light
+    Lotus::AActor dirLight = scene->CreateActor(5.0f * X_AXIS);
+    Lotus::CDirectionalLight cDirectionalLight;
+    cDirectionalLight.direction = Vector3f (-1.0f, -1.0f, 1.0f);
+    dirLight.AddComponent<Lotus::CDirectionalLight>(cDirectionalLight);
+
+    // Spotlight
+    Lotus::AActor spotlight = scene->CreateActor(5.0f * Y_AXIS);
+    Lotus::CSpotlight cSpotlight;
+    cSpotlight.position = 5.0f * Y_AXIS;
+    cSpotlight.direction = -1.0f * Y_AXIS;
+    spotlight.AddComponent<Lotus::CSpotlight>(cSpotlight);
+
+    // Point light
+    Lotus::AActor pointLight = scene->CreateActor(3.0f * Y_AXIS - 2.0f * X_AXIS);
+    Lotus::CPointLight cPointLight;
+    cPointLight.position = 3.0f * Y_AXIS - 2.0f * X_AXIS;
+    pointLight.AddComponent<Lotus::CPointLight>(cPointLight);
+
+    // Camera
+    Lotus::ACamera camera = scene->CreateCamera(10.0f * Z_AXIS + 5.0f * Y_AXIS, 45, true);
+    camera.GetTransform().Rotation = Vector3f (-20, -90, 0);
 
     // Test out python script
     exec_file("/home/priyansh/code/lotus/examples/quickstart/resources/scripts/hello.py");

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lotus/components.h"
+#include "lotus/components/scene.h"
 #include "Scene.h"
 #include "lotus/physics.h"
 
@@ -14,13 +14,14 @@ namespace Lotus
         AActor(EntityID id) : AActor(id, nullptr) {}
         AActor(EntityID id, Scene* scene);
 
-        CTransform GetTransform();
-        Vector3f GetPosition();
-        Vector3f GetForwardVector();
-        Vector3f GetUpVector();
+        CTransform& GetTransform();
+
+        Vector3f GetAbsolutePosition();
+        Vector3f GetAbsoluteRotation();
+        Vector3f GetAbsoluteScale();
 
         Vector3f GetRightVector();
-
-        Vector3f GetRotation();
+        Vector3f GetForwardVector();
+        Vector3f GetUpVector();
     };
 }

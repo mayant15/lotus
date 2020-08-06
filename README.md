@@ -20,6 +20,8 @@ You should now have an output library file at `build/lib/` and the example execu
 There are a few absolute paths in `examples/quickstart/main.cpp`. You'll have to whatever works on your computer, till we come up with a better solution.
 
 ## Ideas
+- [ ] Resource loader and cache
+- [ ] Render lighting and continue on with learnopengl
 - [ ] Multipass rendering for a better lighting solution with the scene graph
 - [ ] Store scenes on disk with gLTF
 - [ ] Implement python subclasses for scene nodes

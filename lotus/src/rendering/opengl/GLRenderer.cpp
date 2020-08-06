@@ -115,49 +115,54 @@ namespace Lotus
 
         // Set transforms and draw actor
         Matrix4f model(1.0f);
-        model = Lotus::LTranslate(model, transform.position);
-        model = Lotus::LRotate(model, transform.rotation.x, X_AXIS);
-        model = Lotus::LRotate(model, transform.rotation.y, Y_AXIS);
-        model = Lotus::LRotate(model, transform.rotation.z, Z_AXIS);
-        model = Lotus::LScale(model, transform.scale);
+        model = Lotus::LTranslate(model, transform.Position);
+        model = Lotus::LRotate(model, transform.Rotation.x, X_AXIS);
+        model = Lotus::LRotate(model, transform.Rotation.y, Y_AXIS);
+        model = Lotus::LRotate(model, transform.Rotation.z, Z_AXIS);
+        model = Lotus::LScale(model, transform.Scale);
         shader->setMat4f("model", false, model);
 
         // Set camera
         shader->setMat4f("view", false, view);
         shader->setMat4f("projection", GL_FALSE, projection);
-//        shader->setVec3f("viewPos", cameraPos);
+        shader->setVec3f("viewPos", cameraPos);
 
         // Material. Diffuse is set through a texture
-//        Vector3f specular(0.5f);
-//        shader->setVec3f("material.specular", specular);
-//        shader->setFloat("material.shininess", 32);
+        Vector3f specular(0.5f);
+        shader->setVec3f("material.specular", specular);
+        shader->setFloat("material.shininess", 32);
+
+        // Set lighting
+        shader->setDirLightArray("dirLight", dirLightParams);
+        shader->setPointLightArray("pointLight", ptLightParams);
+        shader->setSpotlightArray("spotlight", spLightParams);
 
         std::vector<Lotus::Mesh> meshes = data.Model->getMeshes();
         for (Lotus::Mesh& mesh : meshes)
         {
             // Setup textures
-//            unsigned int diffuseNum = 1;
-//            unsigned int specularNum = 1;
-//            for (unsigned int i = 0; i < mesh.textures.size(); ++i)
-//            {
-//                glActiveTexture(GL_TEXTURE0 + i);
-//                std::string number;
-//                std::string name = mesh.textures[i]->type;
-//                if (name == DIFFUSE_TEXTURE)
-//                {
-//                    number = std::to_string(diffuseNum++);
-//                }
-//                else if (name == SPECULAR_TEXTURE)
-//                {
-//                    number = std::to_string(specularNum++);
-//                }
-//
-//                shader->setInt("material." + name + number, i);
-//                glBindTexture(GL_TEXTURE_2D, mesh.textures[i]->id);
-//            }
+            unsigned int diffuseNum = 1;
+            unsigned int specularNum = 1;
+            for (unsigned int i = 0; i < mesh.textures.size(); ++i)
+            {
+                glActiveTexture(GL_TEXTURE0 + i);
+                std::string number;
+                std::string name = mesh.textures[i]->type;
+                if (name == DIFFUSE_TEXTURE)
+                {
+                    number = std::to_string(diffuseNum++);
+                }
+                else if (name == SPECULAR_TEXTURE)
+                {
+                    number = std::to_string(specularNum++);
+                }
+
+                shader->setInt("material." + name + number, i);
+                glBindTexture(GL_TEXTURE_2D, mesh.textures[i]->id);
+            }
 
             // Reset the active texture
-//            glActiveTexture(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
 
             glBindVertexArray(mesh.VAO);
 
@@ -171,7 +176,7 @@ namespace Lotus
         // TODO: Should be done by the event system
         glfwPollEvents();
 
-        glClearColor(0.2f, 0.3f, 0.3, 0.5f);
+        glClearColor(0.2f, 0.3f, 0.8f, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
@@ -179,22 +184,50 @@ namespace Lotus
 
         // Get camera properties
         view = camera.GetViewMatrix();
-        cameraPos = camera.GetPosition();
+        cameraPos = camera.GetAbsolutePosition();
 
         float aspectRatio = (float) _options.Width / _options.Height;
         projection = Lotus::LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
 
-        // TODO: Get scene lighting data
+        glCheckError();
     }
 
     void GLRenderer::OnUpdate(float delta)
     {
         const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
+
+        // Process lighting
+        ptLightParams.clear();
+        auto ptView = scene->Find<CPointLight>();
+        for (auto light : ptView)
+        {
+            const auto& params = ptView.get<CPointLight>(light);
+            ptLightParams.push_back(params);
+        }
+
+        spLightParams.clear();
+        auto spView = scene->Find<CSpotlight>();
+        for (auto light : spView)
+        {
+            const auto& params = spView.get<CSpotlight>(light);
+            spLightParams.push_back(params);
+        }
+
+        dirLightParams.clear();
+        auto dirView = scene->Find<CDirectionalLight>();
+        for (auto light : dirView)
+        {
+            const auto& params = dirView.get<CDirectionalLight>(light);
+            dirLightParams.push_back(params);
+        }
+
         auto entityView = scene->Find<CMeshRenderer, CTransform>();
         for (auto entity : entityView)
         {
+            glCheckError();
             const auto& [data, transform] = entityView.get<CMeshRenderer, CTransform>(entity);
             DrawMesh(data, transform);
+            glCheckError();
         }
     }
 
@@ -295,4 +328,43 @@ namespace Lotus
         }
     }
 }
+
+/**
+ * Print out an error message with file name and line number
+ */
+GLenum glCheckError_(const char* file, int line)
+{
+    GLenum errorCode;
+    while ((errorCode = glGetError()) != GL_NO_ERROR)
+    {
+        std::string error;
+        switch (errorCode)
+        {
+            case GL_INVALID_ENUM:
+                error = "INVALID_ENUM";
+                break;
+            case GL_INVALID_VALUE:
+                error = "INVALID_VALUE";
+                break;
+            case GL_INVALID_OPERATION:
+                error = "INVALID_OPERATION";
+                break;
+            case GL_STACK_OVERFLOW:
+                error = "STACK_OVERFLOW";
+                break;
+            case GL_STACK_UNDERFLOW:
+                error = "STACK_UNDERFLOW";
+                break;
+            case GL_OUT_OF_MEMORY:
+                error = "OUT_OF_MEMORY";
+                break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                error = "INVALID_FRAMEBUFFER_OPERATION";
+                break;
+        }
+        LOG_ERROR("{} | {} ( {} )", error, file, line);
+    }
+    return errorCode;
+}
+
 #pragma clang diagnostic pop

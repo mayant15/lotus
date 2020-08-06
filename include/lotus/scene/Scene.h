@@ -30,7 +30,7 @@ namespace Lotus
         AActor CreateActor(const Vector3f& position);
 //        AActor CreateActor(const CTransform& transform);
 
-        ACamera CreateCamera(const Vector3f& position, bool isActive);
+        ACamera CreateCamera(const Vector3f& position, float fov, bool isActive);
         ACamera GetActiveCamera();
     };
 

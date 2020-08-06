@@ -2,6 +2,8 @@
 
 // TODO: Remove glm here to make it a dev dependency only
 #include "internal/glm/glm.hpp"
+#include "internal/glm/gtc/matrix_transform.hpp"
+#include "internal/glm/gtx/matrix_decompose.hpp"
 
 typedef glm::ivec2 Vector2i;
 typedef glm::ivec3 Vector3i;

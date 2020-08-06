@@ -3,8 +3,12 @@
 #include <lotus/lotus.h>
 #include "lotus/rendering/Renderer.h"
 
+#define glCheckError() glCheckError_(__FILE__, __LINE__)
+GLenum glCheckError_(const char* file, int line);
+
 namespace Lotus
 {
+
     class GLRenderer : public Renderer, public Singleton<GLRenderer>
     {
         URef<Window> _window;
@@ -17,6 +21,10 @@ namespace Lotus
 
         // Render buffer object for depth and stencil buffers
         unsigned int RBO = 0;
+
+        std::vector<CPointLight> ptLightParams;
+        std::vector<CSpotlight> spLightParams;
+        std::vector<CDirectionalLight> dirLightParams;
 
         Matrix4f view{};
         Matrix4f projection{};

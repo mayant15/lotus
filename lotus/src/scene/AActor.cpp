@@ -1,5 +1,4 @@
 #include "lotus/scene/AActor.h"
-#include "lotus/components.h"
 
 namespace Lotus
 {
@@ -9,19 +8,30 @@ namespace Lotus
         _pScene = scene;
     }
 
-    Vector3f AActor::GetPosition()
+    CTransform& AActor::GetTransform()
     {
-        return GetTransform().position;
+        return GetComponent<CTransform>();
     }
 
-    Vector3f AActor::GetRotation()
+    Vector3f AActor::GetAbsolutePosition()
     {
-        return GetTransform().rotation;
+        return GetComponent<CTransform>().Position;
     }
+
+    Vector3f AActor::GetAbsoluteRotation()
+    {
+        return GetComponent<CTransform>().Rotation;
+    }
+
+    Vector3f AActor::GetAbsoluteScale()
+    {
+        return GetComponent<CTransform>().Scale;
+    }
+
 
     Vector3f AActor::GetForwardVector()
     {
-        Vector3f rotation = GetRotation();
+        Vector3f rotation = GetAbsoluteRotation();
         float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
         float y = sin(glm::radians(rotation.x));
         float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
@@ -30,17 +40,11 @@ namespace Lotus
 
     Vector3f AActor::GetRightVector()
     {
-        // TODO: A simple cross product doesn't account for rotation about the forward vector
         return LNormalize(LCross(GetForwardVector(), UP));
     }
 
     Vector3f AActor::GetUpVector()
     {
         return LNormalize(LCross(GetRightVector(), GetForwardVector()));
-    }
-
-    CTransform AActor::GetTransform()
-    {
-        return GetComponent<CTransform>();
     }
 }

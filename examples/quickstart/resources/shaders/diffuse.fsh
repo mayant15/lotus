@@ -67,10 +67,10 @@ void main()
     vec3 viewDir = normalize(fragPos - viewPos);
     vec3 result = vec3(0.0f);
 
-//    for (uint i = 0; i < NR_DIR_LIGHTS; i++) {
-//        result += calculateDirectionalLight(dirLight[i], norm, viewDir);
-//    }
-//
+    for (uint i = 0; i < NR_DIR_LIGHTS; i++) {
+        result += calculateDirectionalLight(dirLight[i], norm, viewDir);
+    }
+
     for (uint i = 0; i < NR_POINT_LIGHTS; i++) {
         result += calculatePointLight(pointLight[i], norm, fragPos, viewDir);
     }

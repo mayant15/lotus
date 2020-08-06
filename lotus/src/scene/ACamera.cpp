@@ -10,8 +10,10 @@ namespace Lotus
 
     Matrix4f ACamera::GetViewMatrix()
     {
-        Vector3f position = GetPosition();
-        return LLookAt(position, position + GetForwardVector(), GetUpVector());
+        Vector3f position = GetAbsolutePosition();
+        Vector3f forward = GetForwardVector();
+        Vector3f up = GetUpVector();
+        return LLookAt(position, position + forward, up);
     }
 
     float ACamera::GetFieldOfView()

@@ -2,8 +2,12 @@
 
 //#define RESOURCE(x) Lotus::resource(__FILE__, x)
 
-#include "components.h"
 #include "physics.h"
+
+#include "components/scene.h"
+#include "components/lights.h"
+#include "components/rendering.h"
+
 #include "resources.h"
 
 #include "rendering/LShader.h"

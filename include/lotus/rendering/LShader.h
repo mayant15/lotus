@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lotus/physics.h"
-#include "lotus/components.h"
+#include "lotus/components/lights.h"
 
 namespace Lotus
 {

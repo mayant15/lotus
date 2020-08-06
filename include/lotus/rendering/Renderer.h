@@ -1,9 +1,8 @@
 #pragma once
 
-#include "lotus/components.h"
-#include "lotus/resources.h"
 #include "Window.h"
-#include "LShader.h"
+#include "lotus/components/rendering.h"
+#include "lotus/components/scene.h"
 
 namespace Lotus
 {
@@ -13,13 +12,6 @@ namespace Lotus
         ERenderAPI RenderAPI;
         unsigned int Width;
         unsigned int Height;
-    };
-
-    struct CMeshRenderer
-    {
-        // Render data
-        SRef<LShader> Shader;
-        SRef<LModel> Model;
     };
 
     // TODO: Find a better way to keep this class abstract and enforce override restrictions at the same time

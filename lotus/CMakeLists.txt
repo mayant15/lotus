@@ -33,7 +33,7 @@ set(SOURCES
         src/scene/ACamera.cpp
 
 #        src/tools/logger.cpp
-        src/scene/SceneManager.cpp)
+        src/scene/SceneManager.cpp ../include/lotus/components/lights.h ../include/lotus/components/rendering.h ../include/lotus/components/scene.h)
 
 add_library(lotus SHARED ${SOURCES})
 target_link_libraries(lotus ${CONAN_LIBS} pybind11::embed)

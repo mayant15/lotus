@@ -1,4 +1,3 @@
-#include "lotus/components.h"
 #include "lotus/scene/Scene.h"
 #include "lotus/scene/ACamera.h"
 #include "lotus/debug.h"
@@ -15,15 +14,15 @@ namespace Lotus
     {
         EntityID id = _registry.create();
         CTransform& transform = _registry.emplace<CTransform>(id);
-        transform.position = position;
+        transform.Position = position;
 
         return AActor(id, this);
     }
 
-    ACamera Scene::CreateCamera(const Vector3f& position, bool isActive)
+    ACamera Scene::CreateCamera(const Vector3f& position, float fov, bool isActive)
     {
         CTransform transform {
-            .position = position
+            .Position = position
         };
 
         CCamera camera {
