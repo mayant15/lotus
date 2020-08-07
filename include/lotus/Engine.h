@@ -2,6 +2,7 @@
 
 #include "lcommon.h"
 #include "rendering/Renderer.h"
+#include "events/EventDispatcher.h"
 
 namespace Lotus
 {
@@ -15,8 +16,11 @@ namespace Lotus
 
     class Engine : public Singleton<Engine>
     {
+        URef<Window> _window;
         // TODO: Wrap the raw pointer, like in Scene
-        Renderer* _renderer;
+        Renderer* _renderer {};
+        bool _isRunning = true;
+
     private:
         friend Singleton<Engine>;
 
@@ -28,6 +32,8 @@ namespace Lotus
         void Initialize(const LotusOp& options);
 
         void Run();
+
+        void Stop();
 
         void Shutdown();
     };

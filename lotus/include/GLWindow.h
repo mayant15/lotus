@@ -2,18 +2,17 @@
 
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
-#include "lotus/rendering/Window.h"
+#include "lotus/events/Window.h"
 
 namespace Lotus
 {
     class GLWindow : public Window
     {
         GLFWwindow* _pWindow;
+        std::function<void(Event&)> _dispatchEvent;
 
     public:
         GLWindow(const WindowOp& options);
-
-        void OnUpdate(float delta) override;
 
         bool IsVSync() const override;
 
@@ -26,5 +25,11 @@ namespace Lotus
         void SetEventCallback(const std::function<void(Event&)>& callback) override;
 
         void SetVSync(bool enabled) override;
+
+        void OnPostUpdate() override;
+
+        void OnDestroy() override;
+
+        void OnShutdown() override;
     };
 }

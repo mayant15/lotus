@@ -32,8 +32,6 @@ namespace Lotus
         friend class Singleton<GLRenderer>;
         GLRenderer() = default;
 
-        static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-
         static void debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
                                          const GLchar* message,
                                          const void* userParam);

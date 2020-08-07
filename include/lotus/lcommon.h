@@ -11,9 +11,6 @@ namespace Lotus
     template<typename T>
     using SRef = std::shared_ptr<T>;
 
-    template<typename T>
-    using WRef = std::weak_ptr<T>;
-
     enum class ERenderAPI
     {
         OPEN_GL,
@@ -27,13 +24,13 @@ namespace Lotus
     protected:
         Singleton() noexcept = default;
 
+        virtual ~Singleton() = default;
+
+    public:
         Singleton(const Singleton&) = delete;
 
         Singleton& operator=(const Singleton&) = delete;
 
-        virtual ~Singleton() = default;
-
-    public:
         static T& Get() noexcept(std::is_nothrow_constructible<T>::value)
         {
             static T instance;
@@ -43,28 +40,29 @@ namespace Lotus
 
     class ILifecycle
     {
-        virtual void OnInit()
+    public:
+        [[maybe_unused]] virtual void OnInit()
         {}
 
-        virtual void OnBegin()
+        [[maybe_unused]] virtual void OnBegin()
         {}
 
-        virtual void OnPreUpdate()
+        [[maybe_unused]] virtual void OnPreUpdate()
         {}
 
-        virtual void OnUpdate(float delta)
+        [[maybe_unused]] virtual void OnUpdate(float delta)
         {}
 
-        virtual void OnPostUpdate()
+        [[maybe_unused]] virtual void OnPostUpdate()
         {}
 
-        virtual void OnPreDestroy()
+        [[maybe_unused]] virtual void OnPreDestroy()
         {}
 
-        virtual void OnDestroy()
+        [[maybe_unused]] virtual void OnDestroy()
         {}
 
-        virtual void OnShutdown()
+        [[maybe_unused]] virtual void OnShutdown()
         {}
     };
 }

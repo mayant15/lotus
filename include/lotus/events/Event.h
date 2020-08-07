@@ -4,6 +4,12 @@
 
 namespace Lotus
 {
+    enum class EEventType
+    {
+        NONE = 0,
+        WINDOW_CLOSE_EVENT
+    };
+
     enum class EEventCategory
     {
         NONE = 0,
@@ -20,12 +26,18 @@ namespace Lotus
 
     struct Event
     {
-        bool IsHandled;
-        EEventCategory Category;
+        bool IsHandled = false;
+        EEventCategory Category = EEventCategory::NONE;
+        EEventType Type = EEventType::NONE;
     };
 
-    struct WindowCloseEvent
+    struct WindowCloseEvent : public Event
     {
+        WindowCloseEvent()
+        {
+            Category = EEventCategory::WINDOW;
+            Type = EEventType::WINDOW_CLOSE_EVENT;
+        }
     };
 
     struct WindowResizeEvent

@@ -12,16 +12,7 @@ namespace Lotus
 {
     void GLRenderer::Initialize(const RendererOp& options)
     {
-        // Initialize and configure GLFW
-        glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, options.IsDebug);
-
         _options = options;
-        _window = std::make_unique<GLWindow>(options.WindowOptions);
-        glfwSetFramebufferSizeCallback((GLFWwindow*) _window->GetNativeWindow(), framebufferSizeCallback);
 
         // Initialize GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -44,7 +35,7 @@ namespace Lotus
         // Create color buffer
         glGenTextures(1, &texColorBuffer);
         glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, options.WindowOptions.Width, options.WindowOptions.Height, 0, GL_RGB,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, options.ViewportWidth, options.ViewportHeight, 0, GL_RGB,
                      GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -56,8 +47,7 @@ namespace Lotus
         // create depth/stencil renderbuffer objects
         glGenRenderbuffers(1, &RBO);
         glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, options.WindowOptions.Width,
-                              options.WindowOptions.Height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, options.ViewportWidth, options.ViewportHeight);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
         // attach it to the FBO
@@ -182,7 +172,7 @@ namespace Lotus
         view = camera.GetViewMatrix();
         cameraPos = camera.GetAbsolutePosition();
 
-        float aspectRatio = (float) _options.WindowOptions.Width / _options.WindowOptions.Height;
+        float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
         projection = Lotus::LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
 
         glCheckError();
@@ -229,9 +219,7 @@ namespace Lotus
 
     void GLRenderer::OnPostUpdate()
     {
-        glfwSwapBuffers((GLFWwindow*) _window->GetNativeWindow());
-        // TODO: Should be done by the event system
-        glfwPollEvents();
+        // TODO
     }
 
     void GLRenderer::OnPreDestroy()
@@ -241,13 +229,7 @@ namespace Lotus
 
     void GLRenderer::OnDestroy()
     {
-        glfwDestroyWindow((GLFWwindow*) _window->GetNativeWindow());
-        glfwTerminate();
-    }
-
-    void GLRenderer::framebufferSizeCallback([[maybe_unused]] GLFWwindow* window, int width, int height)
-    {
-        glViewport(0, 0, width, height);
+        // TODO
     }
 
     void GLRenderer::debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
