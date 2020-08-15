@@ -89,6 +89,7 @@ int main()
     CameraSystem cameraSystem;
     Lotus::EventManager& em = Lotus::EventManager::Get();
     em.Bind<UpdateEvent, &CameraSystem::OnUpdate>(cameraSystem);
+    em.Bind<MouseEvent, &CameraSystem::OnMouseEvent>(cameraSystem);
 
     engine.Run();
 

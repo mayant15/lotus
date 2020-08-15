@@ -14,10 +14,14 @@ namespace Lotus
         else
         {
             // Pass it to the event manager.
-            if (event.Category == EEventCategory::INPUT)
+            // If it is an input event, invoke it immediately
+            if (event.Type == EEventType::KEYBOARD_EVENT)
             {
-                // If it is an input event, invoke it immediately
-                engine._inputManager->UpdateState((KeyboardEvent&) event);
+                engine._eventManager->Invoke((KeyboardEvent&) event);
+            }
+            if (event.Type == EEventType::MOUSE_EVENT)
+            {
+                engine._eventManager->Invoke((MouseEvent&) event);
             }
             else
             {
@@ -30,7 +34,10 @@ namespace Lotus
     void Engine::Initialize(const LotusOp& options)
     {
         _eventManager = &EventManager::Get();
+
         _inputManager = &Input::Get();
+        _eventManager->Bind<MouseEvent, &Input::UpdateMouseState>(_inputManager);
+        _eventManager->Bind<KeyboardEvent, &Input::UpdateKeyState>(_inputManager);
 
         WindowOp winOptions{
                 .Width = options.Width,

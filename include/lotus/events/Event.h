@@ -10,7 +10,8 @@ namespace Lotus
     {
         NONE = 0,
         WINDOW_CLOSE_EVENT,
-        KEYBOARD_EVENT
+        KEYBOARD_EVENT,
+        MOUSE_EVENT
     };
 
     // TODO: Do this with plain macros too?
@@ -35,14 +36,8 @@ namespace Lotus
 
     struct Event
     {
-        bool IsHandled = false;
         EEventCategory Category = EEventCategory::NONE;
         EEventType Type = EEventType::NONE;
-
-        static EEventType GetStaticType()
-        {
-            return EEventType::NONE;
-        }
     };
 
     struct UpdateEvent : public Event
@@ -83,14 +78,6 @@ namespace Lotus
 #define L_KEY_REPEAT  1
 #define L_KEY_RELEASE 2
 
-    enum class EMouseCode
-    {
-        LEFT_MOUSE_BUTTON,
-        RIGHT_MOUSE_BUTTON,
-        MIDDLE_MOUSE_BUTTON,
-        SCROLL
-    };
-
     struct KeyboardEvent : public Event
     {
         int KeyCode = L_KEY_NONE;
@@ -101,32 +88,20 @@ namespace Lotus
             // TODO: This OR needs a == to got with it
 //            Category = EEventCategory::KEYBOARD | EEventCategory::INPUT;
             Category = EEventCategory::INPUT;
-            IsHandled = false;
         }
+    };
 
-        static EEventType GetStaticType()
+    struct MouseEvent : public Event
+    {
+//        int MouseCode;
+//        int State;
+        float MouseX;
+        float MouseY;
+
+        MouseEvent()
         {
-            return EEventType::KEYBOARD_EVENT;
+            Type = EEventType::MOUSE_EVENT;
+            Category = EEventCategory::INPUT;
         }
-    };
-
-    enum class EMouseButtonState
-    {
-        PRESS,
-        RELEASE
-    };
-
-    struct MouseButtonEvent : public Event
-    {
-        EMouseCode MouseCode;
-        EMouseButtonState State;
-    };
-
-    struct MouseScrollEvent : public Event
-    {
-    };
-
-    struct MouseMoveEvent : public Event
-    {
     };
 }

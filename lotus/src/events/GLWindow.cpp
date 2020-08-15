@@ -56,6 +56,16 @@ namespace Lotus
         (*function)(event);
     }
 
+    static void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos)
+    {
+        MouseEvent event;
+        event.MouseX = xPos;
+        event.MouseY = yPos;
+
+        auto function = (std::function<void(Event&)>*) glfwGetWindowUserPointer(window);
+        (*function)(event);
+    }
+
     GLWindow::GLWindow(const WindowOp& options) : Window(options)
     {
         if (InitGLFW)
@@ -84,6 +94,10 @@ namespace Lotus
         glfwSetFramebufferSizeCallback(_pWindow, framebufferSizeCallback);
         glfwSetWindowCloseCallback(_pWindow, closeWindowCallback);
         glfwSetKeyCallback(_pWindow, keyCallback);
+        glfwSetCursorPosCallback(_pWindow, cursorPositionCallback);
+
+        // TODO: Have a way to toggle mouse capture outside here
+        glfwSetInputMode(_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
     void GLWindow::OnPostUpdate()

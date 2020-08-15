@@ -10,6 +10,10 @@ add_subdirectory(ext/pybind11)
 set(SOURCES
         src/Engine.cpp
 
+        src/events/Event.cpp
+        src/events/GLWindow.cpp
+        src/events/Input.cpp
+
         src/physics/math/operations.cpp
 
         src/python/Interpreter.cpp
@@ -29,9 +33,6 @@ set(SOURCES
         src/scene/AActor.cpp
         src/scene/ACamera.cpp
         src/scene/SceneManager.cpp
-
-        src/events/GLWindow.cpp
-        src/events/Event.cpp
 )
 
 add_library(lotus SHARED ${SOURCES})

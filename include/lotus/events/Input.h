@@ -1,43 +1,31 @@
 #pragma once
 
+#include "lotus/lcommon.h"
 #include "Event.h"
+
+#include <unordered_map>
 
 namespace Lotus
 {
     class Input : public Singleton<Input>
     {
         std::unordered_map<int, int> _state;
+
+        float _xOffset = 0.0f;
+        float _yOffset = 0.0f;
+
     private:
         friend Singleton<Input>;
 
         Input() = default;
 
     public:
-        void UpdateState(const KeyboardEvent& event)
-        {
-            try
-            {
-                _state.at(event.KeyCode) = event.State;
-            }
-            catch (const std::exception& e)
-            {
-                // TODO: Error if exception is legit, and not just a "no key found"
-                _state.insert({event.KeyCode, event.State});
-            }
-        }
+        void UpdateKeyState(const KeyboardEvent& event);
 
-        bool GetKeyPressed(int key)
-        {
-            try
-            {
-                int state = _state.at(key);
-                return (state == L_KEY_PRESS || state == L_KEY_REPEAT);
-            }
-            catch (const std::exception& e)
-            {
-                // TODO: Error if exception is legit, and not just a "no key found"
-                return false;
-            }
-        }
+        void UpdateMouseState(const MouseEvent& event);
+
+        bool GetKeyPressed(int key);
+
+        std::pair<float, float> GetMouseDelta();
     };
 }
