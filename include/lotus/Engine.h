@@ -3,6 +3,7 @@
 #include "lcommon.h"
 #include "rendering/Renderer.h"
 #include "events/EventManager.h"
+#include "events/Input.h"
 
 namespace Lotus
 {
@@ -19,6 +20,7 @@ namespace Lotus
         bool _isRunning = true;
         URef<Window> _window;
         EventManager* _eventManager{};
+        Input* _inputManager{};
         Renderer* _renderer{};
     private:
         friend Singleton<Engine>;

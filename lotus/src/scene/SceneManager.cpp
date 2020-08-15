@@ -1,4 +1,5 @@
 #include "lotus/scene/SceneManager.h"
+#include "lotus/scene/ACamera.h"
 
 namespace Lotus
 {
@@ -18,5 +19,10 @@ namespace Lotus
     {
         // TODO: Destroy current scene?
         return LoadScene(path);
+    }
+
+    ACamera SceneManager::GetActiveCamera()
+    {
+        return _activeScene->GetActiveCamera();
     }
 }

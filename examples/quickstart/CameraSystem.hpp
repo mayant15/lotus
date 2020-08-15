@@ -5,46 +5,32 @@
 
 using namespace Lotus;
 
-void OnKeyboardInput(const KeyboardEvent& event)
+class CameraSystem
 {
-//    if (event.State != L_KEY_RELEASE)
-//    {
+public:
+    void OnUpdate(const UpdateEvent& event) {
         // Find the camera in the scene
-        const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
-        ACamera camera = scene->GetActiveCamera();
+        ACamera camera = SceneManager::Get().GetActiveCamera();
         CTransform& transform =  camera.GetTransform();
         Vector3f front = camera.GetForwardVector();
         Vector3f right = camera.GetRightVector();
 
-        // TODO: Implement deltaTime
-        float deltaTime = 1.0f / 60;
-        float velocity = 10.0f * deltaTime;
-        if (event.KeyCode == L_KEY_W)
+        float velocity = 10.0f * event.DeltaTime;
+        Input& input = Input::Get();
+        if (input.GetKeyPressed(L_KEY_W))
             transform.Position += front * velocity;
-        if (event.KeyCode == L_KEY_S)
+        if (input.GetKeyPressed(L_KEY_S))
             transform.Position -= front * velocity;
-        if (event.KeyCode == L_KEY_A)
+        if (input.GetKeyPressed(L_KEY_A))
             transform.Position -= right * velocity;
-        if (event.KeyCode == L_KEY_D)
+        if (input.GetKeyPressed(L_KEY_D))
             transform.Position += right * velocity;
-        if (event.KeyCode == L_KEY_E)
+        if (input.GetKeyPressed(L_KEY_E))
             transform.Position += UP * velocity;
-        if (event.KeyCode == L_KEY_Q)
+        if (input.GetKeyPressed(L_KEY_Q))
             transform.Position -= UP * velocity;
-//    }
-}
-
-class CameraSystem // : public ISystem
-{
-public:
-    CameraSystem()
-    {
-        EventManager& em = EventManager::Get();
-        em.Bind<KeyboardEvent, &OnKeyboardInput>();
     }
 };
-
-
 
 //    void processMouseScroll(float yoffset)
 //    {

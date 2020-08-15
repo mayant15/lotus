@@ -17,7 +17,7 @@ namespace Lotus
             if (event.Category == EEventCategory::INPUT)
             {
                 // If it is an input event, invoke it immediately
-                engine._eventManager->Invoke((KeyboardEvent&) event);
+                engine._inputManager->UpdateState((KeyboardEvent&) event);
             }
             else
             {
@@ -26,11 +26,13 @@ namespace Lotus
             }
         }
     }
+
     void Engine::Initialize(const LotusOp& options)
     {
         _eventManager = &EventManager::Get();
+        _inputManager = &Input::Get();
 
-        WindowOp winOptions {
+        WindowOp winOptions{
                 .Width = options.Width,
                 .Height = options.Height,
                 .IsDebug = options.IsDebug
@@ -40,22 +42,28 @@ namespace Lotus
         switch (options.RenderAPI)
         {
             case ERenderAPI::OPEN_GL:
-                _window = std::make_unique<GLWindow>(winOptions); break;
+                _window = std::make_unique<GLWindow>(winOptions);
+                break;
             case ERenderAPI::DIRECTX:
-                LOG_ERROR("DirectX is not yet supported."); return;
+                LOG_ERROR("DirectX is not yet supported.");
+                return;
             case ERenderAPI::VULKAN:
-                LOG_ERROR("Vulkan is not yet supported."); return;
+                LOG_ERROR("Vulkan is not yet supported.");
+                return;
         }
         _window->SetEventCallback(Engine::OnEvent);
 
         switch (options.RenderAPI)
         {
             case ERenderAPI::OPEN_GL:
-                _renderer = &GLRenderer::Get(); break;
+                _renderer = &GLRenderer::Get();
+                break;
             case ERenderAPI::DIRECTX:
-                LOG_ERROR("DirectX is not yet supported."); return;
+                LOG_ERROR("DirectX is not yet supported.");
+                return;
             case ERenderAPI::VULKAN:
-                LOG_ERROR("Vulkan is not yet supported."); return;
+                LOG_ERROR("Vulkan is not yet supported.");
+                return;
         }
 
         RendererOp rendererOp{
@@ -69,9 +77,8 @@ namespace Lotus
 
     void Engine::Run()
     {
-        double startTime = glfwGetTime();
-        double currentTime = startTime;
-        double lastTime = startTime;
+        double currentTime = glfwGetTime();
+        double lastTime = currentTime;
         while (_isRunning)
         {
             // tick()
@@ -97,6 +104,7 @@ namespace Lotus
 
     void Engine::tick(float delta)
     {
+        _eventManager->Queue(UpdateEvent{.DeltaTime = delta});
         // Game logic tick
         // TODO: process physics, AI etc here
 
@@ -107,6 +115,6 @@ namespace Lotus
 
         // Poll for events
         _window->OnPostUpdate();
-//        _eventManager->BroadcastQueue();
+        _eventManager->BroadcastQueue();
     }
 }

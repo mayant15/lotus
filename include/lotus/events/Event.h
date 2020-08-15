@@ -45,6 +45,11 @@ namespace Lotus
         }
     };
 
+    struct UpdateEvent : public Event
+    {
+        float DeltaTime = 0.0f;
+    };
+
     struct WindowCloseEvent : public Event
     {
         WindowCloseEvent()

@@ -85,8 +85,10 @@ int main()
     // Test out python script
     exec_file("/home/priyansh/code/lotus/examples/quickstart/resources/scripts/hello.py");
 
-    // To call the constructor that binds event callbacks
+    // Bind event callbacks
     CameraSystem cameraSystem;
+    Lotus::EventManager& em = Lotus::EventManager::Get();
+    em.Bind<UpdateEvent, &CameraSystem::OnUpdate>(cameraSystem);
 
     engine.Run();
 

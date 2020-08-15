@@ -31,6 +31,12 @@ namespace Lotus
             _dispatcher.enqueue<T>(event);
         }
 
+        template<typename E, auto F, typename L>
+        void Bind(L arg)
+        {
+            _dispatcher.sink<E>().template connect<F>(std::forward<L>(arg));
+        }
+
         template<typename E, auto F>
         void Bind()
         {

@@ -17,6 +17,8 @@ namespace Lotus
 
         const URef<Scene>& GetActiveScene();
 
+        ACamera GetActiveCamera();
+
         const URef<Scene>& LoadScene(const std::string& path);
 
         const URef<Scene>& ChangeScene(const std::string& path);
