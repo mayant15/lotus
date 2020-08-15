@@ -1,4 +1,4 @@
-from lotus import add
-a = add(1, 6)
+import lotus
 
+a = lotus.add(1, 3)
 print(a)

@@ -2,7 +2,7 @@
 
 #include "lcommon.h"
 #include "rendering/Renderer.h"
-#include "events/EventDispatcher.h"
+#include "events/EventManager.h"
 
 namespace Lotus
 {
@@ -16,24 +16,26 @@ namespace Lotus
 
     class Engine : public Singleton<Engine>
     {
-        URef<Window> _window;
-        // TODO: Wrap the raw pointer, like in Scene
-        Renderer* _renderer {};
         bool _isRunning = true;
-
+        URef<Window> _window;
+        EventManager* _eventManager{};
+        Renderer* _renderer{};
     private:
         friend Singleton<Engine>;
 
         Engine() = default;
 
-        void tick();
+        void tick(float delta);
+
+        // This guy needs to be a reference so that a single callback can be used for all window events
+        // This function should then typecast into an appropriate type before ending the thing to the Event Manager.
+        static void OnEvent(Event& event);
 
     public:
+
         void Initialize(const LotusOp& options);
 
         void Run();
-
-        void Stop();
 
         void Shutdown();
     };

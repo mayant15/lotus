@@ -4,17 +4,32 @@
 
 namespace Lotus
 {
-    static void dispatchEvent(Event& event)
+    void Engine::OnEvent(Event& event)
     {
-        // Handle events relevant to the engine, broadcast the rest
+        Engine& engine = Engine::Get();
         if (event.Type == EEventType::WINDOW_CLOSE_EVENT)
         {
-            Engine::Get().Stop();
+            engine._isRunning = false;
+        }
+        else
+        {
+            // Pass it to the event manager.
+            if (event.Category == EEventCategory::INPUT)
+            {
+                // If it is an input event, invoke it immediately
+                engine._eventManager->Invoke((KeyboardEvent&) event);
+            }
+            else
+            {
+                // TODO: cast to the appropriate type
+//                engine._eventManager->Queue(event);
+            }
         }
     }
-
     void Engine::Initialize(const LotusOp& options)
     {
+        _eventManager = &EventManager::Get();
+
         WindowOp winOptions {
                 .Width = options.Width,
                 .Height = options.Height,
@@ -31,10 +46,18 @@ namespace Lotus
             case ERenderAPI::VULKAN:
                 LOG_ERROR("Vulkan is not yet supported."); return;
         }
+        _window->SetEventCallback(Engine::OnEvent);
 
-        _window->SetEventCallback(dispatchEvent);
+        switch (options.RenderAPI)
+        {
+            case ERenderAPI::OPEN_GL:
+                _renderer = &GLRenderer::Get(); break;
+            case ERenderAPI::DIRECTX:
+                LOG_ERROR("DirectX is not yet supported."); return;
+            case ERenderAPI::VULKAN:
+                LOG_ERROR("Vulkan is not yet supported."); return;
+        }
 
-        _renderer = &GLRenderer::Get();
         RendererOp rendererOp{
                 .IsDebug = options.IsDebug,
                 .RenderAPI = options.RenderAPI,
@@ -52,29 +75,13 @@ namespace Lotus
         while (_isRunning)
         {
             // tick()
-
             currentTime = glfwGetTime();
             float delta = currentTime - lastTime;
             lastTime = currentTime;
-
-            // Game logic tick
-            // TODO: process physics, AI etc here
-
-            // Render tick. Everything that needs to be done this frame should have been done by now.
-            _renderer->OnPreUpdate();
-            _renderer->OnUpdate(delta);
-            _renderer->OnPostUpdate();
-
-            // Poll for events
-            _window->OnPostUpdate();
+            tick(delta);
         }
 
         Shutdown();
-    }
-
-    void Engine::Stop()
-    {
-        _isRunning = false;
     }
 
     void Engine::Shutdown()
@@ -88,8 +95,18 @@ namespace Lotus
         _window->OnShutdown();
     }
 
-    void Engine::tick()
+    void Engine::tick(float delta)
     {
+        // Game logic tick
+        // TODO: process physics, AI etc here
 
+        // Render tick. Everything that needs to be done this frame should have been done by now.
+        _renderer->OnPreUpdate();
+        _renderer->OnUpdate(delta);
+        _renderer->OnPostUpdate();
+
+        // Poll for events
+        _window->OnPostUpdate();
+//        _eventManager->BroadcastQueue();
     }
 }

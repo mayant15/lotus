@@ -1,6 +1,8 @@
 #include "lotus/lotus.h"
 #include "lotus/debug.h"
 
+#include "CameraSystem.hpp"
+
 int main()
 {
     // Have to initialize the engine first
@@ -82,6 +84,9 @@ int main()
 
     // Test out python script
     exec_file("/home/priyansh/code/lotus/examples/quickstart/resources/scripts/hello.py");
+
+    // To call the constructor that binds event callbacks
+    CameraSystem cameraSystem;
 
     engine.Run();
 

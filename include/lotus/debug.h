@@ -1,3 +1,5 @@
+#pragma once
+
 // TODO: spdlog as a usage dependency
 #include <spdlog/spdlog.h>
 

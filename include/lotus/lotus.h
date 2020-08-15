@@ -1,5 +1,6 @@
-//#include <string>
+#pragma once
 
+//#include <string>
 //#define RESOURCE(x) Lotus::resource(__FILE__, x)
 
 #include "physics.h"

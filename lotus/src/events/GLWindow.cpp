@@ -5,13 +5,53 @@ namespace Lotus
 {
     static bool InitGLFW = true;
 
+    static int getKeyCode(int key)
+    {
+        switch (key)
+        {
+            case GLFW_KEY_W: return L_KEY_W;
+            case GLFW_KEY_S: return L_KEY_S;
+            case GLFW_KEY_A: return L_KEY_A;
+            case GLFW_KEY_D: return L_KEY_D;
+            case GLFW_KEY_E: return L_KEY_E;
+            case GLFW_KEY_Q: return L_KEY_Q;
+            default: return L_KEY_NONE;
+        }
+    }
+
+    static int getState(int action)
+    {
+        switch (action)
+        {
+            case GLFW_PRESS:
+                return L_KEY_PRESS;
+            case GLFW_REPEAT:
+                return L_KEY_REPEAT;
+            case GLFW_RELEASE:
+                return L_KEY_RELEASE;
+            default:
+                return L_KEY_NONE;
+        }
+    }
+
     static void framebufferSizeCallback([[maybe_unused]] GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
     }
 
-    static void closeWindowCallback(GLFWwindow* window){
+    static void closeWindowCallback(GLFWwindow* window)
+    {
         WindowCloseEvent event;
+        auto function = (std::function<void(Event)>*) glfwGetWindowUserPointer(window);
+        (*function)(event);
+    }
+
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        KeyboardEvent event;
+        event.KeyCode = getKeyCode(key);
+        event.State = getState(action);
+
         auto function = (std::function<void(Event&)>*) glfwGetWindowUserPointer(window);
         (*function)(event);
     }
@@ -37,12 +77,13 @@ namespace Lotus
             glfwTerminate();
             return;
         }
-
-        glfwSetWindowUserPointer(_pWindow, &_dispatchEvent);
-
         glfwMakeContextCurrent(_pWindow);
+
+        // Setup callbacks
+        glfwSetWindowUserPointer(_pWindow, &_dispatchEvent);
         glfwSetFramebufferSizeCallback(_pWindow, framebufferSizeCallback);
         glfwSetWindowCloseCallback(_pWindow, closeWindowCallback);
+        glfwSetKeyCallback(_pWindow, keyCallback);
     }
 
     void GLWindow::OnPostUpdate()
@@ -85,6 +126,7 @@ namespace Lotus
     void GLWindow::SetEventCallback(const std::function<void(Event&)>& callback)
     {
         _dispatchEvent = callback;
+        glfwSetWindowUserPointer(_pWindow, &_dispatchEvent);
     }
 
     void GLWindow::SetVSync(bool enabled)

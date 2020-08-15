@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #define BIT(x) (1 << x)
 
 namespace Lotus
@@ -7,9 +9,11 @@ namespace Lotus
     enum class EEventType
     {
         NONE = 0,
-        WINDOW_CLOSE_EVENT
+        WINDOW_CLOSE_EVENT,
+        KEYBOARD_EVENT
     };
 
+    // TODO: Do this with plain macros too?
     enum class EEventCategory
     {
         NONE = 0,
@@ -24,11 +28,21 @@ namespace Lotus
         return static_cast<EEventCategory>(static_cast<int>(A) | static_cast<int>(B));
     }
 
+    inline EEventCategory operator&(EEventCategory A, EEventCategory B)
+    {
+        return static_cast<EEventCategory>(static_cast<int>(A) & static_cast<int>(B));
+    }
+
     struct Event
     {
         bool IsHandled = false;
         EEventCategory Category = EEventCategory::NONE;
         EEventType Type = EEventType::NONE;
+
+        static EEventType GetStaticType()
+        {
+            return EEventType::NONE;
+        }
     };
 
     struct WindowCloseEvent : public Event
@@ -50,17 +64,19 @@ namespace Lotus
      * Input events
      */
 
-    enum class EKeyCode
-    {
-        ESC
-    };
+    // TODO: Have sequential macros instead of this
+#define L_KEY_NONE 0
+#define L_KEY_ESC  1
+#define L_KEY_W    2
+#define L_KEY_S    3
+#define L_KEY_A    4
+#define L_KEY_D    5
+#define L_KEY_E    6
+#define L_KEY_Q    7
 
-    enum class EKeyState
-    {
-        PRESS,
-        REPEAT,
-        RELEASE
-    };
+#define L_KEY_PRESS   0
+#define L_KEY_REPEAT  1
+#define L_KEY_RELEASE 2
 
     enum class EMouseCode
     {
@@ -72,8 +88,21 @@ namespace Lotus
 
     struct KeyboardEvent : public Event
     {
-        EKeyCode KeyCode;
-        EKeyState State;
+        int KeyCode = L_KEY_NONE;
+        int State = L_KEY_NONE;
+        KeyboardEvent()
+        {
+            Type = EEventType::KEYBOARD_EVENT,
+            // TODO: This OR needs a == to got with it
+//            Category = EEventCategory::KEYBOARD | EEventCategory::INPUT;
+            Category = EEventCategory::INPUT;
+            IsHandled = false;
+        }
+
+        static EEventType GetStaticType()
+        {
+            return EEventType::KEYBOARD_EVENT;
+        }
     };
 
     enum class EMouseButtonState

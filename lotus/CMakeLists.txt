@@ -18,7 +18,6 @@ set(SOURCES
         src/rendering/LShader.cpp
         src/rendering/opengl/glad.c
         src/rendering/opengl/GLRenderer.cpp
-        src/events/GLWindow.cpp
 
         src/resources/stb_image.cpp
         src/resources/Mesh.cpp
@@ -31,8 +30,9 @@ set(SOURCES
         src/scene/ACamera.cpp
         src/scene/SceneManager.cpp
 
+        src/events/GLWindow.cpp
         src/events/Event.cpp
-        src/events/EventDispatcher.cpp)
+)
 
 add_library(lotus SHARED ${SOURCES})
 target_link_libraries(lotus ${CONAN_LIBS} pybind11::embed)
