@@ -20,9 +20,9 @@ int main()
             "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/diffuse.fsh"
     );
 
-    Lotus::SRef<Lotus::LShader> whiteShader = std::make_shared<Lotus::LShader>(
-            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/standard.vsh",
-            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/emission.fsh"
+    Lotus::SRef<Lotus::LShader> skyShader = std::make_shared<Lotus::LShader>(
+            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/skybox.vsh",
+            "/home/priyansh/code/lotus/examples/quickstart/resources/shaders/skybox.fsh"
     );
 
     // Initialize and import the model
@@ -36,8 +36,28 @@ int main()
     );
     planeModel->import();
 
+    std::vector<std::string> faces
+            {
+                    "/home/priyansh/code/lotus/examples/quickstart/resources/skybox/right.jpg",
+                    "/home/priyansh/code/lotus/examples/quickstart/resources/skybox/left.jpg",
+                    "/home/priyansh/code/lotus/examples/quickstart/resources/skybox/top.jpg",
+                    "/home/priyansh/code/lotus/examples/quickstart/resources/skybox/bottom.jpg",
+                    "/home/priyansh/code/lotus/examples/quickstart/resources/skybox/front.jpg",
+                    "/home/priyansh/code/lotus/examples/quickstart/resources/skybox/back.jpg",
+            };
+    Lotus::SRef<Lotus::Cubemap> cubemap = std::make_shared<Lotus::Cubemap>(faces);
+    cubemap->import();
+
     Lotus::SceneManager& sceneManager = Lotus::SceneManager::Get();
     const Lotus::URef<Lotus::Scene>& scene = sceneManager.LoadScene("");
+
+    // Sky
+    Lotus::Entity sky = scene->CreateEntity();
+    Lotus::CSkybox cSkybox{
+            .Shader = skyShader,
+            .Map = cubemap,
+    };
+    sky.AddComponent<Lotus::CSkybox>(cSkybox);
 
     // Box
     Lotus::AActor entity = scene->CreateActor(ORIGIN);
@@ -56,7 +76,7 @@ int main()
     // Directional light
     Lotus::AActor dirLight = scene->CreateActor(5.0f * X_AXIS);
     Lotus::CDirectionalLight cDirectionalLight;
-    cDirectionalLight.direction = Vector3f (-1.0f, -1.0f, 1.0f);
+    cDirectionalLight.direction = Vector3f(-1.0f, -1.0f, 1.0f);
     dirLight.AddComponent<Lotus::CDirectionalLight>(cDirectionalLight);
 
     // Spotlight
@@ -74,7 +94,7 @@ int main()
 
     // Camera
     Lotus::ACamera camera = scene->CreateCamera(10.0f * Z_AXIS + 5.0f * Y_AXIS, 45, true);
-    camera.GetTransform().Rotation = Vector3f (-20, -90, 0);
+    camera.GetTransform().Rotation = Vector3f(-20, -90, 0);
 
     // Test out python script
     exec_file("/home/priyansh/code/lotus/examples/quickstart/resources/scripts/hello.py");

@@ -215,6 +215,22 @@ namespace Lotus
             DrawMesh(data, transform);
             glCheckError();
         }
+
+        // Draw skybox
+        auto skyView = scene->Find<CSkybox>();
+        const auto& sky = skyView.get<CSkybox>(skyView.front());
+
+        glDepthFunc(GL_LEQUAL);
+        sky.Shader->use();
+        sky.Shader->setMat4f("view", false, Matrix4f (Matrix3f (view)));
+        sky.Shader->setMat4f("projection", false, projection);
+        // skybox cube
+        glBindVertexArray(sky.Map->VAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, sky.Map->ID);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS); // set depth function back to default
     }
 
     void GLRenderer::OnPostUpdate()

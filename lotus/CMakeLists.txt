@@ -41,6 +41,7 @@ set(SOURCES
         src/resources/Mesh.cpp
         src/resources/Model.cpp
         src/resources/Texture.cpp
+        src/resources/Cubemap.cpp
         src/resources/AssetManager.cpp
 
         src/scene/Scene.cpp

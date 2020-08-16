@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 
 #include <vector>
+#include <utility>
 
 #define DIFFUSE_TEXTURE "texture_diffuse"
 #define SPECULAR_TEXTURE "texture_specular"
@@ -61,6 +62,20 @@ namespace Lotus
         Texture(const std::string& path_, const std::string& type_);
 
         int import() override;
+    };
+
+    class Cubemap
+    {
+        std::vector<std::string> faces;
+    public:
+        unsigned int ID = 0;
+        unsigned int VAO;
+        unsigned int VBO;
+
+        Cubemap(std::vector<std::string> paths) : faces(std::move(paths))
+        {}
+
+        int import();
     };
 
     struct Vertex
