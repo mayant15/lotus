@@ -14,4 +14,7 @@ conan_basic_setup()
 # Build libraries
 add_subdirectory(lotus)
 add_subdirectory(examples/quickstart)
-#add_subdirectory(docs)
+
+if (BUILD_DOCS)
+    add_subdirectory(docs)
+endif()

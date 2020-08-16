@@ -25,7 +25,7 @@ There are a few absolute paths in `examples/quickstart/main.cpp`. You'll have to
 - [ ] Multipass rendering for a better lighting solution with the scene graph
 - [ ] Store scenes on disk with gLTF
 - [ ] Implement python subclasses for scene nodes
-- [ ] Editor GUI with [ImGui](https://github.com/ocornut/imgui) or [GTK+](https://gtk.org/)
+- [ ] Editor GUI with [ImGui](https://github.com/ocornut/imgui)
 - [ ] Setup Exhale to properly generate Sphinx documentation
 - [ ] Store config in YAML using [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [ ] Physics systems with [bullet](https://pybullet.org/wordpress/)
