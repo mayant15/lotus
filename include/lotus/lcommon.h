@@ -1,16 +1,28 @@
+/**
+ * Defines constructs used throughout the project.
+ */
+
 #pragma once
 
 #include <memory>
 
 namespace Lotus
 {
-    // Aliases
+    /**
+     * Alias to a unique pointer.
+     */
     template<typename T>
     using URef = std::unique_ptr<T>;
 
+    /**
+     * Alias to a shared pointer.
+     */
     template<typename T>
     using SRef = std::shared_ptr<T>;
 
+    /**
+     * Supported Render APIs.
+     */
     enum class ERenderAPI
     {
         OPEN_GL,
@@ -18,26 +30,48 @@ namespace Lotus
         VULKAN
     };
 
+    /**
+     * Base class that implements singleton behavior with CRTP.
+     * @example
+     * <code>
+     *     class Sample: public Singleton<Sample>
+     *     {
+     *     private:
+     *         friend Singleton<Sample>; // Required to access the private constructor
+     *         Sample() = default;
+     *     public:
+     *         // Public member functions
+     *     }
+     *</code>
+     * @tparam T Class that is to be defined as a singleton
+     */
     template<typename T>
     class Singleton
     {
-    protected:
-        Singleton() noexcept = default;
-
-        virtual ~Singleton() = default;
-
     public:
         Singleton(const Singleton&) = delete;
 
         Singleton& operator=(const Singleton&) = delete;
 
+        /**
+         * Get an instance to the class, creating it if none exist.
+         * @return A reference to the active instance
+         */
         static T& Get() noexcept(std::is_nothrow_constructible<T>::value)
         {
             static T instance;
             return instance;
         }
+
+    protected:
+        Singleton() noexcept = default;
+
+        virtual ~Singleton() = default;
     };
 
+    /**
+     * Base class to define lifecyle hooks
+     */
     class ILifecycle
     {
     public:

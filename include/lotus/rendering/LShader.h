@@ -5,6 +5,9 @@
 
 namespace Lotus
 {
+    /**
+     * OpenGL Shader implementation
+     */
     class LShader
     {
     public:

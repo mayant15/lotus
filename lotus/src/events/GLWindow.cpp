@@ -66,7 +66,7 @@ namespace Lotus
         (*function)(event);
     }
 
-    GLWindow::GLWindow(const WindowOp& options) : Window(options)
+    GLWindow::GLWindow(const WindowOp& options) : IWindow(options)
     {
         if (InitGLFW)
         {

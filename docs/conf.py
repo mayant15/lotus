@@ -76,7 +76,7 @@ exhale_args = {
     # Required arguments
     "containmentFolder": "api",
     "rootFileName": "lotus.rst",
-    "rootFileTitle": "Lotus API",
+    "rootFileTitle": "API Reference",
     "doxygenStripFromPath": "../",
 
     # Suggested optional arguments

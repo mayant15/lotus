@@ -1,9 +1,11 @@
 Welcome to Lotus's documentation!
 =================================
 
+Lotus is a cross-platform 3D game engine.
+
 .. toctree::
    :maxdepth: 2
-
-   api/lotus
-
    :caption: Contents
+
+   install
+   api/lotus

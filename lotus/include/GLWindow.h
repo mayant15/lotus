@@ -2,11 +2,11 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-#include "lotus/events/Window.h"
+#include "lotus/events/IWindow.h"
 
 namespace Lotus
 {
-    class GLWindow : public Window
+    class GLWindow : public IWindow
     {
         GLFWwindow* _pWindow;
         std::function<void(Event&)> _dispatchEvent;

@@ -1,3 +1,7 @@
+/**
+ * Primary header file. This contains all necessary includes to use the engine.
+ */
+
 #pragma once
 
 //#include <string>
@@ -12,7 +16,7 @@
 #include "resources.h"
 
 #include "events/Event.h"
-#include "events/Window.h"
+#include "events/IWindow.h"
 #include "events/Input.h"
 
 #include "rendering/LShader.h"
