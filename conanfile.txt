@@ -1,6 +1,0 @@
-[requires]
-assimp/5.0.1
-spdlog/1.6.1
-
-[generators]
-cmake

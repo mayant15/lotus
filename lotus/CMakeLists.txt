@@ -13,6 +13,12 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "GLFW lib only")
 set(GLFW_INSTALL OFF CACHE BOOL "GLFW lib only")
 add_subdirectory(ext/glfw)
 
+# Assimp
+add_subdirectory(ext/assimp)
+
+# spdlog
+add_subdirectory(ext/spdlog)
+
 set(SOURCES
         src/Engine.cpp
 
@@ -42,4 +48,4 @@ set(SOURCES
 )
 
 add_library(lotus SHARED ${SOURCES})
-target_link_libraries(lotus ${CONAN_LIBS} pybind11::embed glfw)
+target_link_libraries(lotus pybind11::embed glfw assimp spdlog::spdlog)

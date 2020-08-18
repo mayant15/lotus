@@ -4,3 +4,9 @@
 [submodule "lotus/ext/glfw"]
 	path = lotus/ext/glfw
 	url = git@github.com:glfw/glfw.git
+[submodule "lotus/ext/assimp"]
+	path = lotus/ext/assimp
+	url = git@github.com:assimp/assimp.git
+[submodule "lotus/ext/spdlog"]
+	path = lotus/ext/spdlog
+	url = git@github.com:gabime/spdlog.git
