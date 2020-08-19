@@ -32,7 +32,6 @@ namespace Lotus
         Entity CreateEntity();
 
         AActor CreateActor(const Vector3f& position);
-//        AActor CreateActor(const CTransform& transform);
 
         ACamera CreateCamera(const Vector3f& position, float fov, bool isActive);
 
@@ -53,7 +52,7 @@ namespace Lotus
         template<typename T, typename ...Args>
         T& AddComponent(Args&& ...args)
         {
-            return _pScene->_registry.emplace<T>(_id, args...);
+            return _pScene->_registry.emplace<T>(_id, std::forward<Args>(args)...);
         }
 
         template<typename T>

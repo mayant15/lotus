@@ -21,7 +21,7 @@ namespace Lotus
             }
             if (event.Type == EEventType::MOUSE_EVENT)
             {
-                engine._eventManager->Invoke((KeyboardEvent&) event);
+                engine._eventManager->Invoke((MouseEvent&) event);
             }
             else
             {

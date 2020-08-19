@@ -52,6 +52,7 @@ set(SOURCES
 
 add_library(lotus SHARED ${SOURCES})
 target_link_libraries(lotus pybind11::embed glfw assimp spdlog::spdlog)
+target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 generate_export_header( lotus
           BASE_NAME lotus
           EXPORT_MACRO_NAME LOTUS_API

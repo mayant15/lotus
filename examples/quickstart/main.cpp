@@ -78,20 +78,20 @@ int main()
     AActor dirLight = scene->CreateActor(5.0f * X_AXIS);
     CDirectionalLight cDirectionalLight;
     cDirectionalLight.direction = Vector3f(-1.0f, -1.0f, 1.0f);
-    dirLight.AddComponent<CDirectionalLight>(cDirectionalLight);
+    auto& comp =  dirLight.AddComponent<CDirectionalLight>(cDirectionalLight);
 
     // Spotlight
-    /*AActor spotlight = scene->CreateActor(5.0f * Y_AXIS);
+    AActor spotlight = scene->CreateActor(5.0f * Y_AXIS);
     CSpotlight cSpotlight;
     cSpotlight.position = 5.0f * Y_AXIS;
     cSpotlight.direction = -1.0f * Y_AXIS;
-    spotlight.AddComponent<CSpotlight>(cSpotlight);*/
+    spotlight.AddComponent<CSpotlight>(cSpotlight);
 
     // Point light
-    /*AActor pointLight = scene->CreateActor(3.0f * Y_AXIS - 2.0f * X_AXIS);
+    AActor pointLight = scene->CreateActor(3.0f * Y_AXIS - 2.0f * X_AXIS);
     CPointLight cPointLight;
     cPointLight.position = 3.0f * Y_AXIS - 2.0f * X_AXIS;
-    pointLight.AddComponent<CPointLight>(cPointLight);*/
+    pointLight.AddComponent<CPointLight>(cPointLight);
 
     // Camera
     ACamera camera = scene->CreateCamera(10.0f * Z_AXIS + 5.0f * Y_AXIS, 45, true);
