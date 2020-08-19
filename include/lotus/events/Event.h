@@ -1,12 +1,13 @@
 #pragma once
 
 #include <functional>
+#include "lotus/lotus_export.h"
 
 #define BIT(x) (1 << x)
 
 namespace Lotus
 {
-    enum class EEventType
+    enum class LOTUS_API EEventType
     {
         NONE = 0,
         WINDOW_CLOSE_EVENT,
@@ -15,7 +16,7 @@ namespace Lotus
     };
 
     // TODO: Do this with plain macros too?
-    enum class EEventCategory
+    enum class LOTUS_API EEventCategory
     {
         NONE = 0,
         WINDOW = BIT(0),
@@ -24,28 +25,28 @@ namespace Lotus
         MOUSE = BIT(3)
     };
 
-    inline EEventCategory operator|(EEventCategory A, EEventCategory B)
+    inline LOTUS_API EEventCategory operator|(EEventCategory A, EEventCategory B)
     {
         return static_cast<EEventCategory>(static_cast<int>(A) | static_cast<int>(B));
     }
 
-    inline EEventCategory operator&(EEventCategory A, EEventCategory B)
+    inline LOTUS_API EEventCategory operator&(EEventCategory A, EEventCategory B)
     {
         return static_cast<EEventCategory>(static_cast<int>(A) & static_cast<int>(B));
     }
 
-    struct Event
+    struct LOTUS_API Event
     {
         EEventCategory Category = EEventCategory::NONE;
         EEventType Type = EEventType::NONE;
     };
 
-    struct UpdateEvent : public Event
+    struct LOTUS_API UpdateEvent : public Event
     {
         float DeltaTime = 0.0f;
     };
 
-    struct WindowCloseEvent : public Event
+    struct LOTUS_API WindowCloseEvent : public Event
     {
         WindowCloseEvent()
         {
@@ -54,7 +55,7 @@ namespace Lotus
         }
     };
 
-    struct WindowResizeEvent
+    struct LOTUS_API WindowResizeEvent
     {
         float NewWidth;
         float NewHeight;
@@ -78,7 +79,7 @@ namespace Lotus
 #define L_KEY_REPEAT  1
 #define L_KEY_RELEASE 2
 
-    struct KeyboardEvent : public Event
+    struct LOTUS_API KeyboardEvent : public Event
     {
         int KeyCode = L_KEY_NONE;
         int State = L_KEY_NONE;
@@ -91,7 +92,7 @@ namespace Lotus
         }
     };
 
-    struct MouseEvent : public Event
+    struct LOTUS_API MouseEvent : public Event
     {
 //        int MouseCode;
 //        int State;

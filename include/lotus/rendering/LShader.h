@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lotus/physics.h"
+#include "lotus/lotus_export.h"
 #include "lotus/components/lights.h"
 
 namespace Lotus
@@ -8,7 +9,7 @@ namespace Lotus
     /**
      * OpenGL Shader implementation
      */
-    class LShader
+    class LOTUS_API LShader
     {
     public:
 

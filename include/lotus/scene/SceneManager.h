@@ -5,7 +5,7 @@
 
 namespace Lotus
 {
-    class SceneManager : public Singleton<SceneManager>
+    class LOTUS_API SceneManager : public Singleton<SceneManager>
     {
         URef<Scene> _activeScene;
     private:

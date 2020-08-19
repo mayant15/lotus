@@ -12,7 +12,7 @@ namespace Lotus
      * to get input information. This is to avoid end users interacting with low level window implementations
      * themselves.
      */
-    class Input : public Singleton<Input>
+    class LOTUS_API Input : public Singleton<Input>
     {
         std::unordered_map<int, int> _state;
 

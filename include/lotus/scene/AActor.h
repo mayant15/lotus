@@ -7,7 +7,7 @@
 namespace Lotus
 {
     // TODO: An entity that is placed in the scene, i.e. entity with a transform, plus some helper functions
-    class AActor : public Entity
+    class LOTUS_API AActor : public Entity
     {
     public:
         AActor(EntityID id = NULL_ENTITY, Scene* scene = nullptr) : Entity(id, scene)

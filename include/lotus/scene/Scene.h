@@ -2,6 +2,7 @@
 
 #include "lotus/internal/entt.hpp"
 #include "lotus/physics.h"
+#include "lotus/lotus_export.h"
 
 #define NULL_ENTITY entt::null
 
@@ -16,7 +17,7 @@ namespace Lotus
     typedef entt::registry EntityRegistry;
     typedef entt::entity EntityID;
 
-    class Scene
+    class LOTUS_API Scene
     {
     private:
         EntityRegistry _registry;
@@ -38,7 +39,7 @@ namespace Lotus
         ACamera GetActiveCamera();
     };
 
-    class Entity
+    class LOTUS_API Entity
     {
     protected:
         EntityID _id;

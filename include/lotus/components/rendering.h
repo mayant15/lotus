@@ -6,7 +6,7 @@ namespace Lotus
 {
     class LShader;
     class LModel;
-    struct CMeshRenderer
+    struct LOTUS_API CMeshRenderer
     {
         // Render data
         SRef<LShader> Shader;

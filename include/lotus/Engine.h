@@ -10,7 +10,7 @@ namespace Lotus
     /**
      * Options to initialize the engine with.
      */
-    struct LotusOp
+    struct LOTUS_API LotusOp
     {
         ERenderAPI RenderAPI = ERenderAPI::OPEN_GL;
         bool IsDebug = true;
@@ -21,7 +21,7 @@ namespace Lotus
     /**
      * Core Lotus engine class that handles all subsystems and the main gameplay loop.
      */
-    class Engine : public Singleton<Engine>
+    class LOTUS_API Engine : public Singleton<Engine>
     {
         bool _isRunning = true;
         URef<IWindow> _window;

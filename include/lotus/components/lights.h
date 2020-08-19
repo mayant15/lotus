@@ -4,14 +4,14 @@
 
 namespace Lotus
 {
-    struct CLight
+    struct LOTUS_API CLight
     {
         Vector3f ambient = Vector3f(0.2f);
         Vector3f diffuse = Vector3f(1.0f);
         Vector3f specular = Vector3f(0.4f);
     };
 
-    struct CPointLight : CLight
+    struct LOTUS_API CPointLight : CLight
     {
         Vector3f position = Vector3f(0.0f);
         float constant = 1.0f;
@@ -19,12 +19,12 @@ namespace Lotus
         float quadratic = 0.20f;
     };
 
-    struct CDirectionalLight : CLight
+    struct LOTUS_API CDirectionalLight : CLight
     {
         Vector3f direction = Vector3f(0.0f);
     };
 
-    struct CSpotlight : CLight
+    struct LOTUS_API CSpotlight : CLight
     {
         Vector3f position = Vector3f(0.0f);
         Vector3f direction = Vector3f(0.0f);

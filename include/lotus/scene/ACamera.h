@@ -4,7 +4,7 @@
 
 namespace Lotus
 {
-    class ACamera : public AActor
+    class LOTUS_API ACamera : public AActor
     {
     public:
         ACamera(EntityID id = NULL_ENTITY, Scene* scene = nullptr) : AActor(id, scene)

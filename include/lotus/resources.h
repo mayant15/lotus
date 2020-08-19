@@ -24,7 +24,7 @@
 
 namespace Lotus
 {
-    class AssetManager
+    class LOTUS_API AssetManager
     {
         AssetManager() = default;
 
@@ -43,7 +43,7 @@ namespace Lotus
         static bool exists(const std::string& path);
     };
 
-    class IResource
+    class LOTUS_API IResource
     {
     protected:
         std::string path;
@@ -93,7 +93,7 @@ namespace Lotus
 
     };
 
-    struct LModel : IResource
+    struct LOTUS_API LModel : IResource
     {
     public:
         LModel(const std::string& path, bool flipTextureY_ = true);

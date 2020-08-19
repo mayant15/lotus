@@ -6,6 +6,8 @@
 
 #include <memory>
 
+#include "lotus_export.h"
+
 namespace Lotus
 {
     /**
@@ -46,7 +48,7 @@ namespace Lotus
      * @tparam T Class that is to be defined as a singleton
      */
     template<typename T>
-    class Singleton
+    class LOTUS_API Singleton
     {
     public:
         Singleton(const Singleton&) = delete;
