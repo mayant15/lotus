@@ -39,11 +39,10 @@ namespace Lotus
         _eventManager->Bind<MouseEvent, &Input::UpdateMouseState>(_inputManager);
         _eventManager->Bind<KeyboardEvent, &Input::UpdateKeyState>(_inputManager);
 
-        WindowOp winOptions{
-                .Width = options.Width,
-                .Height = options.Height,
-                .IsDebug = options.IsDebug
-        };
+        WindowOp winOptions;
+        winOptions.Width = options.Width;
+        winOptions.Height = options.Height;
+        winOptions.IsDebug = options.IsDebug;
 
         // Create context
         switch (options.RenderAPI)
@@ -73,12 +72,11 @@ namespace Lotus
                 return;
         }
 
-        RendererOp rendererOp{
-                .IsDebug = options.IsDebug,
-                .RenderAPI = options.RenderAPI,
-                .ViewportWidth = options.Width,
-                .ViewportHeight = options.Height
-        };
+        RendererOp rendererOp;
+        rendererOp.IsDebug = options.IsDebug;
+        rendererOp.RenderAPI = options.RenderAPI;
+        rendererOp.ViewportWidth = options.Width;
+        rendererOp.ViewportHeight = options.Height;
         _renderer->Initialize(rendererOp);
     }
 
@@ -111,7 +109,9 @@ namespace Lotus
 
     void Engine::tick(float delta)
     {
-        _eventManager->Queue(UpdateEvent{.DeltaTime = delta});
+        UpdateEvent updateEvent;
+        updateEvent.DeltaTime = delta;
+        _eventManager->Queue(updateEvent);
         // Game logic tick
         // TODO: process physics, AI etc here
 

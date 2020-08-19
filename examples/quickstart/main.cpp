@@ -7,12 +7,11 @@ int main()
 {
     // Have to initialize the engine first
     Lotus::Engine& engine = Lotus::Engine::Get();
-    Lotus::LotusOp config = {
-            .RenderAPI = Lotus::ERenderAPI::OPEN_GL,
-            .IsDebug = true,
-            .Width = 1024,
-            .Height = 800
-    };
+    Lotus::LotusOp config;
+    config.RenderAPI = Lotus::ERenderAPI::OPEN_GL;
+    config.IsDebug = true;
+    config.Width = 1024;
+    config.Height = 800;
     engine.Initialize(config);
 
     // Capture mouse
@@ -45,18 +44,16 @@ int main()
 
     // Box
     Lotus::AActor entity = scene->CreateActor(ORIGIN);
-    Lotus::CMeshRenderer meshRenderer {
-        .Shader = shader,
-        .Model = model
-    };
+    Lotus::CMeshRenderer meshRenderer;
+    meshRenderer.Shader = shader;
+    meshRenderer.Model = model;
     entity.AddComponent<Lotus::CMeshRenderer>(meshRenderer);
 
     // Plane
     Lotus::AActor plane = scene->CreateActor(-2.0f * Y_AXIS);
-    Lotus::CMeshRenderer planeRenderer {
-            .Shader = shader,
-            .Model = planeModel
-    };
+    Lotus::CMeshRenderer planeRenderer;
+    planeRenderer.Shader = shader;
+    planeRenderer.Model = planeModel;
     plane.AddComponent<Lotus::CMeshRenderer>(planeRenderer);
 
     // Directional light

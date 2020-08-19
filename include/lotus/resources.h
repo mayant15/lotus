@@ -4,6 +4,8 @@
 #include "lcommon.h"
 #include <assimp/scene.h>
 
+#include <vector>
+
 #define DIFFUSE_TEXTURE "texture_diffuse"
 #define SPECULAR_TEXTURE "texture_specular"
 

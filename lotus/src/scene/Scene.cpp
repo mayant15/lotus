@@ -21,14 +21,12 @@ namespace Lotus
 
     ACamera Scene::CreateCamera(const Vector3f& position, float fov, bool isActive)
     {
-        CTransform transform {
-            .Position = position
-        };
+        CTransform transform;
+        transform.Position = position;
 
-        CCamera camera {
-            .IsActive = isActive,
-            .FOV = 45
-        };
+        CCamera camera;
+        camera.IsActive = isActive;
+        camera.FOV = 45;
 
         // TODO: This should happen through prefabs
         EntityID id = _registry.create();

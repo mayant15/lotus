@@ -1,6 +1,10 @@
 build/
+lib/
+bin/
+out/
 CMakeFiles/
 .idea/
+.vs/
 docs/doxygen/
 docs/sphinx/
 docs/api/

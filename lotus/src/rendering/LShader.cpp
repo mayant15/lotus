@@ -29,7 +29,7 @@ namespace Lotus
         const char* vertexCodeStr = vertexCode.c_str();
         const char* fragmentCodeStr = fragmentCode.c_str();
 
-        uint vertex, fragment;
+        unsigned int vertex, fragment;
         int success;
         char infoLog[512];
 
