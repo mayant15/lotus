@@ -34,17 +34,6 @@ namespace Lotus
 
     /**
      * Base class that implements singleton behavior with CRTP.
-     * @example
-     * <code>
-     *     class Sample: public Singleton<Sample>
-     *     {
-     *     private:
-     *         friend Singleton<Sample>; // Required to access the private constructor
-     *         Sample() = default;
-     *     public:
-     *         // Public member functions
-     *     }
-     *</code>
      * @tparam T Class that is to be defined as a singleton
      */
     template<typename T>
@@ -59,9 +48,9 @@ namespace Lotus
          * Get an instance to the class, creating it if none exist.
          * @return A reference to the active instance
          */
-        static T& Get() noexcept(std::is_nothrow_constructible<T>::value)
+        static T& Get()
         {
-            static T instance;
+            static T instance;  // NOLINT(clang-diagnostic-exit-time-destructors)
             return instance;
         }
 
@@ -72,11 +61,13 @@ namespace Lotus
     };
 
     /**
-     * Base class to define lifecyle hooks
+     * Base class to define lifecycle hooks
      */
     class ILifecycle
     {
     public:
+        virtual ~ILifecycle() = default;
+
         [[maybe_unused]] virtual void OnInit()
         {}
 

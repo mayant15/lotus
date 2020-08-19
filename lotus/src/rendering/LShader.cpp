@@ -41,7 +41,7 @@ namespace Lotus
         {
             glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
             LOG_ERROR("Vertex shader compilation failed.\n{}", infoLog);
-        };
+        }
 
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragment, 1, &fragmentCodeStr, nullptr);
@@ -51,7 +51,7 @@ namespace Lotus
         {
             glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
             LOG_ERROR("Fragment shader compilation failed.\n{}", infoLog);
-        };
+        }
 
         ID = glCreateProgram();
         glAttachShader(ID, vertex);
@@ -96,13 +96,13 @@ namespace Lotus
 
     void LShader::setMat3f(const std::string& name, bool transpose, const Matrix3f& mat) const
     {
-        unsigned int loc = glGetUniformLocation(ID, name.c_str());
+        const int loc = glGetUniformLocation(ID, name.c_str());
         glUniformMatrix3fv(loc, 1, transpose, valuePtr(mat));
     }
 
     void LShader::setMat4f(const std::string& name, bool transpose, const Matrix4f& mat) const
     {
-        unsigned int loc = glGetUniformLocation(ID, name.c_str());
+        const int loc = glGetUniformLocation(ID, name.c_str());
         glUniformMatrix4fv(loc, 1, transpose, valuePtr(mat));
     }
 

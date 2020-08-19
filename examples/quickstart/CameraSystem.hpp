@@ -1,7 +1,6 @@
 #pragma once
 
 #include "lotus/lotus.h"
-#include "lotus/debug.h"
 
 using namespace Lotus;
 

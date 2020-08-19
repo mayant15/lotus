@@ -21,7 +21,6 @@ namespace Lotus
 
     void Input::UpdateMouseState(const MouseEvent& event)
     {
-        Input& input = Input::Get();
         if (firstMouse)
         {
             lastX = event.MouseX;

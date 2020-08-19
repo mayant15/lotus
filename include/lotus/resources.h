@@ -10,15 +10,9 @@
 #define DIFFUSE_TEXTURE "texture_diffuse"
 #define SPECULAR_TEXTURE "texture_specular"
 
-#if RENDER_API == OPEN_GL
 #define RED GL_RED
 #define RGB GL_RGB
 #define RGBA GL_RGBA
-#elif RENDER_API == VULKAN
-#define RED // TODO
-#define RGB
-#define RGBA
-#endif
 
 #define IMPORT_ERR_CODE -1
 #define IMPORT_SUCCESS_CODE -2
@@ -47,32 +41,33 @@ namespace Lotus
     class LOTUS_API IResource
     {
     protected:
-        std::string path;
+        std::string Path;
     public:
+        virtual ~IResource() = default;
         virtual int import() = 0;
     };
 
     class Texture : public IResource
     {
     public:
-        unsigned int id = 0;
+        unsigned int ID = 0;
 
-        std::string type;
+        std::string Type;
 
-        Texture(const std::string& path_, const std::string& type_);
+        Texture(const std::string& path, const std::string& type);
 
         int import() override;
     };
 
-    class Cubemap
+    class LOTUS_API Cubemap
     {
-        std::vector<std::string> faces;
+        std::vector<std::string> _faces;
     public:
         unsigned int ID = 0;
-        unsigned int VAO;
-        unsigned int VBO;
+        unsigned int VAO = 0;
+        unsigned int VBO = 0;
 
-        Cubemap(std::vector<std::string> paths) : faces(std::move(paths))
+        Cubemap(std::vector<std::string> paths) : _faces(std::move(paths))
         {}
 
         int import();

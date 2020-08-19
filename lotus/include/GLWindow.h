@@ -6,7 +6,7 @@
 
 namespace Lotus
 {
-    class GLWindow : public IWindow
+    class GLWindow final : public IWindow
     {
         GLFWwindow* _pWindow;
         std::function<void(Event&)> _dispatchEvent;
@@ -14,13 +14,13 @@ namespace Lotus
     public:
         GLWindow(const WindowOp& options);
 
-        bool IsVSync() const override;
+        [[nodiscard]] bool IsVSync() const override;
 
-        uint32_t GetWidth() const override;
+        [[nodiscard]] uint32_t GetWidth() const override;
 
-        uint32_t GetHeight() const override;
+        [[nodiscard]] uint32_t GetHeight() const override;
 
-        void* GetNativeWindow() const override;
+        [[nodiscard]] void* GetNativeWindow() const override;
 
         void SetEventCallback(const std::function<void(Event&)>& callback) override;
 

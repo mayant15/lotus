@@ -1,9 +1,9 @@
 #pragma once
 
-#include <functional>
 #include "lotus/lotus_export.h"
 
-#define BIT(x) (1 << x)
+template<int X>
+static constexpr int BIT = (1 << X);
 
 namespace Lotus
 {
@@ -19,10 +19,10 @@ namespace Lotus
     enum class LOTUS_API EEventCategory
     {
         NONE = 0,
-        WINDOW = BIT(0),
-        INPUT = BIT(1),
-        KEYBOARD = BIT(2),
-        MOUSE = BIT(3)
+        WINDOW = BIT<0>,
+        INPUT = BIT<1>,
+        KEYBOARD = BIT<2>,
+        MOUSE = BIT<3>
     };
 
     inline LOTUS_API EEventCategory operator|(EEventCategory A, EEventCategory B)
@@ -66,18 +66,18 @@ namespace Lotus
      */
 
     // TODO: Have sequential macros instead of this
-#define L_KEY_NONE 0
-#define L_KEY_ESC  1
-#define L_KEY_W    2
-#define L_KEY_S    3
-#define L_KEY_A    4
-#define L_KEY_D    5
-#define L_KEY_E    6
-#define L_KEY_Q    7
+constexpr int L_KEY_NONE = 0;
+constexpr int L_KEY_ESC = 1;
+constexpr int L_KEY_W   = 2;
+constexpr int L_KEY_S   = 3;
+constexpr int L_KEY_A   = 4;
+constexpr int L_KEY_D   = 5;
+constexpr int L_KEY_E   = 6;
+constexpr int L_KEY_Q   = 7;
 
-#define L_KEY_PRESS   0
-#define L_KEY_REPEAT  1
-#define L_KEY_RELEASE 2
+constexpr int L_KEY_PRESS   = 0;
+constexpr int L_KEY_REPEAT  = 1;
+constexpr int L_KEY_RELEASE = 2;
 
     struct LOTUS_API KeyboardEvent : public Event
     {
@@ -85,7 +85,7 @@ namespace Lotus
         int State = L_KEY_NONE;
         KeyboardEvent()
         {
-            Type = EEventType::KEYBOARD_EVENT,
+            Type = EEventType::KEYBOARD_EVENT;
             // TODO: This OR needs a == to got with it
 //            Category = EEventCategory::KEYBOARD | EEventCategory::INPUT;
             Category = EEventCategory::INPUT;
@@ -94,10 +94,8 @@ namespace Lotus
 
     struct LOTUS_API MouseEvent : public Event
     {
-//        int MouseCode;
-//        int State;
-        float MouseX;
-        float MouseY;
+        float MouseX = 0.0f;
+        float MouseY = 0.0f;
 
         MouseEvent()
         {

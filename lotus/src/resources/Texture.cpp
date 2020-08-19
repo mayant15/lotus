@@ -5,14 +5,14 @@
 
 namespace Lotus
 {
-    Texture::Texture(const std::string& path_, const std::string& type_) {
-        path = path_;
-        type = type_;
+    Texture::Texture(const std::string& path, const std::string& type) {
+        Path = path;
+        Type = type;
     }
 
     int Texture::import() {
         int width, height, nrComponents;
-        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
+        unsigned char* data = stbi_load(Path.c_str(), &width, &height, &nrComponents, 0);
         unsigned int format;
         if (data)
         {
@@ -37,7 +37,7 @@ namespace Lotus
         }
         else
         {
-            LOG_ERROR("Texture failed to load at path: {}", path);
+            LOG_ERROR("Texture failed to load at path: {}", Path);
             stbi_image_free(data);
             throw std::invalid_argument("image data invalid");
         }
@@ -46,9 +46,9 @@ namespace Lotus
         GLRenderer& renderer = GLRenderer::Get();
         unsigned int textureID = renderer.createTexture(data, width, height, format);
 
-        id = textureID;
+        ID = textureID;
 
-        AssetManager::registerAsset(path);
+        AssetManager::registerAsset(Path);
         return IMPORT_SUCCESS_CODE;
     }
 }

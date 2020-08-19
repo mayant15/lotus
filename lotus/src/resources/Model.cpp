@@ -10,20 +10,20 @@ namespace Lotus
     LModel::LModel(const std::string& path_, bool flipTextureY_)
     {
         flipTextureY = flipTextureY_;
-        path = path_;
+        Path = path_;
     }
 
     int LModel::import()
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(Path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             LOG_ERROR("Assimp: {}", importer.GetErrorString());
             return IMPORT_ERR_CODE;
         }
-        directory = path.substr(0, path.find_last_of('/'));
+        directory = Path.substr(0, Path.find_last_of('/'));
         processNode(scene->mRootNode, scene);
 
         return IMPORT_SUCCESS_CODE;
@@ -107,13 +107,13 @@ namespace Lotus
         {
             aiString str;
             mat->GetTexture(type, i, &str);
-            bool skip = AssetManager::exists(path);
+            bool skip = AssetManager::exists(Path);
 
             // if texture hasn't been loaded already, load it
             if (!skip)
             {
                 std::string path = str.C_Str();
-                path = directory + '/' + path;
+                // path = directory + '/' + path;
                 SRef<Texture> texture = std::make_shared<Texture>(path, typeName);
                 texture->import();
                 textures.push_back(texture);

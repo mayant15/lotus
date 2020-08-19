@@ -4,7 +4,7 @@
 #include "lotus/physics.h"
 #include "lotus/lotus_export.h"
 
-#define NULL_ENTITY entt::null
+#define NULL_ENTITY entt::null  // NOLINT(cppcoreguidelines-macro-usage)
 
 namespace Lotus
 {
@@ -53,7 +53,7 @@ namespace Lotus
         template<typename T, typename ...Args>
         T& AddComponent(Args&& ...args)
         {
-            return _pScene->_registry.emplace<T>(_id, std::forward<Args>(args)...);
+            return _pScene->_registry.emplace<T>(_id, args...);
         }
 
         template<typename T>

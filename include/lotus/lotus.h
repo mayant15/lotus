@@ -4,8 +4,9 @@
 
 #pragma once
 
-//#include <string>
-//#define RESOURCE(x) Lotus::resource(__FILE__, x)
+#include <string>
+#include <filesystem>
+#define RESOURCE(x) resource(__FILE__, x)
 
 #include "physics.h"
 
@@ -30,4 +31,8 @@
 #include "python.h"
 #include "Engine.h"
 
-//    std::string resource(const std::string& root, const std::string& relPath);
+inline std::string resource(const std::string& root, const std::string& relPath)
+{
+    std::filesystem::path mainPath = root;
+    return mainPath.parent_path().append("/resources/" + relPath).string();
+}

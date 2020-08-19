@@ -7,7 +7,7 @@ namespace Lotus
     class LShader;
     class LModel;
     class Cubemap;
-    struct LOTUS_API CMeshRenderer
+    struct CMeshRenderer
     {
         // Render data
         SRef<LShader> Shader;

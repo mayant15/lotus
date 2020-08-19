@@ -21,7 +21,7 @@ namespace Lotus
             }
             if (event.Type == EEventType::MOUSE_EVENT)
             {
-                engine._eventManager->Invoke((MouseEvent&) event);
+                engine._eventManager->Invoke((KeyboardEvent&) event);
             }
             else
             {
@@ -88,7 +88,7 @@ namespace Lotus
         {
             // tick()
             currentTime = glfwGetTime();
-            float delta = currentTime - lastTime;
+            double delta = currentTime - lastTime;
             lastTime = currentTime;
             tick(delta);
         }

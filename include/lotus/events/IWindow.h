@@ -42,18 +42,18 @@ namespace Lotus
     protected:
         WindowOp _options;
     public:
-        IWindow(WindowOp options) : _options(std::move(options))
+        explicit IWindow(WindowOp options) : _options(std::move(options))
         {}
 
         virtual void SetVSync(bool enabled) = 0;
 
-        virtual bool IsVSync() const = 0;
+        [[nodiscard]] virtual bool IsVSync() const = 0;
 
-        virtual uint32_t GetWidth() const = 0;
+        [[nodiscard]] virtual uint32_t GetWidth() const = 0;
 
-        virtual uint32_t GetHeight() const = 0;
+        [[nodiscard]] virtual uint32_t GetHeight() const = 0;
 
-        virtual void* GetNativeWindow() const = 0;
+        [[nodiscard]] virtual void* GetNativeWindow() const = 0;
 
         virtual void SetEventCallback(const std::function<void(Event&)>& callback) = 0;
 

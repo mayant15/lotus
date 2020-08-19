@@ -136,7 +136,7 @@ namespace Lotus
             {
                 glActiveTexture(GL_TEXTURE0 + i);
                 std::string number;
-                std::string name = mesh.textures[i]->type;
+                std::string name = mesh.textures[i]->Type;
                 if (name == DIFFUSE_TEXTURE)
                 {
                     number = std::to_string(diffuseNum++);
@@ -147,7 +147,7 @@ namespace Lotus
                 }
 
                 shader->setInt("material." + name + number, i);
-                glBindTexture(GL_TEXTURE_2D, mesh.textures[i]->id);
+                glBindTexture(GL_TEXTURE_2D, mesh.textures[i]->ID);
             }
 
             // Reset the active texture

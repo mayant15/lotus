@@ -1,7 +1,5 @@
 #pragma once
 
-#include <lotus/Engine.h>
-#include "Event.h"
 #include "lotus/lcommon.h"
 #include "lotus/internal/entt.hpp"
 
@@ -66,7 +64,7 @@ namespace Lotus
         /**
          * Dispatch all queued events
          */
-        void BroadcastQueue()
+        void BroadcastQueue() const
         {
             // Call all events in queue
             _dispatcher.update();
