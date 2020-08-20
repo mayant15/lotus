@@ -2,6 +2,7 @@ include(GenerateExportHeader)
 
 # Public headers for the library
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include/lotus/internal)
 
 # Internal headers
 include_directories(include)

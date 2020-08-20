@@ -8,11 +8,8 @@ namespace Lotus
     class LOTUS_API SceneManager : public Singleton<SceneManager>
     {
         URef<Scene> _activeScene;
-    private:
+
         friend Singleton<SceneManager>;
-
-        SceneManager() = default;
-
     public:
 
         const URef<Scene>& GetActiveScene();

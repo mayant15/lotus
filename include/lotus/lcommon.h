@@ -8,6 +8,9 @@
 
 #include "lotus_export.h"
 #include "lotus/internal/entt/entt.hpp"
+#include "lotus/internal/cereal/cereal.hpp"
+#include "lotus/internal/cereal/archives/json.hpp"
+
 
 // TODO: Convenient, but not very readable I guess.
 #define LOADER(x, y) struct LOTUS_API x final: entt::resource_loader<x, y>

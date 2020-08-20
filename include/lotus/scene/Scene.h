@@ -1,5 +1,6 @@
 #pragma once
 
+#include "lotus/ISerializable.h"
 #include "lotus/internal/entt/entt.hpp"
 #include "lotus/physics.h"
 #include "lotus/lotus_export.h"
@@ -17,9 +18,8 @@ namespace Lotus
     typedef entt::registry EntityRegistry;
     typedef entt::entity EntityID;
 
-    class LOTUS_API Scene
+    class LOTUS_API Scene : public ISerializable
     {
-    private:
         EntityRegistry _registry;
         friend Entity;
     public:
@@ -36,6 +36,17 @@ namespace Lotus
         ACamera CreateCamera(const Vector3f& position, float fov, bool isActive);
 
         ACamera GetActiveCamera();
+
+        void Load(IArchive& archive) override
+        {
+            archive(1.0f);
+        }
+
+        void Save(OArchive& archive) const override
+        {
+            archive(FIELD("sample", 10.02f));
+        }
+
     };
 
     class LOTUS_API Entity

@@ -2,6 +2,10 @@
 #include "lotus/debug.h"
 #include "GLRenderer.h"
 
+#include <fstream>
+#include "lotus/internal/cereal/cereal.hpp"
+#include "lotus/scene/SceneManager.h"
+
 namespace Lotus
 {
     void Engine::OnEvent(Event& event)
@@ -98,12 +102,18 @@ namespace Lotus
 
     void Engine::Shutdown()
     {
+        std::ofstream file("cache.json");
+        cereal::JSONOutputArchive ar(file);
+
+        const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
+        scene->Save(ar);
+
         _renderer->OnPreDestroy();
 
         _renderer->OnDestroy();
         _window->OnDestroy();
 
-        _renderer->OnShutdown();
+        // _renderer->OnShutdown();
         _window->OnShutdown();
     }
 
