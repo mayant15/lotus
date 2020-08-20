@@ -7,6 +7,10 @@
 #include <memory>
 
 #include "lotus_export.h"
+#include "lotus/internal/entt/entt.hpp"
+
+// TODO: Convenient, but not very readable I guess.
+#define LOADER(x, y) struct LOTUS_API x final: entt::resource_loader<x, y>
 
 namespace Lotus
 {
@@ -21,6 +25,9 @@ namespace Lotus
      */
     template<typename T>
     using SRef = std::shared_ptr<T>;
+
+    template<typename T>
+    using Handle = entt::resource_handle<T>;
 
     /**
      * Supported Render APIs.

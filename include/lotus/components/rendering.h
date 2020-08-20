@@ -1,22 +1,22 @@
 #pragma once
 
 #include "lotus/lcommon.h"
+#include "lotus/resources/Model.h"
+#include "lotus/resources/Cubemap.h"
 
 namespace Lotus
 {
     class LShader;
-    class LModel;
-    class Cubemap;
     struct CMeshRenderer
     {
         // Render data
         SRef<LShader> Shader;
-        SRef<LModel> Model;
+        Handle<Model> Model;
     };
 
     struct CSkybox
     {
        SRef<LShader> Shader;
-       SRef<Cubemap> Map;
+       Handle<Cubemap> Map;
     };
 }

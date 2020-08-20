@@ -24,7 +24,6 @@ add_subdirectory(ext/spdlog)
 set(SOURCES
         src/Engine.cpp
 
-        src/events/Event.cpp
         src/events/GLWindow.cpp
         src/events/Input.cpp
 
@@ -34,15 +33,14 @@ set(SOURCES
         src/python/module.cpp
 
         src/rendering/LShader.cpp
-        src/rendering/opengl/glad.c
-        src/rendering/opengl/GLRenderer.cpp
+        src/rendering/platform/opengl/glad.c
+        src/rendering/platform/opengl/GLRenderer.cpp
 
         src/resources/stb_image.cpp
-        src/resources/Mesh.cpp
         src/resources/Model.cpp
         src/resources/Texture.cpp
         src/resources/Cubemap.cpp
-        src/resources/AssetManager.cpp
+        src/resources/platform/GLTextureLoader.cpp
 
         src/scene/Scene.cpp
         src/scene/AActor.cpp

@@ -14,7 +14,10 @@
 #include "components/lights.h"
 #include "components/rendering.h"
 
-#include "resources.h"
+#include "resources/AssetRegistry.h"
+#include "resources/Cubemap.h"
+#include "resources/Model.h"
+#include "resources/Texture.h"
 
 #include "events/Event.h"
 #include "events/IWindow.h"

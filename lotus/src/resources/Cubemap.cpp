@@ -1,4 +1,4 @@
-#include "lotus/resources.h"
+#include "lotus/resources/Cubemap.h"
 #include "lotus/debug.h"
 #include "glad/glad.h"
 #include "stb_image.h"
@@ -50,12 +50,15 @@ namespace Lotus
             1.0f, -1.0f, 1.0f
     };
 
-    int Cubemap::import()
+    SRef<Cubemap> CubemapLoader::Load(const std::vector<std::string>& faces) const
     {
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        SRef<Cubemap> map = std::make_shared<Cubemap>();
+
+        glGenVertexArrays(1, &map->VAO);
+        glGenBuffers(1, &map->VBO);
+
+        glBindVertexArray(map->VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, map->VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(SKYBOX_VERTICES), &SKYBOX_VERTICES, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
@@ -66,9 +69,9 @@ namespace Lotus
 
         stbi_set_flip_vertically_on_load(false);
         int width, height, nrChannels;
-        for (unsigned int i = 0; i < _faces.size(); i++)
+        for (unsigned int i = 0; i < faces.size(); i++)
         {
-            unsigned char* data = stbi_load(_faces[i].c_str(), &width, &height, &nrChannels, 0);
+            unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
             if (data)
             {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
@@ -77,9 +80,9 @@ namespace Lotus
             }
             else
             {
-                LOG_ERROR("Cubemap texture failed to load at path: {}", _faces[i]);
+                LOG_ERROR("Cubemap texture failed to load at path: {}", faces[i]);
                 stbi_image_free(data);
-                return IMPORT_ERR_CODE;
+                throw std::invalid_argument("Cubemap load failed.");
             }
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -88,7 +91,7 @@ namespace Lotus
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-        ID = textureID;
-        return IMPORT_SUCCESS_CODE;
+        map->ID = textureID;
+        return map;
     }
 }

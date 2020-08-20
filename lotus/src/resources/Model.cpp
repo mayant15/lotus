@@ -1,53 +1,72 @@
+#include "glad/glad.h"
+#include "lotus/resources/AssetRegistry.h"
+#include "lotus/debug.h"
+#include "stb_image.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-
-#include "lotus/debug.h"
-#include "lotus/resources.h"
-#include "stb_image.h"
+#include <assimp/scene.h>
 
 namespace Lotus
 {
-    LModel::LModel(const std::string& path_, bool flipTextureY_)
-    {
-        flipTextureY = flipTextureY_;
-        Path = path_;
-    }
+    void processNode(const aiNode* node, const aiScene* scene, SRef<Model> model);
+    SubMesh processMesh(const aiMesh* mesh, const aiScene* scene);
+    std::vector<Handle<Texture>> loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName, bool flipY = true);
 
-    int LModel::import()
+    SRef<Model> ModelLoader::Load(const std::string& path) const
     {
+        SRef<Model> model = std::make_shared<Model>();
+
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(Path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             LOG_ERROR("Assimp: {}", importer.GetErrorString());
-            return IMPORT_ERR_CODE;
+            throw std::invalid_argument(importer.GetErrorString());
         }
-        directory = Path.substr(0, Path.find_last_of('/'));
-        processNode(scene->mRootNode, scene);
 
-        return IMPORT_SUCCESS_CODE;
+        processNode(scene->mRootNode, scene, model);
+        return model;
     }
 
-    void LModel::processNode(const aiNode* node, const aiScene* scene)
+    void processNode(const aiNode* node, const aiScene* scene, SRef<Model> model)
     {
         for (unsigned int i = 0; i < node->mNumMeshes; ++i)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(processMesh(mesh, scene));
+            model->Meshes.push_back(processMesh(mesh, scene));
         }
 
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
-            processNode(node->mChildren[i], scene);
+            processNode(node->mChildren[i], scene, model);
         }
     }
 
-    Mesh LModel::processMesh(const aiMesh* mesh, const aiScene* scene)
+    std::vector<Handle<Texture>>
+    loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName, bool flipY)
+    {
+        auto& cache = AssetRegistry::Get();
+        stbi_set_flip_vertically_on_load(flipY);
+        std::vector<Handle<Texture>> textures;
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
+        {
+            // TODO: String identifiers should be unified across libraries
+            aiString str;
+            mat->GetTexture(type, i, &str);
+            Handle<Texture> texture = cache.LoadTexture(str.C_Str(), typeName);
+            textures.push_back(texture);
+        }
+
+        return textures;
+    }
+
+    SubMesh processMesh(const aiMesh* mesh, const aiScene* scene)
     {
         std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
-        std::vector<SRef<Texture>> textures;
+        std::vector<uint32_t> indices;
+        std::vector<Handle<Texture>> textures;
 
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
         {
@@ -85,46 +104,54 @@ namespace Lotus
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
             // Append diffuse maps
-            std::vector<SRef<Texture>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE,
+            std::vector<Handle<Texture>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE,
                                                                         DIFFUSE_TEXTURE);
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
             // Append specular maps
-            std::vector<SRef<Texture>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR,
+            std::vector<Handle<Texture>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR,
                                                                          SPECULAR_TEXTURE);
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
 
-        return Mesh(vertices, indices, textures);
+        return SubMesh(vertices, indices, textures);
     }
 
-    std::vector<SRef<Texture>>
-    LModel::loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName)
+    SubMesh::SubMesh(
+        std::vector<Vertex> vertices, 
+        std::vector<uint32_t> indices,
+        const std::vector<Handle<Texture>>& textures
+    )
     {
-        stbi_set_flip_vertically_on_load(flipTextureY);
-        std::vector<SRef<Texture>> textures;
-        for (unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
-        {
-            aiString str;
-            mat->GetTexture(type, i, &str);
-            bool skip = AssetManager::exists(Path);
+        Indices = indices;
+        Vertices = vertices;
+        Textures = textures;
 
-            // if texture hasn't been loaded already, load it
-            if (!skip)
-            {
-                std::string path = str.C_Str();
-                // path = directory + '/' + path;
-                SRef<Texture> texture = std::make_shared<Texture>(path, typeName);
-                texture->import();
-                textures.push_back(texture);
-            }
-        }
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
 
-        return textures;
-    }
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-    std::vector<Mesh> LModel::getMeshes() const
-    {
-        return meshes;
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+
+        // Can do this because structs are laid sequentially in memory
+
+        // vertex positions
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+
+        // vertex normals
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, Normal));
+
+        // vertex texture coords
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, TexCoords));
+
+        glBindVertexArray(0);
     }
 }

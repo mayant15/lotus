@@ -6,7 +6,7 @@
 int main()
 {
     // Have to initialize the engine first
-    Engine& engine = Engine::Get();
+    auto& engine = Engine::Get();
     LotusOp config;
     config.RenderAPI = ERenderAPI::OPEN_GL;
     config.IsDebug = true;
@@ -15,26 +15,21 @@ int main()
     engine.Initialize(config);
 
     // Create the shaders to be used
-    SRef<LShader> shader = std::make_shared<LShader>(
+    auto shader = std::make_shared<LShader>(
         R"(D:\code\lotus\examples\quickstart\resources\shaders\standard.vsh)",
         R"(D:\code\lotus\examples\quickstart\resources\shaders\diffuse.fsh)"
     );
 
-    SRef<LShader> skyShader = std::make_shared<LShader>(
+    auto skyShader = std::make_shared<LShader>(
         R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.vsh)",
         R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.fsh)"
     );
 
     // Initialize and import the model
-    SRef<LModel> model = std::make_shared<LModel>(
-        R"(D:\code\lotus\examples\quickstart\resources\mesh\untitled.obj)"
-    );
-    model->import();
+    auto& assetRegistry = AssetRegistry::Get();
+    auto model = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\untitled.obj)");
+    auto planeModel = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\plane.obj)");
 
-    SRef<LModel> planeModel = std::make_shared<LModel>(
-        R"(D:\code\lotus\examples\quickstart\resources\mesh\plane.obj)"
-    );
-    planeModel->import();
 
     std::vector<std::string> faces
     {
@@ -45,8 +40,7 @@ int main()
         R"(D:\code\lotus\examples\quickstart\resources\skybox\front.jpg)",
         R"(D:\code\lotus\examples\quickstart\resources\skybox\back.jpg)",
     };
-    SRef<Cubemap> cubemap = std::make_shared<Cubemap>(faces);
-    cubemap->import();
+    Handle<Cubemap> cubemap = assetRegistry.LoadCubemap(faces);
 
     SceneManager& sceneManager = SceneManager::Get();
     const URef<Scene>& scene = sceneManager.LoadScene("");
@@ -72,13 +66,11 @@ int main()
     planeRenderer.Model = planeModel;
     plane.AddComponent<CMeshRenderer>(planeRenderer);
 
-    LOG_INFO("Added plane mesh renderer");
-
     // Directional light
     AActor dirLight = scene->CreateActor(5.0f * X_AXIS);
     CDirectionalLight cDirectionalLight;
     cDirectionalLight.direction = Vector3f(-1.0f, -1.0f, 1.0f);
-    auto& comp =  dirLight.AddComponent<CDirectionalLight>(cDirectionalLight);
+    dirLight.AddComponent<CDirectionalLight>(cDirectionalLight);
 
     // Spotlight
     AActor spotlight = scene->CreateActor(5.0f * Y_AXIS);

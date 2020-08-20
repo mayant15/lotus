@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lotus/internal/entt.hpp"
+#include "lotus/internal/entt/entt.hpp"
 #include "lotus/physics.h"
 #include "lotus/lotus_export.h"
 

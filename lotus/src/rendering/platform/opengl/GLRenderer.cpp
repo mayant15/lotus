@@ -1,9 +1,6 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "hicpp-signed-bitwise"
-
 #include "lotus/debug.h"
 #include "GLRenderer.h"
-#include "lotus/resources.h"
+#include "lotus/resources/Model.h"
 #include "lotus/rendering/LShader.h"
 #include "lotus/scene/SceneManager.h"
 #include "lotus/scene/ACamera.h"
@@ -104,11 +101,11 @@ namespace Lotus
 
         // Set transforms and draw actor
         Matrix4f model(1.0f);
-        model = Lotus::LTranslate(model, transform.Position);
-        model = Lotus::LRotate(model, transform.Rotation.x, X_AXIS);
-        model = Lotus::LRotate(model, transform.Rotation.y, Y_AXIS);
-        model = Lotus::LRotate(model, transform.Rotation.z, Z_AXIS);
-        model = Lotus::LScale(model, transform.Scale);
+        model = LTranslate(model, transform.Position);
+        model = LRotate(model, transform.Rotation.x, X_AXIS);
+        model = LRotate(model, transform.Rotation.y, Y_AXIS);
+        model = LRotate(model, transform.Rotation.z, Z_AXIS);
+        model = LScale(model, transform.Scale);
         shader->setMat4f("model", false, model);
 
         // Set camera
@@ -126,17 +123,18 @@ namespace Lotus
         shader->setPointLightArray("pointLight", ptLightParams);
         shader->setSpotlightArray("spotlight", spLightParams);
 
-        std::vector<Lotus::Mesh> meshes = data.Model->getMeshes();
-        for (Lotus::Mesh& mesh : meshes)
+        std::vector<SubMesh> meshes = data.Model->Meshes;
+        for (SubMesh& mesh : meshes)
         {
             // Setup textures
             unsigned int diffuseNum = 1;
             unsigned int specularNum = 1;
-            for (unsigned int i = 0; i < mesh.textures.size(); ++i)
+            for (unsigned int i = 0; i < mesh.Textures.size(); ++i)
             {
+                Handle<Texture> texture = mesh.Textures[i];
                 glActiveTexture(GL_TEXTURE0 + i);
                 std::string number;
-                std::string name = mesh.textures[i]->Type;
+                std::string name = texture->Type;
                 if (name == DIFFUSE_TEXTURE)
                 {
                     number = std::to_string(diffuseNum++);
@@ -147,7 +145,7 @@ namespace Lotus
                 }
 
                 shader->setInt("material." + name + number, i);
-                glBindTexture(GL_TEXTURE_2D, mesh.textures[i]->ID);
+                glBindTexture(GL_TEXTURE_2D, texture->ID);
             }
 
             // Reset the active texture
@@ -155,7 +153,7 @@ namespace Lotus
 
             glBindVertexArray(mesh.VAO);
 
-            glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, nullptr);
             glBindVertexArray(0);
         }
     }
@@ -172,8 +170,8 @@ namespace Lotus
         view = camera.GetViewMatrix();
         cameraPos = camera.GetAbsolutePosition();
 
-        float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
-        projection = Lotus::LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
+        const float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
+        projection = LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
 
         glCheckError();
     }
@@ -224,6 +222,7 @@ namespace Lotus
         sky.Shader->use();
         sky.Shader->setMat4f("view", false, Matrix4f (Matrix3f (view)));
         sky.Shader->setMat4f("projection", false, projection);
+
         // skybox cube
         glBindVertexArray(sky.Map->VAO);
         glActiveTexture(GL_TEXTURE0);
@@ -362,5 +361,3 @@ GLenum glCheckError_(const char* file, int line)
     }
     return errorCode;
 }
-
-#pragma clang diagnostic pop

@@ -1,18 +1,14 @@
 #include "lotus/debug.h"
-#include "lotus/resources.h"
+#include "lotus/resources/Texture.h"
 #include "GLRenderer.h"
 #include "stb_image.h"
 
 namespace Lotus
 {
-    Texture::Texture(const std::string& path, const std::string& type) {
-        Path = path;
-        Type = type;
-    }
-
-    int Texture::import() {
+    SRef<Texture> TextureLoader::Load(const std::string& path, const std::string& type) const
+    {
         int width, height, nrComponents;
-        unsigned char* data = stbi_load(Path.c_str(), &width, &height, &nrComponents, 0);
+        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
         unsigned int format;
         if (data)
         {
@@ -37,18 +33,15 @@ namespace Lotus
         }
         else
         {
-            LOG_ERROR("Texture failed to load at path: {}", Path);
+            LOG_ERROR("Texture failed to load at path: {}", path);
             stbi_image_free(data);
             throw std::invalid_argument("image data invalid");
         }
 
         // TODO: Make API independent. Fire an event?
         GLRenderer& renderer = GLRenderer::Get();
-        unsigned int textureID = renderer.createTexture(data, width, height, format);
+        const uint32_t textureID = renderer.createTexture(data, width, height, format);
 
-        ID = textureID;
-
-        AssetManager::registerAsset(Path);
-        return IMPORT_SUCCESS_CODE;
+        return std::make_shared<Texture>(Texture { textureID, type });
     }
 }
