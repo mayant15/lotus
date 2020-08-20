@@ -14,17 +14,17 @@
 #include "components/lights.h"
 #include "components/rendering.h"
 
+#include "resources/Shader.h"
 #include "resources/AssetRegistry.h"
 #include "resources/Cubemap.h"
 #include "resources/Model.h"
 #include "resources/Texture.h"
 
+#include "Renderer.h"
+
 #include "events/Event.h"
 #include "events/IWindow.h"
 #include "events/Input.h"
-
-#include "rendering/LShader.h"
-#include "rendering/Renderer.h"
 
 #include "scene/Scene.h"
 #include "scene/SceneManager.h"

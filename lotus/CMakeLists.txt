@@ -32,15 +32,16 @@ set(SOURCES
         src/python/Interpreter.cpp
         src/python/module.cpp
 
-        src/rendering/LShader.cpp
-        src/rendering/platform/opengl/glad.c
-        src/rendering/platform/opengl/GLRenderer.cpp
-
+        src/rendering/opengl/glad.c
+        src/rendering/opengl/GLRenderer.cpp
+        src/rendering/opengl/GLShader.cpp
+        src/rendering/opengl/GLTextureLoader.cpp
+        
+        src/resources/Shader.cpp
         src/resources/stb_image.cpp
         src/resources/Model.cpp
         src/resources/Texture.cpp
         src/resources/Cubemap.cpp
-        src/resources/platform/GLTextureLoader.cpp
 
         src/scene/Scene.cpp
         src/scene/AActor.cpp

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lcommon.h"
-#include "rendering/Renderer.h"
+#include "Renderer.h"
 #include "events/EventManager.h"
 #include "events/Input.h"
 

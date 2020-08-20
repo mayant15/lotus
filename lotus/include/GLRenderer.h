@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GLWindow.h"
-#include "lotus/rendering/Renderer.h"
+#include "lotus/Renderer.h"
 #include "lotus/components/lights.h"
 
 #define glCheckError() glCheckError_(__FILE__, __LINE__)

@@ -1,0 +1,158 @@
+#include "glad/glad.h"
+#include "lotus/debug.h"
+#include "GLShader.h"
+
+#include <fstream>
+
+namespace Lotus
+{
+    GLShader::GLShader(const std::string& vertexPath, const std::string& fragmentPath)
+    {
+        std::string vertexCode;
+        std::string fragmentCode;
+        try
+        {
+            std::ifstream vertexFile(vertexPath);
+            vertexCode.assign((std::istreambuf_iterator<char>(vertexFile)), (std::istreambuf_iterator<char>()));
+
+            std::ifstream fragmentFile(fragmentPath);
+            fragmentCode.assign((std::istreambuf_iterator<char>(fragmentFile)), (std::istreambuf_iterator<char>()));
+
+            vertexFile.close();
+            fragmentFile.close();
+        }
+        catch (...)
+        {
+            LOG_ERROR("Shader Program: File not read.");
+        }
+        const char* vertexCodeStr = vertexCode.c_str();
+        const char* fragmentCodeStr = fragmentCode.c_str();
+
+        unsigned int vertex, fragment;
+        int success;
+        char infoLog[512];
+
+        vertex = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertex, 1, &vertexCodeStr, nullptr);
+        glCompileShader(vertex);
+        glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
+            LOG_ERROR("Vertex shader compilation failed.\n{}", infoLog);
+        }
+
+        fragment = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment, 1, &fragmentCodeStr, nullptr);
+        glCompileShader(fragment);
+        glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
+            LOG_ERROR("Fragment shader compilation failed.\n{}", infoLog);
+        }
+
+        ID = glCreateProgram();
+        glAttachShader(ID, vertex);
+        glAttachShader(ID, fragment);
+        glLinkProgram(ID);
+        glGetProgramiv(ID, GL_LINK_STATUS, &success);
+        if (!success)
+        {
+            glGetProgramInfoLog(ID, 512, nullptr, infoLog);
+            LOG_ERROR("Shader program linking failed.\n{}", infoLog);
+        }
+
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
+    }
+
+    void GLShader::Use() const
+    {
+        glUseProgram(ID);
+    }
+
+    void GLShader::SetInt(const std::string& name, int value) const
+    {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    }
+
+    void GLShader::SetFloat(const std::string& name, float value) const
+    {
+        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+    }
+
+    void GLShader::SetMat4f(const std::string& name, const Matrix4f& mat) const
+    {
+        const int loc = glGetUniformLocation(ID, name.c_str());
+        glUniformMatrix4fv(loc, 1, false, valuePtr(mat));
+    }
+
+    void GLShader::SetVec3f(const std::string& name, const Vector3f& mat) const
+    {
+        const int loc = glGetUniformLocation(ID, name.c_str());
+        glUniform3fv(loc, 1, valuePtr(mat));
+    }
+
+    void GLShader::SetPointLight(const std::string& name, const CPointLight& options) const
+    {
+        SetFloat(name + ".constant", options.constant);
+        SetFloat(name + ".linear", options.linear);
+        SetFloat(name + ".quadratic", options.quadratic);
+        SetVec3f(name + ".position", options.position);
+        SetVec3f(name + ".ambient", options.ambient);
+        SetVec3f(name + ".diffuse", options.diffuse);
+        SetVec3f(name + ".specular", options.specular);
+    }
+
+    void GLShader::SetSpotlight(const std::string& name, const CSpotlight& options) const
+    {
+        SetFloat(name + ".constant", options.constant);
+        SetFloat(name + ".linear", options.linear);
+        SetFloat(name + ".quadratic", options.quadratic);
+        SetFloat(name + ".innerCutOff", options.innerCutOff);
+        SetFloat(name + ".outerCutOff", options.outerCutOff);
+
+        SetVec3f(name + ".direction", options.direction);
+        SetVec3f(name + ".position", options.position);
+        SetVec3f(name + ".ambient", options.ambient);
+        SetVec3f(name + ".diffuse", options.diffuse);
+        SetVec3f(name + ".specular", options.specular);
+    }
+
+    void GLShader::SetDirectionalLight(const std::string& name, const CDirectionalLight& options) const
+    {
+        SetVec3f(name + ".direction", options.direction);
+        SetVec3f(name + ".ambient", options.ambient);
+        SetVec3f(name + ".diffuse", options.diffuse);
+        SetVec3f(name + ".specular", options.specular);
+    }
+
+    void GLShader::SetPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const
+    {
+        unsigned int i = 0;
+        for (const CPointLight& light : lights)
+        {
+            SetPointLight(name + "[" + std::to_string(i) + "]", light);
+            i++;
+        }
+    }
+
+    void GLShader::SetSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const
+    {
+        unsigned int i = 0;
+        for (const CSpotlight& light : lights)
+        {
+            SetSpotlight(name + "[" + std::to_string(i) + "]", light);
+        }
+    }
+
+    void GLShader::SetDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const
+    {
+        unsigned int i = 0;
+        for (const CDirectionalLight& light : lights)
+        {
+            SetDirectionalLight(name + "[" + std::to_string(i) + "]", light);
+        }
+    }
+}

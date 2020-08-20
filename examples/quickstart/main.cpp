@@ -14,19 +14,20 @@ int main()
     config.Height = 800;
     engine.Initialize(config);
 
+    auto& assetRegistry = AssetRegistry::Get();
+
     // Create the shaders to be used
-    auto shader = std::make_shared<LShader>(
+    auto shader = assetRegistry.LoadShader(
         R"(D:\code\lotus\examples\quickstart\resources\shaders\standard.vsh)",
         R"(D:\code\lotus\examples\quickstart\resources\shaders\diffuse.fsh)"
     );
 
-    auto skyShader = std::make_shared<LShader>(
+    auto skyShader = assetRegistry.LoadShader(
         R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.vsh)",
         R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.fsh)"
     );
 
     // Initialize and import the model
-    auto& assetRegistry = AssetRegistry::Get();
     auto model = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\untitled.obj)");
     auto planeModel = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\plane.obj)");
 
