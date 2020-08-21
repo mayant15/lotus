@@ -158,7 +158,7 @@ namespace Lotus
         }
     }
 
-    void GLRenderer::OnPreUpdate()
+    void GLRenderer::OnPreUpdate(const PreUpdateEvent& event)
     {
         glClearColor(0.2f, 0.3f, 0.8f, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -176,7 +176,7 @@ namespace Lotus
         glCheckError();
     }
 
-    void GLRenderer::OnUpdate(float delta)
+    void GLRenderer::OnUpdate(const UpdateEvent& event)
     {
         const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
 
@@ -230,21 +230,6 @@ namespace Lotus
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
-    }
-
-    void GLRenderer::OnPostUpdate()
-    {
-        // TODO
-    }
-
-    void GLRenderer::OnPreDestroy()
-    {
-        // TODO
-    }
-
-    void GLRenderer::OnDestroy()
-    {
-        // TODO
     }
 
     void GLRenderer::debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,

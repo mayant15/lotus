@@ -69,37 +69,4 @@ namespace Lotus
 
         virtual ~Singleton() = default;
     };
-
-    /**
-     * Base class to define lifecycle hooks
-     */
-    class ILifecycle
-    {
-    public:
-        virtual ~ILifecycle() = default;
-
-        [[maybe_unused]] virtual void OnInit()
-        {}
-
-        [[maybe_unused]] virtual void OnBegin()
-        {}
-
-        [[maybe_unused]] virtual void OnPreUpdate()
-        {}
-
-        [[maybe_unused]] virtual void OnUpdate(float delta)
-        {}
-
-        [[maybe_unused]] virtual void OnPostUpdate()
-        {}
-
-        [[maybe_unused]] virtual void OnPreDestroy()
-        {}
-
-        [[maybe_unused]] virtual void OnDestroy()
-        {}
-
-        [[maybe_unused]] virtual void OnShutdown()
-        {}
-    };
 }

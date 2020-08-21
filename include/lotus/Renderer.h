@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ILifecycle.h"
 #include "lotus/events/IWindow.h"
 #include "lotus/components/rendering.h"
 #include "lotus/components/scene.h"
@@ -67,14 +68,7 @@ namespace Lotus
         virtual void DrawMesh(const CMeshRenderer& data, const CTransform& transform)
         {}
 
-        void OnPreUpdate() override = 0;
-
-        void OnUpdate(float delta) override = 0;
-
-        void OnPostUpdate() override = 0;
-
-        void OnPreDestroy() override = 0;
-
-        void OnDestroy() override = 0;
+        void OnPreUpdate(const PreUpdateEvent& event) override = 0;
+        void OnUpdate(const UpdateEvent& event) override = 0;
     };
 }

@@ -24,7 +24,11 @@ namespace Lotus
     class LOTUS_API Engine : public Singleton<Engine>
     {
         bool _isRunning = true;
+
+        // NOTE: While this is a unique pointer owned by the engine, the underlying object can be modified
+        // by the lifecycle events called on it.
         URef<IWindow> _window;
+
         EventManager* _eventManager{};
         Input* _inputManager{};
         Renderer* _renderer{};

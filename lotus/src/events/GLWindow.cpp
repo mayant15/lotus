@@ -100,19 +100,19 @@ namespace Lotus
         glfwSetInputMode(_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
-    void GLWindow::OnPostUpdate()
+    void GLWindow::OnPostUpdate(const PostUpdateEvent& event)
     {
         // Initialize and configure GLFW
         glfwSwapBuffers(_pWindow);
         glfwPollEvents();
     }
 
-    void GLWindow::OnDestroy()
+    void GLWindow::OnDestroy(const DestroyEvent& event)
     {
         glfwDestroyWindow(_pWindow);
     }
 
-    void GLWindow::OnShutdown()
+    void GLWindow::OnShutdown(const ShutdownEvent& event)
     {
         glfwTerminate();
     }

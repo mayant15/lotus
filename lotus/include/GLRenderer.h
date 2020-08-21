@@ -43,15 +43,8 @@ namespace Lotus
 
         void DrawMesh(const CMeshRenderer& data, const CTransform& transform) override;
 
-        void OnPreUpdate() override;
-
-        void OnUpdate(float delta) override;
-
-        void OnPostUpdate() override;
-
-        void OnPreDestroy() override;
-
-        void OnDestroy() override;
+        void OnPreUpdate(const PreUpdateEvent& event) override;
+        void OnUpdate(const UpdateEvent& event) override;
 
         unsigned int createTexture(unsigned char* data, int width, int height, unsigned int format);
     };

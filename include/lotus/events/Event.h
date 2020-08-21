@@ -41,11 +41,6 @@ namespace Lotus
         EEventType Type = EEventType::NONE;
     };
 
-    struct LOTUS_API UpdateEvent : public Event
-    {
-        float DeltaTime = 0.0f;
-    };
-
     struct LOTUS_API WindowCloseEvent : public Event
     {
         WindowCloseEvent()

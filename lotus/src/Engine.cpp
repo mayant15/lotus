@@ -2,10 +2,6 @@
 #include "lotus/debug.h"
 #include "GLRenderer.h"
 
-#include <fstream>
-#include "lotus/internal/cereal/cereal.hpp"
-#include "lotus/scene/SceneManager.h"
-
 namespace Lotus
 {
     void Engine::OnEvent(Event& event)
@@ -63,6 +59,11 @@ namespace Lotus
         }
         _window->SetEventCallback(Engine::OnEvent);
 
+        // TODO: Bind with reflection
+        _eventManager->Bind<PostUpdateEvent, &IWindow::OnPostUpdate>(_window.get());
+        _eventManager->Bind<DestroyEvent, &IWindow::OnDestroy>(_window.get());
+        _eventManager->Bind<ShutdownEvent, &IWindow::OnShutdown>(_window.get());
+
         switch (options.RenderAPI)
         {
             case ERenderAPI::OPEN_GL:
@@ -82,6 +83,10 @@ namespace Lotus
         rendererOp.ViewportWidth = options.Width;
         rendererOp.ViewportHeight = options.Height;
         _renderer->Initialize(rendererOp);
+
+        // Register lifecycle events
+        _eventManager->Bind<PreUpdateEvent, &Renderer::OnPreUpdate>(_renderer);
+        _eventManager->Bind<UpdateEvent, &Renderer::OnUpdate>(_renderer);
     }
 
     void Engine::Run()
@@ -102,36 +107,23 @@ namespace Lotus
 
     void Engine::Shutdown()
     {
-        std::ofstream file("cache.json");
-        cereal::JSONOutputArchive ar(file);
-
-        const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
-        scene->Save(ar);
-
-        _renderer->OnPreDestroy();
-
-        _renderer->OnDestroy();
-        _window->OnDestroy();
-
-        // _renderer->OnShutdown();
-        _window->OnShutdown();
+        _eventManager->Invoke(PreDestroyEvent {});
+        _eventManager->Invoke(DestroyEvent {});
+        _eventManager->Invoke(ShutdownEvent {});
     }
 
     void Engine::tick(float delta)
     {
         UpdateEvent updateEvent;
         updateEvent.DeltaTime = delta;
-        _eventManager->Queue(updateEvent);
+        PreUpdateEvent preUpdateEvent;
+        PostUpdateEvent postUpdateEvent;
+
         // Game logic tick
         // TODO: process physics, AI etc here
 
-        // Render tick. Everything that needs to be done this frame should have been done by now.
-        _renderer->OnPreUpdate();
-        _renderer->OnUpdate(delta);
-        _renderer->OnPostUpdate();
-
-        // Poll for events
-        _window->OnPostUpdate();
-        _eventManager->BroadcastQueue();
+        _eventManager->Invoke(preUpdateEvent);
+        _eventManager->Invoke(updateEvent);
+        _eventManager->Invoke(postUpdateEvent);
     }
 }

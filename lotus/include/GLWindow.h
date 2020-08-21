@@ -26,10 +26,8 @@ namespace Lotus
 
         void SetVSync(bool enabled) override;
 
-        void OnPostUpdate() override;
-
-        void OnDestroy() override;
-
-        void OnShutdown() override;
+        void OnPostUpdate(const PostUpdateEvent& event) override;
+        void OnDestroy(const DestroyEvent& event) override;
+        void OnShutdown(const ShutdownEvent& event) override;
     };
 }

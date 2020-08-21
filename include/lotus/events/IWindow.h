@@ -6,6 +6,8 @@
 #include <functional>
 #include <utility>
 
+#include "lotus/ILifecycle.h"
+
 namespace Lotus
 {
     /**
@@ -48,19 +50,14 @@ namespace Lotus
         virtual void SetVSync(bool enabled) = 0;
 
         [[nodiscard]] virtual bool IsVSync() const = 0;
-
         [[nodiscard]] virtual uint32_t GetWidth() const = 0;
-
         [[nodiscard]] virtual uint32_t GetHeight() const = 0;
-
         [[nodiscard]] virtual void* GetNativeWindow() const = 0;
 
         virtual void SetEventCallback(const std::function<void(Event&)>& callback) = 0;
 
-        void OnPostUpdate() override = 0;
-
-        void OnDestroy() override = 0;
-
-        void OnShutdown() override = 0;
+        void OnPostUpdate(const PostUpdateEvent& event) override = 0;
+        void OnDestroy(const DestroyEvent& event) override = 0;
+        void OnShutdown(const ShutdownEvent& event) override = 0;
     };
 }
