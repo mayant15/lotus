@@ -1,6 +1,8 @@
 #include "lotus/scene/SceneManager.h"
 #include "lotus/scene/ACamera.h"
 
+#include <fstream>
+
 namespace Lotus
 {
     const URef <Scene>& SceneManager::GetActiveScene()
@@ -12,6 +14,7 @@ namespace Lotus
     {
         // TODO: Load from path
         _activeScene = std::make_unique<Scene>();
+        _activeScene->Path = path;
         return _activeScene;
     }
 
@@ -19,6 +22,13 @@ namespace Lotus
     {
         // TODO: Destroy current scene?
         return LoadScene(path);
+    }
+
+    void SceneManager::OnPreDestroy(const PreDestroyEvent& event)
+    {
+        std::ofstream sceneFile(_activeScene->Path);
+        OArchive archive(sceneFile);
+        _activeScene->Save(archive);
     }
 
     ACamera SceneManager::GetActiveCamera()

@@ -1,6 +1,7 @@
 #include "lotus/Engine.h"
 #include "lotus/debug.h"
 #include "GLRenderer.h"
+#include "lotus/scene/SceneManager.h"
 
 namespace Lotus
 {
@@ -87,6 +88,10 @@ namespace Lotus
         // Register lifecycle events
         _eventManager->Bind<PreUpdateEvent, &Renderer::OnPreUpdate>(_renderer);
         _eventManager->Bind<UpdateEvent, &Renderer::OnUpdate>(_renderer);
+
+
+        // Save scene
+        _eventManager->Bind<PreDestroyEvent, &SceneManager::OnPreDestroy>(&SceneManager::Get());
     }
 
     void Engine::Run()

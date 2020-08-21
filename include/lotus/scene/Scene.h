@@ -23,6 +23,9 @@ namespace Lotus
         EntityRegistry _registry;
         friend Entity;
     public:
+
+        std::string Path = "";
+
         template<typename... Component>
         auto Find()
         {
@@ -44,7 +47,7 @@ namespace Lotus
 
         void Save(OArchive& archive) const override
         {
-            archive(FIELD("sample", 10.02f));
+            archive(FIELD("sample", 30.12f));
         }
 
     };

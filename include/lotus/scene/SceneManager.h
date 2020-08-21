@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Scene.h"
+#include "lotus/ILifecycle.h"
 #include "lotus/lcommon.h"
 
 namespace Lotus
 {
-    class LOTUS_API SceneManager : public Singleton<SceneManager>
+    class LOTUS_API SceneManager : public Singleton<SceneManager>, ILifecycle
     {
         URef<Scene> _activeScene;
 
@@ -19,5 +20,8 @@ namespace Lotus
         const URef<Scene>& LoadScene(const std::string& path);
 
         const URef<Scene>& ChangeScene(const std::string& path);
+
+
+        void OnPreDestroy(const PreDestroyEvent& event) override;
     };
 }

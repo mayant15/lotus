@@ -44,7 +44,7 @@ int main()
     Handle<Cubemap> cubemap = assetRegistry.LoadCubemap(faces);
 
     SceneManager& sceneManager = SceneManager::Get();
-    const URef<Scene>& scene = sceneManager.LoadScene("");
+    const URef<Scene>& scene = sceneManager.LoadScene(R"(D:\code\lotus\examples\quickstart\resources\scenes\SampleScene.json)");
 
     // Sky
     Entity sky = scene->CreateEntity();
