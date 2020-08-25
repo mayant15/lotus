@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lotus/physics.h"
-#include "Texture.h"
+#include "Material.h"
 
 namespace Lotus
 {
@@ -16,15 +16,14 @@ namespace Lotus
     {
         std::vector<Vertex> Vertices;
         std::vector<uint32_t> Indices;
-        std::vector<Handle<Texture>> Textures;
+        Handle<Material> Material;
 
         // TODO: Make meshes API agnostic
         unsigned int VBO = 0;
         unsigned int EBO = 0;
         unsigned int VAO = 0;
 
-        SubMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices,
-                const std::vector<Handle<Texture>>& textures);
+        SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Handle<Lotus::Material> material);
     };
 
     struct LOTUS_API Model

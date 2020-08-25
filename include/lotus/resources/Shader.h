@@ -14,7 +14,7 @@ namespace Lotus
         virtual void SetInt(const std::string& name, int value) const = 0;
         virtual void SetFloat(const std::string& name, float value) const = 0;
         virtual void SetMat4f(const std::string& name, const Matrix4f& mat) const = 0;
-        virtual void SetVec3f(const std::string& name, const Vector3f& mat) const = 0;
+        virtual void SetVec3f(const std::string& name, const Vector3f& vec) const = 0;
         virtual void SetPointLight(const std::string& name, const CPointLight& options) const = 0;
         virtual void SetSpotlight(const std::string& name, const CSpotlight& options) const = 0;
         virtual void SetDirectionalLight(const std::string& name, const CDirectionalLight& options) const = 0;

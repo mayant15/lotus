@@ -11,7 +11,7 @@ namespace Lotus
         void SetInt(const std::string& name, int value) const override;
         void SetFloat(const std::string& name, float value) const override;
         void SetMat4f(const std::string& name, const Matrix4f& mat) const override;
-        void SetVec3f(const std::string& name, const Vector3f& mat) const override;
+        void SetVec3f(const std::string& name, const Vector3f& vec) const override;
         void SetPointLight(const std::string& name, const CPointLight& options) const override;
         void SetSpotlight(const std::string& name, const CSpotlight& options) const override;
         void SetDirectionalLight(const std::string& name, const CDirectionalLight& options) const override;

@@ -4,6 +4,7 @@
 #include "stb_image.h"
 
 #include <assimp/Importer.hpp>
+#include <utility>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
@@ -11,7 +12,7 @@ namespace Lotus
 {
     void processNode(const aiNode* node, const aiScene* scene, SRef<Model> model);
     SubMesh processMesh(const aiMesh* mesh, const aiScene* scene);
-    std::vector<Handle<Texture>> loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName, bool flipY = true);
+    std::variant<Vector3f, Handle<Texture>> loadMaterialTextures(const aiMaterial* mat, aiTextureType type, bool flipY = true);
 
     SRef<Model> ModelLoader::Load(const std::string& path) const
     {
@@ -44,29 +45,30 @@ namespace Lotus
         }
     }
 
-    std::vector<Handle<Texture>>
-    loadMaterialTextures(const aiMaterial* mat, aiTextureType type, const std::string& typeName, bool flipY)
+    std::variant<Vector3f, Handle<Texture>>
+    loadMaterialTextures(const aiMaterial* mat, aiTextureType type, bool flipY)
     {
         auto& cache = AssetRegistry::Get();
         stbi_set_flip_vertically_on_load(flipY);
-        std::vector<Handle<Texture>> textures;
-        for (unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
+
+        if (mat->GetTextureCount(type) == 0)
+        {
+            // Return a plain color if there's no texture
+            return MaterialDefaults::Get(type);
+        }
+        else
         {
             // TODO: String identifiers should be unified across libraries
             aiString str;
-            mat->GetTexture(type, i, &str);
-            Handle<Texture> texture = cache.LoadTexture(str.C_Str(), typeName);
-            textures.push_back(texture);
+            mat->GetTexture(type, 0, &str);
+            return cache.LoadTexture(str.C_Str());
         }
-
-        return textures;
     }
 
     SubMesh processMesh(const aiMesh* mesh, const aiScene* scene)
     {
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
-        std::vector<Handle<Texture>> textures;
 
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
         {
@@ -99,33 +101,29 @@ namespace Lotus
                 indices.push_back(face.mIndices[j]);
         }
 
-        if (mesh->mMaterialIndex >= 0)
-        {
-            aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-            // Append diffuse maps
-            std::vector<Handle<Texture>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE,
-                                                                        DIFFUSE_TEXTURE);
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        // TODO: Save the model as a lotus json too. We should not have to rely on Assimp for material data other than the first import.
+        // TODO: Related to the above point, there is a need to separate "import" and "load".
+        auto& cache = AssetRegistry::Get();
+        aiMaterial* assimpMat = scene->mMaterials[mesh->mMaterialIndex];
+    
+        // Append diffuse maps
+        auto diffuse = loadMaterialTextures(assimpMat, aiTextureType_DIFFUSE);
+    
+        // Append specular maps
+        auto specular = loadMaterialTextures(assimpMat, aiTextureType_SPECULAR);
 
-            // Append specular maps
-            std::vector<Handle<Texture>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR,
-                                                                         SPECULAR_TEXTURE);
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        }
+        float shininess = 16.0f;
+        Handle<Material> material = cache.LoadMaterial(diffuse, specular, shininess);
 
-        return SubMesh(vertices, indices, textures);
+        return SubMesh(vertices, indices, material);
     }
 
-    SubMesh::SubMesh(
-        std::vector<Vertex> vertices, 
-        std::vector<uint32_t> indices,
-        const std::vector<Handle<Texture>>& textures
-    )
+    SubMesh::SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Handle<Lotus::Material> material)
     {
         Indices = indices;
         Vertices = vertices;
-        Textures = textures;
+        Material = std::move(material);
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);

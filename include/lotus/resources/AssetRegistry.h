@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Model.h"
-#include "Texture.h"
 #include "Cubemap.h"
 #include "Shader.h"
 
@@ -13,6 +12,7 @@ namespace Lotus
         entt::resource_cache<Model> _models;
         entt::resource_cache<Cubemap> _cubemaps;
         entt::resource_cache<Shader> _shaders;
+        entt::resource_cache<Material> _materials;
 
         uint32_t _currentID;
 
@@ -70,6 +70,14 @@ namespace Lotus
             auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
             _currentID++;
             return _shaders.load<ShaderLoader>(identifier, std::forward<Args>(args)...);
+        }
+
+        template<typename... Args>
+        Handle<Material> LoadMaterial(Args&& ...args)
+        {
+            auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
+            _currentID++;
+            return _materials.load<MaterialLoader>(identifier, std::forward<Args>(args)...);
         }
 
         // template<typename Loader, typename... Args>

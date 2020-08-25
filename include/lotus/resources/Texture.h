@@ -14,11 +14,10 @@ namespace Lotus
     struct LOTUS_API Texture
     {
         uint32_t ID = 0;
-        std::string Type;
     };
 
     LOADER(TextureLoader, Texture)
     {
-        SRef<Texture> Load(const std::string& path, const std::string& type) const;
+        SRef<Texture> Load(const std::string& path) const;
     };
 }

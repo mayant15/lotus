@@ -88,10 +88,10 @@ namespace Lotus
         glUniformMatrix4fv(loc, 1, false, valuePtr(mat));
     }
 
-    void GLShader::SetVec3f(const std::string& name, const Vector3f& mat) const
+    void GLShader::SetVec3f(const std::string& name, const Vector3f& vec) const
     {
         const int loc = glGetUniformLocation(ID, name.c_str());
-        glUniform3fv(loc, 1, valuePtr(mat));
+        glUniform3fv(loc, 1, valuePtr(vec));
     }
 
     void GLShader::SetPointLight(const std::string& name, const CPointLight& options) const

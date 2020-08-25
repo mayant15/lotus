@@ -113,10 +113,6 @@ namespace Lotus
         shader->SetMat4f("projection", projection);
         shader->SetVec3f("viewPos", cameraPos);
 
-        // Material. Diffuse is set through a texture
-        Vector3f specular(0.5f);
-        shader->SetVec3f("material.specular", specular);
-        shader->SetFloat("material.shininess", 16.0f);
 
         // Set lighting
         shader->SetDirLightArray("dirLight", dirLightParams);
@@ -126,27 +122,41 @@ namespace Lotus
         std::vector<SubMesh> meshes = data.Model->Meshes;
         for (SubMesh& mesh : meshes)
         {
-            // Setup textures
-            unsigned int diffuseNum = 1;
-            unsigned int specularNum = 1;
-            for (unsigned int i = 0; i < mesh.Textures.size(); ++i)
-            {
-                Handle<Texture> texture = mesh.Textures[i];
-                glActiveTexture(GL_TEXTURE0 + i);
-                std::string number;
-                std::string name = texture->Type;
-                if (name == DIFFUSE_TEXTURE)
-                {
-                    number = std::to_string(diffuseNum++);
-                }
-                else if (name == SPECULAR_TEXTURE)
-                {
-                    number = std::to_string(specularNum++);
-                }
+            // Material
 
-                shader->SetInt("material." + name + number, i);
+            // Set diffuse texture
+            auto diffuse = mesh.Material->Diffuse;
+            if (std::holds_alternative<Vector3f>(diffuse))
+            {
+                // invalid texture, set the color
+                shader->SetVec3f("material.diffuseColor", std::get<Vector3f>(diffuse));
+            }
+            else
+            {
+                // valid texture, set texture
+                Handle<Texture> texture = std::get<Handle<Texture>>(diffuse);
+                glActiveTexture(GL_TEXTURE0);
+                shader->SetInt("material.texture_diffuse1", 0);
                 glBindTexture(GL_TEXTURE_2D, texture->ID);
             }
+
+            // Set specular texture
+            auto specular = mesh.Material->Specular;
+            if (std::holds_alternative<Vector3f>(specular))
+            {
+                // invalid texture, set the color
+                shader->SetVec3f("material.specularColor", std::get<Vector3f>(specular));
+            }
+            else
+            {
+                // valid texture, set texture
+                Handle<Texture> texture = std::get<Handle<Texture>>(specular);
+                glActiveTexture(GL_TEXTURE1);
+                shader->SetInt("material.texture_specular1", 1);
+                glBindTexture(GL_TEXTURE_2D, texture->ID);
+            }
+
+            shader->SetFloat("material.shininess", mesh.Material->Shininess);
 
             // Reset the active texture
             glActiveTexture(GL_TEXTURE0);

@@ -5,7 +5,7 @@
 
 namespace Lotus
 {
-    SRef<Texture> TextureLoader::Load(const std::string& path, const std::string& type) const
+    SRef<Texture> TextureLoader::Load(const std::string& path) const
     {
         int width, height, nrComponents;
         unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
@@ -42,6 +42,8 @@ namespace Lotus
         GLRenderer& renderer = GLRenderer::Get();
         const uint32_t textureID = renderer.createTexture(data, width, height, format);
 
-        return std::make_shared<Texture>(Texture { textureID, type });
+        SRef<Texture> texture = std::make_shared<Texture>();
+        texture->ID = textureID;
+        return texture;
     }
 }
