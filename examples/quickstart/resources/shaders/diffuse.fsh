@@ -93,7 +93,8 @@ vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir
 
     // specular
     vec3 reflectDir = reflect(lightDir, normal);
-    float spec = pow(max(dot(-viewDir, reflectDir), 0.0f), material.shininess);
+    vec3 halfwayDir = normalize(-lightDir - viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0f), material.shininess);
     vec3 specular = light.specular * spec * material.specular;
 
     return (ambient + diffuse + specular);
@@ -115,7 +116,8 @@ vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewD
 
     // Specular lighting calculations
     vec3 reflectDir = reflect(lightDir, normal);
-    float spec = pow(max(dot(-viewDir, reflectDir), 0.0f), material.shininess);
+    vec3 halfwayDir = normalize(-lightDir - viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0f), material.shininess);
     vec3 specular = light.specular * spec * material.specular * attenuation;
     return (ambient + diffuse + specular);
 }
@@ -141,7 +143,8 @@ vec3 calculateSpotLight(Spotlight light, vec3 normal, vec3 fragPos, vec3 viewDir
 
     // Specular lighting calculations
     vec3 reflectDir = reflect(lightToFragVec, normal);
-    float spec = pow(max(dot(-viewDir, reflectDir), 0.0f), material.shininess);
+    vec3 halfwayDir = normalize(-lightDir - viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0f), material.shininess);
     vec3 specular = light.specular * spec * material.specular * attenuation;
 
     return (ambient + diffuse * intensity + specular * intensity);

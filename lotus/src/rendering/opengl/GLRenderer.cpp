@@ -116,7 +116,7 @@ namespace Lotus
         // Material. Diffuse is set through a texture
         Vector3f specular(0.5f);
         shader->SetVec3f("material.specular", specular);
-        shader->SetFloat("material.shininess", 32);
+        shader->SetFloat("material.shininess", 16.0f);
 
         // Set lighting
         shader->SetDirLightArray("dirLight", dirLightParams);
