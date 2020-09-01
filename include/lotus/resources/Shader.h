@@ -13,6 +13,7 @@ namespace Lotus
         virtual void Use() const = 0;
         virtual void SetInt(const std::string& name, int value) const = 0;
         virtual void SetFloat(const std::string& name, float value) const = 0;
+        virtual void SetBool(const std::string& name, bool value) const = 0;
         virtual void SetMat4f(const std::string& name, const Matrix4f& mat) const = 0;
         virtual void SetVec3f(const std::string& name, const Vector3f& vec) const = 0;
         virtual void SetPointLight(const std::string& name, const CPointLight& options) const = 0;

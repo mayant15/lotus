@@ -55,8 +55,11 @@ struct PointLight {
 uniform DirectionalLight dirLight[NR_DIR_LIGHTS];
 uniform Spotlight spotlight[NR_SPOT_LIGHTS];
 uniform PointLight pointLight[NR_POINT_LIGHTS];
-uniform Material material;
 uniform vec3 viewPos;
+
+uniform Material material;
+uniform bool readDiffuseTexture;
+uniform bool readSpecularTexture;
 
 out vec4 fragColor;
 
@@ -91,14 +94,26 @@ void main()
 
 vec3 getDiffuseColor()
 {
-    if (textureQueryLevels(material.texture_diffuse1) == 0) return material.diffuseColor;
-    else return vec3(texture(material.texture_diffuse1, texCoords));
+    if (readDiffuseTexture)
+    {
+        return vec3(texture(material.texture_diffuse1, texCoords));
+    }
+    else
+    {
+        return material.diffuseColor;
+    }
 }
 
 vec3 getSpecularColor()
 {
-    if (textureQueryLevels(material.texture_specular1) == 0) return material.specularColor;
-    else return vec3(texture(material.texture_specular1, texCoords));
+    if (readSpecularTexture) 
+    {
+        return vec3(texture(material.texture_specular1, texCoords));
+    }
+    else 
+    {
+        return material.specularColor;
+    }
 }
 
 vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir) {

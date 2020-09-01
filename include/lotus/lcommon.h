@@ -5,11 +5,13 @@
 #pragma once
 
 #include <memory>
+#include <fstream>
 
 #include "lotus_export.h"
 #include "lotus/internal/entt/entt.hpp"
 #include "lotus/internal/cereal/cereal.hpp"
 #include "lotus/internal/cereal/archives/json.hpp"
+#include "lotus/internal/nlohmann/json.hpp"
 
 
 // TODO: Convenient, but not very readable I guess.

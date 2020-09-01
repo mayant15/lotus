@@ -10,6 +10,7 @@ namespace Lotus
         void Use() const override;
         void SetInt(const std::string& name, int value) const override;
         void SetFloat(const std::string& name, float value) const override;
+        void SetBool(const std::string& name, bool value) const override;
         void SetMat4f(const std::string& name, const Matrix4f& mat) const override;
         void SetVec3f(const std::string& name, const Vector3f& vec) const override;
         void SetPointLight(const std::string& name, const CPointLight& options) const override;

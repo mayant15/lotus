@@ -108,13 +108,16 @@ namespace Lotus
         aiMaterial* assimpMat = scene->mMaterials[mesh->mMaterialIndex];
     
         // Append diffuse maps
-        auto diffuse = loadMaterialTextures(assimpMat, aiTextureType_DIFFUSE);
-    
-        // Append specular maps
-        auto specular = loadMaterialTextures(assimpMat, aiTextureType_SPECULAR);
+        // auto diffuse = loadMaterialTextures(assimpMat, aiTextureType_DIFFUSE);
+        //
+        // // Append specular maps
+        // auto specular = loadMaterialTextures(assimpMat, aiTextureType_SPECULAR);
+        //
+        // float shininess = 16.0f;
+        // Handle<Material> material = cache.LoadMaterial(diffuse, specular, shininess);
 
-        float shininess = 16.0f;
-        Handle<Material> material = cache.LoadMaterial(diffuse, specular, shininess);
+        // TODO: Store material path in the model json
+        Handle<Material> material = cache.LoadMaterial(R"(D:\code\lotus\examples\quickstart\resources\materials\box.json)");
 
         return SubMesh(vertices, indices, material);
     }

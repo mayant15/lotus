@@ -124,16 +124,19 @@ namespace Lotus
         {
             // Material
 
-            // Set diffuse texture
+            // Set diffuse
             auto diffuse = mesh.Material->Diffuse;
             if (std::holds_alternative<Vector3f>(diffuse))
             {
                 // invalid texture, set the color
                 shader->SetVec3f("material.diffuseColor", std::get<Vector3f>(diffuse));
+                shader->SetBool("readDiffuseTexture", false);
             }
             else
             {
                 // valid texture, set texture
+                shader->SetBool("readDiffuseTexture", true);
+
                 Handle<Texture> texture = std::get<Handle<Texture>>(diffuse);
                 glActiveTexture(GL_TEXTURE0);
                 shader->SetInt("material.texture_diffuse1", 0);
@@ -141,15 +144,19 @@ namespace Lotus
             }
 
             // Set specular texture
+
             auto specular = mesh.Material->Specular;
             if (std::holds_alternative<Vector3f>(specular))
             {
                 // invalid texture, set the color
                 shader->SetVec3f("material.specularColor", std::get<Vector3f>(specular));
+                shader->SetBool("readSpecularTexture", false);
             }
             else
             {
                 // valid texture, set texture
+                shader->SetBool("readSpecularTexture", true);
+
                 Handle<Texture> texture = std::get<Handle<Texture>>(specular);
                 glActiveTexture(GL_TEXTURE1);
                 shader->SetInt("material.texture_specular1", 1);

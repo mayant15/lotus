@@ -31,6 +31,8 @@ int main()
     auto model = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\untitled.obj)");
     auto planeModel = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\plane.obj)");
 
+    model->Meshes.front().Material;
+
 
     std::vector<std::string> faces
     {

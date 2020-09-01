@@ -82,6 +82,11 @@ namespace Lotus
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
 
+    void GLShader::SetBool(const std::string& name, bool value) const
+    {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    }
+
     void GLShader::SetMat4f(const std::string& name, const Matrix4f& mat) const
     {
         const int loc = glGetUniformLocation(ID, name.c_str());

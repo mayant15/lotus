@@ -32,6 +32,6 @@ namespace Lotus
 
     LOADER(MaterialLoader, Material)
     {
-        SRef<Material> Load(std::variant<Vector3f, Handle<Texture>> diffuse, std::variant<Vector3f, Handle<Texture>> specular, float shininess) const;
+        SRef<Material> Load(const std::string& path) const;
     };
 }
