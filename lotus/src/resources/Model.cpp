@@ -10,16 +10,28 @@
 
 namespace Lotus
 {
-    void processNode(const aiNode* node, const aiScene* scene, SRef<Model> model);
-    SubMesh processMesh(const aiMesh* mesh, const aiScene* scene);
-    std::variant<Vector3f, Handle<Texture>> loadMaterialTextures(const aiMaterial* mat, aiTextureType type, bool flipY = true);
+    using json = nlohmann::json;
+
+    void processNode(const aiNode*, const aiScene*, SRef<Model>, Handle<Material>);
+    SubMesh processMesh(const aiMesh*, const aiScene*, Handle<Material>);
 
     SRef<Model> ModelLoader::Load(const std::string& path) const
     {
+        std::ifstream file (path);
+        json data;
+        file >> data;
+
+        // TODO: Save the model as a lotus json too. We should not have to rely on Assimp for material data other than the first import.
+        // TODO: Related to the above point, there is a need to separate "import" and "load".
+        auto& cache = AssetRegistry::Get();
+
+        // TODO: Modify to accommodate sub meshes
+        Handle<Material> material = cache.LoadMaterial(data["material"]);
+
         SRef<Model> model = std::make_shared<Model>();
 
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(data["mesh"], aiProcess_Triangulate | aiProcess_FlipUVs);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -27,45 +39,25 @@ namespace Lotus
             throw std::invalid_argument(importer.GetErrorString());
         }
 
-        processNode(scene->mRootNode, scene, model);
+        processNode(scene->mRootNode, scene, model, material);
         return model;
     }
 
-    void processNode(const aiNode* node, const aiScene* scene, SRef<Model> model)
+    void processNode(const aiNode* node, const aiScene* scene, SRef<Model> model, Handle<Material> mat)
     {
         for (unsigned int i = 0; i < node->mNumMeshes; ++i)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            model->Meshes.push_back(processMesh(mesh, scene));
+            model->Meshes.push_back(processMesh(mesh, scene, mat));
         }
 
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
-            processNode(node->mChildren[i], scene, model);
+            processNode(node->mChildren[i], scene, model, mat);
         }
     }
 
-    std::variant<Vector3f, Handle<Texture>>
-    loadMaterialTextures(const aiMaterial* mat, aiTextureType type, bool flipY)
-    {
-        auto& cache = AssetRegistry::Get();
-        stbi_set_flip_vertically_on_load(flipY);
-
-        if (mat->GetTextureCount(type) == 0)
-        {
-            // Return a plain color if there's no texture
-            return MaterialDefaults::Get(type);
-        }
-        else
-        {
-            // TODO: String identifiers should be unified across libraries
-            aiString str;
-            mat->GetTexture(type, 0, &str);
-            return cache.LoadTexture(str.C_Str());
-        }
-    }
-
-    SubMesh processMesh(const aiMesh* mesh, const aiScene* scene)
+    SubMesh processMesh(const aiMesh* mesh, const aiScene* scene, Handle<Material> mat)
     {
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
@@ -101,25 +93,7 @@ namespace Lotus
                 indices.push_back(face.mIndices[j]);
         }
 
-
-        // TODO: Save the model as a lotus json too. We should not have to rely on Assimp for material data other than the first import.
-        // TODO: Related to the above point, there is a need to separate "import" and "load".
-        auto& cache = AssetRegistry::Get();
-        aiMaterial* assimpMat = scene->mMaterials[mesh->mMaterialIndex];
-    
-        // Append diffuse maps
-        // auto diffuse = loadMaterialTextures(assimpMat, aiTextureType_DIFFUSE);
-        //
-        // // Append specular maps
-        // auto specular = loadMaterialTextures(assimpMat, aiTextureType_SPECULAR);
-        //
-        // float shininess = 16.0f;
-        // Handle<Material> material = cache.LoadMaterial(diffuse, specular, shininess);
-
-        // TODO: Store material path in the model json
-        Handle<Material> material = cache.LoadMaterial(R"(D:\code\lotus\examples\quickstart\resources\materials\box.json)");
-
-        return SubMesh(vertices, indices, material);
+        return SubMesh(vertices, indices, mat);
     }
 
     SubMesh::SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Handle<Lotus::Material> material)
