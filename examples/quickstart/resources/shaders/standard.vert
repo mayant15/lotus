@@ -6,18 +6,25 @@ layout (location = 2) in vec2 aTexCoords;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightView;
+uniform mat4 lightProjection;
 //uniform mat3 normalMatrix;
 
-out vec3 fragPos;
-out vec2 texCoords;
-out vec3 normal;
+out VS_OUT
+{
+    vec3 fragPos;
+    vec2 texCoords;
+    vec3 normal;
+    vec4 fragPosLightSpace;
+} vs_out;
 
 void main()
 {
-    fragPos = vec3(model * vec4(aPos, 1.0));
-    texCoords = aTexCoords;
+    vs_out.fragPos = vec3(model * vec4(aPos, 1.0));
+    vs_out.texCoords = aTexCoords;
     // TODO: Fix the normal matrix here
 //    normal = normalMatrix * aNormal;
-    normal = aNormal;
+    vs_out.normal = aNormal;
+    vs_out.fragPosLightSpace = lightProjection * lightView * model * vec4(aPos, 1.0);
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 }

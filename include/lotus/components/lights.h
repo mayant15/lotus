@@ -6,7 +6,7 @@ namespace Lotus
 {
     struct CLight
     {
-        Vector3f ambient = Vector3f(0.2f);
+        Vector3f ambient = Vector3f(0.0f);
         Vector3f diffuse = Vector3f(1.0f);
         Vector3f specular = Vector3f(0.4f);
     };

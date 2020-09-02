@@ -8,13 +8,13 @@ void setup()
 
     // Create the shaders to be used
     auto shader = assetRegistry.LoadShader(
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\standard.vsh)",
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\diffuse.fsh)"
+        R"(D:\code\lotus\examples\quickstart\resources\shaders\standard.vert)",
+        R"(D:\code\lotus\examples\quickstart\resources\shaders\diffuse.frag)"
     );
 
     auto skyShader = assetRegistry.LoadShader(
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.vsh)",
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.fsh)"
+        R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.vert)",
+        R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.frag)"
     );
 
     // Initialize and import the model

@@ -11,14 +11,9 @@ namespace Lotus
 {
     class GLRenderer : public Renderer, public Singleton<GLRenderer>
     {
-        // framebuffer object
-        unsigned int FBO = 0;
-
-        // Texture used as a color buffer
-        unsigned int texColorBuffer = 0;
-
-        // Render buffer object for depth and stencil buffers
-        unsigned int RBO = 0;
+        unsigned int _shadowFBO = 0;
+        unsigned int _shadowDepthTexture = 0;
+        Handle<Shader> _shadowShader;
 
         std::vector<CPointLight> ptLightParams;
         std::vector<CSpotlight> spLightParams;
@@ -26,6 +21,8 @@ namespace Lotus
 
         Matrix4f view{};
         Matrix4f projection{};
+        Matrix4f lightView{};
+        Matrix4f lightProjection{};
         Vector3f cameraPos{};
 
     private:

@@ -1,9 +1,13 @@
 #include "lotus/debug.h"
 #include "GLRenderer.h"
 #include "GLShader.h"
+#include "lotus/resources/AssetRegistry.h"
 #include "lotus/resources/Model.h"
 #include "lotus/scene/SceneManager.h"
 #include "lotus/scene/ACamera.h"
+
+constexpr unsigned int SHADOW_WIDTH = 1024;
+constexpr unsigned int SHADOW_HEIGHT = 1024;
 
 namespace Lotus
 {
@@ -21,34 +25,27 @@ namespace Lotus
         // Enable depth options
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-        glEnable(GL_STENCIL_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        // Setup framebuffer targets
-        glGenFramebuffers(1, &FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        // Setup FBO for shadow maps
+        glGenFramebuffers(1, &_shadowFBO);
+        glGenTextures(1, &_shadowDepthTexture);
+        glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
-        // Create color buffer
-        glGenTextures(1, &texColorBuffer);
-        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, options.ViewportWidth, options.ViewportHeight, 0, GL_RGB,
-                     GL_UNSIGNED_BYTE, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        // attach it to the FBO
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _shadowDepthTexture, 0);
 
-        // create depth/stencil renderbuffer objects
-        glGenRenderbuffers(1, &RBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, options.ViewportWidth, options.ViewportHeight);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-        // attach it to the FBO
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+        // explicitly tell OpenGL that we're not going to attach a color buffer to this FBO
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);  
 
         // setup completed?
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -70,6 +67,12 @@ namespace Lotus
             glDebugMessageCallback(debugMessageCallback, nullptr);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }
+
+        // TODO: Manage internal standard shaders provided by the engine
+        _shadowShader = AssetRegistry::Get().LoadShader(
+            R"(D:\code\lotus\lotus\src\rendering\shaders\shadow.vert)",
+            R"(D:\code\lotus\lotus\src\rendering\shaders\shadow.frag)"
+        );
     }
 
     unsigned int GLRenderer::createTexture(unsigned char* data, int width, int height, unsigned int format)
@@ -111,6 +114,8 @@ namespace Lotus
         // Set camera
         shader->SetMat4f("view", view);
         shader->SetMat4f("projection", projection);
+        shader->SetMat4f("lightView", lightView);
+        shader->SetMat4f("lightProjection", lightProjection);
         shader->SetVec3f("viewPos", cameraPos);
 
 
@@ -143,8 +148,8 @@ namespace Lotus
                 shader->SetBool("readDiffuseTexture", true);
 
                 Handle<Texture> texture = std::get<Handle<Texture>>(diffuse);
-                glActiveTexture(GL_TEXTURE0);
-                shader->SetInt("material.texture_diffuse1", 0);
+                glActiveTexture(GL_TEXTURE1);
+                shader->SetInt("material.texture_diffuse1", 1);
                 glBindTexture(GL_TEXTURE_2D, texture->ID);
             }
 
@@ -163,8 +168,8 @@ namespace Lotus
                 shader->SetBool("readSpecularTexture", true);
 
                 Handle<Texture> texture = std::get<Handle<Texture>>(specular);
-                glActiveTexture(GL_TEXTURE1);
-                shader->SetInt("material.texture_specular1", 1);
+                glActiveTexture(GL_TEXTURE2);
+                shader->SetInt("material.texture_specular1", 2);
                 glBindTexture(GL_TEXTURE_2D, texture->ID);
             }
 
@@ -172,7 +177,6 @@ namespace Lotus
 
             // Reset the active texture
             glActiveTexture(GL_TEXTURE0);
-
             glBindVertexArray(mesh.VAO);
 
             glDrawElements(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, nullptr);
@@ -182,25 +186,10 @@ namespace Lotus
 
     void GLRenderer::OnPreUpdate(const PreUpdateEvent& event)
     {
-        // Clear with a light grey color
-        glClearColor(0.74f, 0.74f, 0.74f, 0.5f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-        const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
-        ACamera camera = scene->GetActiveCamera();
-
-        // Get camera properties
-        view = camera.GetViewMatrix();
-        cameraPos = camera.GetAbsolutePosition();
-
-        const float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
-        projection = LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
-
+        // glClearColor(0.74f, 0.74f, 0.74f, 0.5f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glCheckError();
-    }
 
-    void GLRenderer::OnUpdate(const UpdateEvent& event)
-    {
         const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
 
         // Process lighting
@@ -221,14 +210,75 @@ namespace Lotus
         }
 
         dirLightParams.clear();
-        auto dirView = scene->Find<CDirectionalLight>();
+        auto dirView = scene->Find<CDirectionalLight, CTransform>();
         for (auto light : dirView)
         {
             const auto& params = dirView.get<CDirectionalLight>(light);
             dirLightParams.push_back(params);
         }
 
+        // Setup light view proj
+        if (!dirView.empty())
+        {
+            const auto& [param, transform] = dirView.get<CDirectionalLight, CTransform>(dirView.front());
+            lightView = LLookAt(transform.Position, transform.Position + param.direction * 10.0f, UP);
+            lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+        }
+
+        ACamera camera = scene->GetActiveCamera();
+        view = camera.GetViewMatrix();
+        cameraPos = camera.GetAbsolutePosition();
+
+        const float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
+        projection = LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
+    }
+
+    void GLRenderer::OnUpdate(const UpdateEvent& event)
+    {
+        const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
+
+        // TODO: Bake the shadow map, don't generate it on update
+
+        // Render shadow map for the first directional light in the scene
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        _shadowShader->Use();
+        _shadowShader->SetMat4f("lightView", lightView);
+        _shadowShader->SetMat4f("lightProjection", lightProjection);
+
         auto entityView = scene->Find<CMeshRenderer, CTransform>();
+        for (auto entity : entityView)
+        {
+            const auto&[data, transform] = entityView.get<CMeshRenderer, CTransform>(entity);
+            Matrix4f model(1.0f);
+            model = LTranslate(model, transform.Position);
+            model = LRotate(model, transform.Rotation.x, X_AXIS);
+            model = LRotate(model, transform.Rotation.y, Y_AXIS);
+            model = LRotate(model, transform.Rotation.z, Z_AXIS);
+            model = LScale(model, transform.Scale);
+            _shadowShader->SetMat4f("model", model);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
+
+            for (const auto& mesh : data.Model->Meshes)
+            {
+                glBindVertexArray(mesh.VAO);
+                glDrawElements(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, nullptr);
+            }
+
+            glBindVertexArray(0);
+        }
+
+        // Render scene as normal with the generated shadow map
+        
+
+        glViewport(0, 0, _options.ViewportWidth, _options.ViewportHeight);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         for (auto entity : entityView)
         {
             glCheckError();

@@ -8,8 +8,8 @@ void setup()
 
     // Create the shaders to be used
     auto shader = assetRegistry.LoadShader(
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\standard.vsh)",
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\diffuse.fsh)"
+        R"(D:\code\lotus\examples\quickstart\resources\shaders\standard.vert)",
+        R"(D:\code\lotus\examples\quickstart\resources\shaders\diffuse.frag)"
     );
 
     // Initialize and import the model
@@ -41,31 +41,27 @@ void setup()
     plane.AddComponent<CMeshRenderer>(planeRenderer);
 
     // background
-    AActor plane2 = scene->CreateActor(-5.0f * Z_AXIS);
+    AActor plane2 = scene->CreateActor(-8.0f * Z_AXIS);
     CTransform& backTransform = plane2.GetTransform();
     backTransform.Rotation = 90.0f * X_AXIS;
     plane2.AddComponent<CMeshRenderer>(planeRenderer);
 
     // Directional light
-    AActor dirLight = scene->CreateActor(5.0f * Z_AXIS);
-    CDirectionalLight cDirectionalLight;
-    cDirectionalLight.direction = -1.0f * Z_AXIS;
-    cDirectionalLight.diffuse = Vector3f (0.74f) / 5.0f;
-    // cDirectionalLight.diffuse = Vector3f (0.74f);
-    dirLight.AddComponent<CDirectionalLight>(cDirectionalLight);
+    // AActor dirLight = scene->CreateActor(5.0f * Z_AXIS);
+    // CDirectionalLight cDirectionalLight;
+    // cDirectionalLight.direction = -1.0f * Z_AXIS;
+    // cDirectionalLight.diffuse = Vector3f (1.0f);
+    // dirLight.AddComponent<CDirectionalLight>(cDirectionalLight);
 
     // Spotlight
-    AActor spotlight = scene->CreateActor(5.0f * Y_AXIS);
+    AActor spotlight = scene->CreateActor(5.0f * Z_AXIS);
     CSpotlight cSpotlight;
-    cSpotlight.position = 5.0f * Y_AXIS;
-    cSpotlight.direction = -1.0f * Y_AXIS;
+    // cSpotlight.position = 5.0f * Y_AXIS;
+    // cSpotlight.direction = -1.0f * Y_AXIS -0.5f * Z_AXIS;
+    cSpotlight.position = 5.0f * Z_AXIS;
+    cSpotlight.direction = 1.0f * Z_AXIS;
+    spotlight.AddComponent<CMeshRenderer>(meshRenderer);
     spotlight.AddComponent<CSpotlight>(cSpotlight);
-
-    // Point light
-    // AActor pointLight = scene->CreateActor(3.0f * Y_AXIS - 2.0f * X_AXIS);
-    // CPointLight cPointLight;
-    // cPointLight.position = 3.0f * Y_AXIS - 2.0f * X_AXIS;
-    // pointLight.AddComponent<CPointLight>(cPointLight);
 
     // Camera
     ACamera camera = scene->CreateCamera(10.0f * Z_AXIS + 5.0f * Y_AXIS, 45, true);

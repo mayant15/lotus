@@ -4,9 +4,13 @@
 #define MAX_POINT_LIGHTS 10
 #define MAX_SPOT_LIGHTS 10
 
-in vec3 fragPos;
-in vec2 texCoords;
-in vec3 normal;
+in VS_OUT
+{
+    vec3 fragPos;
+    vec2 texCoords;
+    vec3 normal;
+    vec4 fragPosLightSpace;
+} fs_in;
 
 struct Material {
     // diffuse == ambient here
@@ -52,6 +56,8 @@ struct PointLight {
     float quadratic;
 };
 
+uniform sampler2D shadowMap;
+
 uniform DirectionalLight dirLight[MAX_DIR_LIGHTS];
 uniform Spotlight spotlight[MAX_SPOT_LIGHTS];
 uniform PointLight pointLight[MAX_POINT_LIGHTS];
@@ -72,14 +78,15 @@ out vec4 fragColor;
 vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir);
 vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 calculateSpotLight(Spotlight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+float calculateShadow(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 
 vec3 getDiffuseColor();
 vec3 getSpecularColor();
 
 void main()
 {
-    vec3 norm = normalize(normal);
-    vec3 viewDir = normalize(fragPos - viewPos);
+    vec3 norm = normalize(fs_in.normal);
+    vec3 viewDir = normalize(fs_in.fragPos - viewPos);
     vec3 result = vec3(0.0f);
 
     for (uint i = 0; i < numDirLight; i++) {
@@ -87,21 +94,23 @@ void main()
     }
 
     for (uint i = 0; i < numPointLight; i++) {
-        result += calculatePointLight(pointLight[i], norm, fragPos, viewDir);
+        result += calculatePointLight(pointLight[i], norm, fs_in.fragPos, viewDir);
     }
 
     for (uint i = 0; i < numSpotlight; i++) {
-        result += calculateSpotLight(spotlight[i], norm, fragPos, viewDir);
+        result += calculateSpotLight(spotlight[i], norm, fs_in.fragPos, viewDir);
     }
 
-    fragColor = vec4(result, 1.0f);
+    // Gamma correction
+    float gamma = 2.2;
+    fragColor = vec4(pow(result, vec3(1.0 / gamma)), 1.0f);
 }
 
 vec3 getDiffuseColor()
 {
     if (readDiffuseTexture)
     {
-        return vec3(texture(material.texture_diffuse1, texCoords));
+        return vec3(texture(material.texture_diffuse1, fs_in.texCoords));
     }
     else
     {
@@ -113,12 +122,27 @@ vec3 getSpecularColor()
 {
     if (readSpecularTexture) 
     {
-        return vec3(texture(material.texture_specular1, texCoords));
+        return vec3(texture(material.texture_specular1, fs_in.texCoords));
     }
     else 
     {
         return material.specularColor;
     }
+}
+
+float calculateShadow(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
+{
+    // Transform to [-1, 1] (NDC)
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+    // Transform to [0, 1] (depth map)
+    projCoords = projCoords * 0.5 + 0.5;
+
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+
+    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+    return currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 }
 
 vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir) {
@@ -136,7 +160,10 @@ vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), material.shininess);
     vec3 specular = light.specular * spec * getSpecularColor();
 
-    return (ambient + diffuse + specular);
+    // shadow
+    float shadow = calculateShadow(fs_in.fragPosLightSpace, normal, lightDir);
+
+    return (1.0 - shadow) * (diffuse + specular) + ambient;
 }
 
 vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
