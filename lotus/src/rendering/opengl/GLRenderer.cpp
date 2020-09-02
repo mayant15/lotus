@@ -116,8 +116,13 @@ namespace Lotus
 
         // Set lighting
         shader->SetDirLightArray("dirLight", dirLightParams);
+        shader->SetInt("numDirLight", dirLightParams.size());
+
         shader->SetPointLightArray("pointLight", ptLightParams);
+        shader->SetInt("numPointLight", ptLightParams.size());
+
         shader->SetSpotlightArray("spotlight", spLightParams);
+        shader->SetInt("numSpotlight", spLightParams.size());
 
         std::vector<SubMesh> meshes = data.Model->Meshes;
         for (SubMesh& mesh : meshes)
@@ -177,7 +182,8 @@ namespace Lotus
 
     void GLRenderer::OnPreUpdate(const PreUpdateEvent& event)
     {
-        glClearColor(0.2f, 0.3f, 0.8f, 0.5f);
+        // Clear with a light grey color
+        glClearColor(0.74f, 0.74f, 0.74f, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
@@ -233,20 +239,23 @@ namespace Lotus
 
         // Draw skybox
         auto skyView = scene->Find<CSkybox>();
-        const auto& sky = skyView.get<CSkybox>(skyView.front());
+        if (!skyView.empty())
+        {
+            const auto& sky = skyView.get<CSkybox>(skyView.front());
 
-        glDepthFunc(GL_LEQUAL);
-        sky.Shader->Use();
-        sky.Shader->SetMat4f("view", Matrix4f (Matrix3f (view)));
-        sky.Shader->SetMat4f("projection", projection);
+            glDepthFunc(GL_LEQUAL);
+            sky.Shader->Use();
+            sky.Shader->SetMat4f("view", Matrix4f (Matrix3f (view)));
+            sky.Shader->SetMat4f("projection", projection);
 
-        // skybox cube
-        glBindVertexArray(sky.Map->VAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, sky.Map->ID);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
+            // skybox cube
+            glBindVertexArray(sky.Map->VAO);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, sky.Map->ID);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+            glDepthFunc(GL_LESS); // set depth function back to default
+        }
     }
 
     void GLRenderer::debugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,

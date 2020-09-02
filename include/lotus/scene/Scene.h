@@ -18,6 +18,7 @@ namespace Lotus
     typedef entt::registry EntityRegistry;
     typedef entt::entity EntityID;
 
+    // TODO: Extract entity manipulations from the scene class into an EntityRegistry class. Scene should just contain a tree.
     class LOTUS_API Scene : public ISerializable
     {
         EntityRegistry _registry;

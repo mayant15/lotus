@@ -1,8 +1,8 @@
 #version 450 core
 
-#define NR_DIR_LIGHTS 1
-#define NR_POINT_LIGHTS 1
-#define NR_SPOT_LIGHTS 1
+#define MAX_DIR_LIGHTS 10
+#define MAX_POINT_LIGHTS 10
+#define MAX_SPOT_LIGHTS 10
 
 in vec3 fragPos;
 in vec2 texCoords;
@@ -52,9 +52,14 @@ struct PointLight {
     float quadratic;
 };
 
-uniform DirectionalLight dirLight[NR_DIR_LIGHTS];
-uniform Spotlight spotlight[NR_SPOT_LIGHTS];
-uniform PointLight pointLight[NR_POINT_LIGHTS];
+uniform DirectionalLight dirLight[MAX_DIR_LIGHTS];
+uniform Spotlight spotlight[MAX_SPOT_LIGHTS];
+uniform PointLight pointLight[MAX_POINT_LIGHTS];
+
+uniform int numDirLight;
+uniform int numSpotlight;
+uniform int numPointLight;
+
 uniform vec3 viewPos;
 
 uniform Material material;
@@ -77,15 +82,15 @@ void main()
     vec3 viewDir = normalize(fragPos - viewPos);
     vec3 result = vec3(0.0f);
 
-    for (uint i = 0; i < NR_DIR_LIGHTS; i++) {
+    for (uint i = 0; i < numDirLight; i++) {
         result += calculateDirectionalLight(dirLight[i], norm, viewDir);
     }
 
-    for (uint i = 0; i < NR_POINT_LIGHTS; i++) {
+    for (uint i = 0; i < numPointLight; i++) {
         result += calculatePointLight(pointLight[i], norm, fragPos, viewDir);
     }
 
-    for (uint i = 0; i < NR_SPOT_LIGHTS; i++) {
+    for (uint i = 0; i < numSpotlight; i++) {
         result += calculateSpotLight(spotlight[i], norm, fragPos, viewDir);
     }
 
