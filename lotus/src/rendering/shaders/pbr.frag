@@ -96,12 +96,13 @@ float GeometrySchlickGGX(float NdotV, float roughness)
 
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
-    float NdotV = max(dot(N, V), 0.0);
     float NdotL = max(dot(N, L), 0.0);
-    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
     float ggx1 = GeometrySchlickGGX(NdotL, roughness);
 
-    return ggx1 * ggx2;
+    float NdotV = max(dot(N, V), 0.0);
+    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+
+    return ggx1; // * ggx2;
 }
 
 
@@ -113,6 +114,29 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 }
 
 
+// Solve the complete reflectance equation given a radiance
+vec3 calculateIrradiance(vec3 radiance, vec3 N, vec3 L, vec3 V, vec3 F0)
+{
+    vec3 H = normalize(L + V);
+
+    float D = DistributionGGX(N, H, roughness);
+    float G = GeometrySmith(N, V, L, roughness);
+    vec3 F = FresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
+
+    // Calculate Cook Torrance specular component
+    float denom = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+    vec3 specular = D * F * G / max(denom, 0.001); // to avoid division by zero
+
+    // Calculate diffuse and specular contributions
+    vec3 ks = F;
+    vec3 kd = vec3(1.0) - ks;
+    kd = kd * (1.0 - metallic); // nullify the diffuse component if material is metallic
+
+    return ((kd * albedo / M_PI) + specular) * radiance * max(dot(N, L), 0.0);
+}
+
+
+// Check if the current fragment is in shadow
 float calculateShadow(vec3 N, vec3 L)
 {
     // To [-1, 1]
@@ -153,52 +177,23 @@ float calculateShadow(vec3 N, vec3 L)
 
 vec3 calculatePointLight(PointLight light, vec3 N, vec3 V, vec3 F0)
 {
-    // Attenuation
     vec3 L = normalize(light.position - WorldPos);
-    vec3 H = normalize(L + V);
 
     float distance = length(light.position - WorldPos);
     float attenuation = 1.0f / (distance * distance);
     vec3 radiance = light.diffuse * attenuation;
-        
-    float D = DistributionGGX(N, H, roughness);
-    float G = GeometrySmith(N, V, L, roughness);
-    vec3 F = FresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
 
-    // Calculate Cook Torrance specular component
-    float denom = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-    vec3 specular = D * F * G / max(denom, 0.001); // to avoid division by zero
-
-    // Calculate diffuse and specular contributions
-    vec3 ks = F;
-    vec3 kd = vec3(1.0) - ks;
-    kd = kd * (1.0 - metallic); // nullify the diffuse component if material is metallic
-
-    return ((kd * albedo / M_PI) + specular) * radiance * max(dot(N, L), 0.0);
-    // L0 += radiance * max(dot(N, L), 0.0);
+    return calculateIrradiance(radiance, N, L, V, F0);
 }
 
 
 vec3 calculateDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0)
 {
-    vec3 L = normalize(-1.0 * light.direction);
+    vec3 L = normalize(-light.direction);
     vec3 H = normalize(L + V);
     vec3 radiance = light.diffuse;
 
-    float D = DistributionGGX(N, H, roughness);
-    float G = GeometrySmith(N, V, L, roughness);
-    vec3 F = FresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
-
-    // Calculate Cook Torrance specular component
-    float denom = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-    vec3 specular = D * F * G / max(denom, 0.001); // to avoid division by zero
-
-    // Calculate diffuse and specular contributions
-    vec3 ks = F;
-    vec3 kd = vec3(1.0) - ks;
-    kd = kd * (1.0 - metallic); // nullify the diffuse component if material is metallic
-
-    return ((kd * albedo / M_PI) + specular) * radiance * max(dot(N, L), 0.0);
+    return calculateIrradiance(radiance, N, L, V, F0);
 }
 
 
@@ -209,31 +204,19 @@ vec3 calculateSpotlight(Spotlight light, vec3 N, vec3 V, vec3 F0)
     vec3 lightDir = normalize(light.direction);
     
     float cosTheta = dot(L, -lightDir);
-    float diffCos = cos(light.innerCutOff) - cos(light.outerCutOff);
-    float intensity = clamp((cosTheta - cos(light.outerCutOff)) / diffCos, 0.0, 1.0);
+
+    float angle1 = light.innerCutOff * M_PI / 180;
+    float angle2 = light.outerCutOff * M_PI / 180;
+
+    float diffCos = cos(angle1) - cos(angle2);
+    float intensity = clamp((cosTheta - cos(angle2)) / diffCos, 0.0, 1.0);
 
     float distance = length(light.position - WorldPos);
     float attenuation = 1.0f / (distance * distance);
-    // float linear = light.linear * distance;
-    // float quadratic = light.quadratic * distance * distance;
-    // float attenuation = 1.0f / (light.constant + linear + quadratic);
 
-    vec3 radiance = light.diffuse * attenuation * intensity;
-
-    float D = DistributionGGX(N, H, roughness);
-    float G = GeometrySmith(N, V, L, roughness);
-    vec3 F = FresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
-
-    // Calculate Cook Torrance specular component
-    float denom = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-    vec3 specular = D * F * G / max(denom, 0.001); // to avoid division by zero
-
-    // Calculate diffuse and specular contributions
-    vec3 ks = F;
-    vec3 kd = vec3(1.0) - ks;
-    kd = kd * (1.0 - metallic); // nullify the diffuse component if material is metallic
-
-    return ((kd * albedo / M_PI) + specular) * radiance * max(dot(N, L), 0.0);
+    vec3 radiance = light.diffuse * intensity * attenuation;
+    
+    return calculateIrradiance(radiance, N, L, V, F0);
 }
 
 
@@ -262,16 +245,18 @@ void main()
     {
         L0 += calculateSpotlight(spotlight[i], N, V, F0);
     }
-
+    
     // TODO: Raytraced GI?
     vec3 ambient = vec3(0.03) * albedo * ao;
-    vec3 color = ambient + L0;
+    vec3 color = L0;
 
     // HDR/Gamma correction
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0f / 2.2f));
 
     // TODO: Improve shadows
-    float shadow = calculateShadow(N, dirLight[0].direction);
-    fragColor = vec4(color, 1.0f) * (1.0f - shadow);
+    // float shadow = calculateShadow(N, dirLight[0].direction);
+
+    // fragColor = vec4(color, 1.0f) * (1.0f - shadow);
+    fragColor = vec4(color, 1.0f);
 }

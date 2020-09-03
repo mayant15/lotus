@@ -5,7 +5,7 @@
     "y": 0.34,
     "z": 0.34
   },
-  "metallic": 0.0,
-  "roughness": 0.05,
+  "metallic": 0.5,
+  "roughness": 0.5,
   "ao": 1.0
 }
