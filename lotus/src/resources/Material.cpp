@@ -19,10 +19,10 @@ namespace Lotus
         else
         {
             return Vector3f( 
-            data.at(key).at("x").get<float>(),
-            data.at(key).at("y").get<float>(),
-            data.at(key).at("z").get<float>()
-        );
+                data.at(key).at("x").get<float>(),
+                data.at(key).at("y").get<float>(),
+                data.at(key).at("z").get<float>()
+            );
         }
     }
 
@@ -35,9 +35,12 @@ namespace Lotus
 
         SRef<Material> material = std::make_shared<Material>();
 
-        material->Diffuse = getTexture(data, "diffuse");
-        material->Specular = getTexture(data, "specular");
-        material->Shininess = data.at("shininess").get<float>();
+        json albedo = data["albedo"];
+        // material->Albedo = Vector3f(albedo["x"].get<float>(), albedo["y"].get<float>(), albedo["z"].get<float>());
+        material->Albedo = Vector3f(albedo["x"], albedo["y"], albedo["z"]);
+        material->Roughness = data["roughness"];
+        material->AO = data["ao"];
+        material->Metallic = data["metallic"];
 
         return material;
     }

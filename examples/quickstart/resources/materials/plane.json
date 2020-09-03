@@ -1,13 +1,11 @@
 {
-  "diffuse": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 1.0
+  "type": "PBR",
+  "albedo": {
+    "x": 0.34,
+    "y": 0.74,
+    "z": 0.34
   },
-  "specular": {
-    "x": 1.0,
-    "y": 1.0,
-    "z": 1.0
-  },
-  "shininess": 16
+  "metallic": 0.0,
+  "roughness": 1.0,
+  "ao": 1.0
 }

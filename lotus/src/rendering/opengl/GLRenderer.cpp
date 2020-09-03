@@ -25,8 +25,10 @@ namespace Lotus
         // Enable depth options
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // TODO: Alpha blending?
+        // glEnable(GL_BLEND);
+        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Setup FBO for shadow maps
         glGenFramebuffers(1, &_shadowFBO);
@@ -36,8 +38,11 @@ namespace Lotus
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
 
         glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _shadowDepthTexture, 0);
@@ -97,6 +102,48 @@ namespace Lotus
         glViewport(x, y, width, height);
     }
 
+    // TODO: Remove if only PBR
+    // Set diffuse
+    // auto diffuse = mesh.Material->Diffuse;
+    // if (std::holds_alternative<Vector3f>(diffuse))
+    // {
+    //     // invalid texture, set the color
+    //     shader->SetVec3f("material.diffuseColor", std::get<Vector3f>(diffuse));
+    //     shader->SetBool("readDiffuseTexture", false);
+    // }
+    // else
+    // {
+    //     // valid texture, set texture
+    //     shader->SetBool("readDiffuseTexture", true);
+    //
+    //     Handle<Texture> texture = std::get<Handle<Texture>>(diffuse);
+    //     glActiveTexture(GL_TEXTURE1);
+    //     shader->SetInt("material.texture_diffuse1", 1);
+    //     glBindTexture(GL_TEXTURE_2D, texture->ID);
+    // }
+    //
+    // // Set specular texture
+    //
+    // auto specular = mesh.Material->Specular;
+    // if (std::holds_alternative<Vector3f>(specular))
+    // {
+    //     // invalid texture, set the color
+    //     shader->SetVec3f("material.specularColor", std::get<Vector3f>(specular));
+    //     shader->SetBool("readSpecularTexture", false);
+    // }
+    // else
+    // {
+    //     // valid texture, set texture
+    //     shader->SetBool("readSpecularTexture", true);
+    //
+    //     Handle<Texture> texture = std::get<Handle<Texture>>(specular);
+    //     glActiveTexture(GL_TEXTURE2);
+    //     shader->SetInt("material.texture_specular1", 2);
+    //     glBindTexture(GL_TEXTURE_2D, texture->ID);
+    // }
+    //
+    // shader->SetFloat("material.shininess", mesh.Material->Shininess);
+
     void GLRenderer::DrawMesh(const CMeshRenderer& data, const CTransform& transform)
     {
         Handle<Shader> shader = data.Shader;
@@ -116,7 +163,7 @@ namespace Lotus
         shader->SetMat4f("projection", projection);
         shader->SetMat4f("lightView", lightView);
         shader->SetMat4f("lightProjection", lightProjection);
-        shader->SetVec3f("viewPos", cameraPos);
+        shader->SetVec3f("camPos", cameraPos);
 
 
         // Set lighting
@@ -133,52 +180,18 @@ namespace Lotus
         for (SubMesh& mesh : meshes)
         {
             // Material
-
-            // Set diffuse
-            auto diffuse = mesh.Material->Diffuse;
-            if (std::holds_alternative<Vector3f>(diffuse))
-            {
-                // invalid texture, set the color
-                shader->SetVec3f("material.diffuseColor", std::get<Vector3f>(diffuse));
-                shader->SetBool("readDiffuseTexture", false);
-            }
-            else
-            {
-                // valid texture, set texture
-                shader->SetBool("readDiffuseTexture", true);
-
-                Handle<Texture> texture = std::get<Handle<Texture>>(diffuse);
-                glActiveTexture(GL_TEXTURE1);
-                shader->SetInt("material.texture_diffuse1", 1);
-                glBindTexture(GL_TEXTURE_2D, texture->ID);
-            }
-
-            // Set specular texture
-
-            auto specular = mesh.Material->Specular;
-            if (std::holds_alternative<Vector3f>(specular))
-            {
-                // invalid texture, set the color
-                shader->SetVec3f("material.specularColor", std::get<Vector3f>(specular));
-                shader->SetBool("readSpecularTexture", false);
-            }
-            else
-            {
-                // valid texture, set texture
-                shader->SetBool("readSpecularTexture", true);
-
-                Handle<Texture> texture = std::get<Handle<Texture>>(specular);
-                glActiveTexture(GL_TEXTURE2);
-                shader->SetInt("material.texture_specular1", 2);
-                glBindTexture(GL_TEXTURE_2D, texture->ID);
-            }
-
-            shader->SetFloat("material.shininess", mesh.Material->Shininess);
+            Handle<Material> material = mesh.Material;
+            shader->SetVec3f("albedo", material->Albedo);
+            shader->SetFloat("roughness", material->Roughness);
+            shader->SetFloat("metallic", material->Metallic);
+            shader->SetFloat("ao", material->AO);
 
             // Reset the active texture
             glActiveTexture(GL_TEXTURE0);
-            glBindVertexArray(mesh.VAO);
+            glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
+            shader->SetInt("shadowMap", 0);
 
+            glBindVertexArray(mesh.VAO);
             glDrawElements(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, nullptr);
             glBindVertexArray(0);
         }
@@ -243,11 +256,12 @@ namespace Lotus
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, _shadowFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
-
+        glCullFace(GL_FRONT);
+        
         _shadowShader->Use();
         _shadowShader->SetMat4f("lightView", lightView);
         _shadowShader->SetMat4f("lightProjection", lightProjection);
-
+        
         auto entityView = scene->Find<CMeshRenderer, CTransform>();
         for (auto entity : entityView)
         {
@@ -259,7 +273,7 @@ namespace Lotus
             model = LRotate(model, transform.Rotation.z, Z_AXIS);
             model = LScale(model, transform.Scale);
             _shadowShader->SetMat4f("model", model);
-
+        
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
 
@@ -273,11 +287,10 @@ namespace Lotus
         }
 
         // Render scene as normal with the generated shadow map
-        
-
         glViewport(0, 0, _options.ViewportWidth, _options.ViewportHeight);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glCullFace(GL_BACK);
 
         for (auto entity : entityView)
         {

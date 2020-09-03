@@ -1,11 +1,8 @@
 #include "lotus/lotus.h"
-#include "lotus/debug.h"
-
 #include "CameraSystem.hpp"
-#include "ClosedRoomScene.hpp"
 
-// #include "SkyboxScene.hpp"
-
+// Include the scene that you want to render
+#include "PBR.hpp"
 
 int main()
 {
