@@ -75,6 +75,9 @@ namespace Lotus
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, options.IsDebug);
+
+            // 4x MSAA
+            glfwWindowHint(GLFW_SAMPLES, 4);
             InitGLFW = false;
         }
 

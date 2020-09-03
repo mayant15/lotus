@@ -22,9 +22,14 @@ namespace Lotus
             return;
         }
 
-        // Enable depth options
+        // Enable depth testing
         glEnable(GL_DEPTH_TEST);
+
+        // Enable backface culling
         glEnable(GL_CULL_FACE);
+
+        // Enable MSAA
+        glEnable(GL_MULTISAMPLE);
 
         // TODO: Alpha blending?
         // glEnable(GL_BLEND);
