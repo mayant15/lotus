@@ -3,6 +3,7 @@
 #include "lotus/lcommon.h"
 #include "lotus/physics.h"
 #include "lotus/components/lights.h"
+#include "lotus/resources/Material.h"
 
 namespace Lotus
 {
@@ -22,6 +23,7 @@ namespace Lotus
         virtual void SetPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const = 0;
         virtual void SetSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const = 0;
         virtual void SetDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const = 0;
+        virtual void SetMaterial(const std::string& name, Handle<Material> mat) const = 0;
         virtual ~Shader() = default;
     };
 

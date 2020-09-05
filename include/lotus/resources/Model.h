@@ -10,6 +10,7 @@ namespace Lotus
         Vector3f Position;
         Vector3f Normal;
         Vector2f TexCoords;
+        Vector3f Tangent;
     };
 
     struct LOTUS_API SubMesh

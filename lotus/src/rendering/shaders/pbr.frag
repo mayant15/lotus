@@ -5,6 +5,19 @@
 #define MAX_POINT_LIGHTS 10
 #define MAX_SPOT_LIGHTS 10
 
+struct Material {
+    vec3 vAlbedo;
+    sampler2D tAlbedo;
+    bool bUseAlbedoTex;
+
+    sampler2D tNormal;
+    bool bUseNormalTex;
+
+    float fRoughness;
+    float fMetallic;
+    float fAO;
+};
+
 struct DirectionalLight {
     vec3 ambient;
     vec3 diffuse;
@@ -44,15 +57,11 @@ in vec2 TexCoords;
 in vec3 Normal;
 in vec3 WorldPos;
 in vec4 FragPosLightSpace;
+in mat3 TBN;
 
 uniform sampler2D shadowMap;
 
 uniform vec3 camPos;
-
-uniform vec3 albedo;
-uniform float metallic;
-uniform float roughness;
-uniform float ao;
 
 uniform DirectionalLight dirLight[MAX_DIR_LIGHTS];
 uniform Spotlight spotlight[MAX_SPOT_LIGHTS];
@@ -61,6 +70,8 @@ uniform PointLight pointLight[MAX_POINT_LIGHTS];
 uniform int numDirLight;
 uniform int numSpotlight;
 uniform int numPointLight;
+
+uniform Material material;
 
 
 // Implements a Trowbridge-Reitz GGX for Cook Torrance specular function
@@ -114,23 +125,38 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 }
 
 
+vec3 getAlbedo()
+{
+    return (material.bUseAlbedoTex) ? texture(material.tAlbedo, TexCoords).rbg : material.vAlbedo;
+}
+
+
 // Solve the complete reflectance equation given a radiance
 vec3 calculateIrradiance(vec3 radiance, vec3 N, vec3 L, vec3 V, vec3 F0)
 {
     vec3 H = normalize(L + V);
 
-    float D = DistributionGGX(N, H, roughness);
-    float G = GeometrySmith(N, V, L, roughness);
+    float D = DistributionGGX(N, H, material.fRoughness);
+    float G = GeometrySmith(N, V, L, material.fRoughness);
     vec3 F = FresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
 
     // Calculate Cook Torrance specular component
     float denom = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-    vec3 specular = D * F * G / max(denom, 0.001); // to avoid division by zero
+    vec3 specular = D * G * F / max(denom, 0.001); // to avoid division by zero
 
     // Calculate diffuse and specular contributions
     vec3 ks = F;
     vec3 kd = vec3(1.0) - ks;
-    kd = kd * (1.0 - metallic); // nullify the diffuse component if material is metallic
+    kd = kd * (1.0 - material.fMetallic); // nullify the diffuse component if material is metallic
+
+    vec3 albedo = getAlbedo();
+
+    if (material.bUseNormalTex)
+    {
+        // NOTE: Sometimes I get pure white specular highlights when using normal maps
+        // Clamping them for now to remove that effect;
+        specular = clamp(specular, 0.0, 1.0) * albedo;
+    }
 
     return ((kd * albedo / M_PI) + specular) * radiance * max(dot(N, L), 0.0);
 }
@@ -220,15 +246,36 @@ vec3 calculateSpotlight(Spotlight light, vec3 N, vec3 V, vec3 F0)
 }
 
 
+vec3 getNormal()
+{
+    // obtain normal from normal map in range [0,1]
+    if (material.bUseNormalTex)
+    {
+        vec3 normal = texture(material.tNormal, TexCoords).rgb;
+        // transform normal vector to range [-1,1]
+        normal = normal * 2.0 - 1.0;
+
+        // NOTE: matrix multiplications in the frag shader are usually not a good idea.
+        // See this for an alternative https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+        return TBN * normal;
+    }
+    else
+    {
+        return Normal;
+    }
+}
+
+
 void main()
 {
-    vec3 N = normalize(Normal);
+    vec3 N = normalize(getNormal());
     vec3 V = normalize(camPos - WorldPos);
+    vec3 albedo = getAlbedo();
 
     // F0 for the Fresnel Schlick approximation that we're using is 0.04 for dielectrics
     // and tinted with the materials albedo for metals
     vec3 F0 = vec3(0.04);
-    F0 = mix(F0, albedo, metallic);
+    F0 = mix(F0, albedo, material.fMetallic);
     
     vec3 L0 = vec3(0.0f);
     for (int i = 0; i < numPointLight; i++)
@@ -247,7 +294,7 @@ void main()
     }
     
     // TODO: Raytraced GI?
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.03) * albedo * material.fAO;
     vec3 color = L0;
 
     // HDR/Gamma correction

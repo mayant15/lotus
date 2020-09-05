@@ -107,48 +107,6 @@ namespace Lotus
         glViewport(x, y, width, height);
     }
 
-    // TODO: Remove if only PBR
-    // Set diffuse
-    // auto diffuse = mesh.Material->Diffuse;
-    // if (std::holds_alternative<Vector3f>(diffuse))
-    // {
-    //     // invalid texture, set the color
-    //     shader->SetVec3f("material.diffuseColor", std::get<Vector3f>(diffuse));
-    //     shader->SetBool("readDiffuseTexture", false);
-    // }
-    // else
-    // {
-    //     // valid texture, set texture
-    //     shader->SetBool("readDiffuseTexture", true);
-    //
-    //     Handle<Texture> texture = std::get<Handle<Texture>>(diffuse);
-    //     glActiveTexture(GL_TEXTURE1);
-    //     shader->SetInt("material.texture_diffuse1", 1);
-    //     glBindTexture(GL_TEXTURE_2D, texture->ID);
-    // }
-    //
-    // // Set specular texture
-    //
-    // auto specular = mesh.Material->Specular;
-    // if (std::holds_alternative<Vector3f>(specular))
-    // {
-    //     // invalid texture, set the color
-    //     shader->SetVec3f("material.specularColor", std::get<Vector3f>(specular));
-    //     shader->SetBool("readSpecularTexture", false);
-    // }
-    // else
-    // {
-    //     // valid texture, set texture
-    //     shader->SetBool("readSpecularTexture", true);
-    //
-    //     Handle<Texture> texture = std::get<Handle<Texture>>(specular);
-    //     glActiveTexture(GL_TEXTURE2);
-    //     shader->SetInt("material.texture_specular1", 2);
-    //     glBindTexture(GL_TEXTURE_2D, texture->ID);
-    // }
-    //
-    // shader->SetFloat("material.shininess", mesh.Material->Shininess);
-
     void GLRenderer::DrawMesh(const CMeshRenderer& data, const CTransform& transform)
     {
         Handle<Shader> shader = data.Shader;
@@ -186,10 +144,8 @@ namespace Lotus
         {
             // Material
             Handle<Material> material = mesh.Material;
-            shader->SetVec3f("albedo", material->Albedo);
-            shader->SetFloat("roughness", material->Roughness);
-            shader->SetFloat("metallic", material->Metallic);
-            shader->SetFloat("ao", material->AO);
+
+            shader->SetMaterial("material", material);
 
             // Reset the active texture
             glActiveTexture(GL_TEXTURE0);

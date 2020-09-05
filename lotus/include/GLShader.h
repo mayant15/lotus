@@ -19,6 +19,7 @@ namespace Lotus
         void SetPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const override;
         void SetSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const override;
         void SetDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const override;
+        void SetMaterial(const std::string& name, Handle<Material> mat) const override;
     };
 }
 

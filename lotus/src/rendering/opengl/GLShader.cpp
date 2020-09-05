@@ -160,4 +160,45 @@ namespace Lotus
             SetDirectionalLight(name + "[" + std::to_string(i) + "]", light);
         }
     }
+
+    void GLShader::SetMaterial(const std::string& name, Handle<Material> mat) const
+    {
+        // Set albedo
+        auto albedo = mat->Albedo;
+        if (std::holds_alternative<Vector3f>(albedo))
+        {
+            // invalid texture, set the color
+            SetVec3f(name + ".vAlbedo", std::get<Vector3f>(albedo));
+            SetBool(name + ".bUseAlbedoTex", false);
+        }
+        else
+        {
+            // valid texture, set texture
+            SetBool(name + ".bUseAlbedoTex", true);
+        
+            Handle<Texture> texture = std::get<Handle<Texture>>(albedo);
+            glActiveTexture(GL_TEXTURE1);
+            SetInt(name + ".tAlbedo", 1);
+            glBindTexture(GL_TEXTURE_2D, texture->ID);
+        }
+
+        // Set normal map
+        auto normal = mat->Normal;
+        if (normal)
+        {
+            SetBool(name + ".bUseNormalTex", true);
+
+            glActiveTexture(GL_TEXTURE2);
+            SetInt(name + ".tNormal", 2);
+            glBindTexture(GL_TEXTURE_2D, normal.value()->ID);
+        }
+        else
+        {
+            SetBool(name + ".bUseNormalTex", false);
+        }
+
+        SetFloat(name + ".fRoughness", mat->Roughness);
+        SetFloat(name + ".fMetallic", mat->Metallic);
+        SetFloat(name + ".fAO", mat->AO);
+    }
 }

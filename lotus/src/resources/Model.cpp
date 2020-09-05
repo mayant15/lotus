@@ -31,7 +31,7 @@ namespace Lotus
         SRef<Model> model = std::make_shared<Model>();
 
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(data["mesh"], aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(data["mesh"], aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -82,7 +82,13 @@ namespace Lotus
                 texCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
             }
 
-            Vertex vertex{position, normal, texCoords};
+            Vector3f tangent {
+                mesh->mTangents[i].x,
+                mesh->mTangents[i].y,
+                mesh->mTangents[i].z
+            };
+
+            Vertex vertex{position, normal, texCoords, tangent};
             vertices.push_back(vertex);
         }
 
@@ -126,6 +132,10 @@ namespace Lotus
         // vertex texture coords
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, TexCoords));
+
+        // vertex tangents
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, Tangent));
 
         glBindVertexArray(0);
     }

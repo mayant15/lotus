@@ -36,11 +36,11 @@ void setup()
     const URef<Scene>& scene = sceneManager.LoadScene(R"(D:\code\lotus\examples\quickstart\resources\scenes\SampleScene.json)");
 
     // Sky
-    Entity sky = scene->CreateEntity();
-    CSkybox cSkybox;
-    cSkybox.Shader = skyShader;
-    cSkybox.Map = cubemap;
-    sky.AddComponent<CSkybox>(cSkybox);
+    // Entity sky = scene->CreateEntity();
+    // CSkybox cSkybox;
+    // cSkybox.Shader = skyShader;
+    // cSkybox.Map = cubemap;
+    // sky.AddComponent<CSkybox>(cSkybox);
 
     // Sphere
     AActor entity = scene->CreateActor(ORIGIN);
