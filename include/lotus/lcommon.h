@@ -16,6 +16,7 @@
 
 // TODO: Convenient, but not very readable I guess.
 #define LOADER(x, y) struct LOTUS_API x final: entt::resource_loader<x, y>
+#define GET(x) x::Get()
 
 namespace Lotus
 {
