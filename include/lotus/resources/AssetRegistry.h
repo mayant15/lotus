@@ -3,6 +3,47 @@
 #include "Model.h"
 #include "Cubemap.h"
 #include "Shader.h"
+#include "lotus/Config.h"
+
+#include <filesystem>
+
+
+#ifdef SHADER_ROOT
+
+#define __VERTEX_PATH(x)   __concatPath(SHADER_ROOT, x ".vert")
+#define __FRAGMENT_PATH(x) __concatPath(SHADER_ROOT, x ".frag")
+
+#define SHADER_PBR_VERT  __VERTEX_PATH("pbr")
+#define SHADER_PBR_FRAG  __FRAGMENT_PATH("pbr")
+#define SHADER_PBR SHADER_PBR_VERT, SHADER_PBR_FRAG
+
+#define INTERNAL_SHADERS(x) __VERTEX_PATH(x), __FRAGMENT_PATH(x)
+
+#else
+
+#error No shader root configured.
+
+#endif
+
+#define RESOURCE(x) __getConfigResourcePath(x)
+
+inline std::string __concatPath(const std::string& path1, const std::string& path2)
+{
+    std::filesystem::path base(path1);
+    return base.append(path2).string();
+}
+
+inline std::string __getConfigResourcePath(const std::string& relPath)
+{
+    std::filesystem::path arg = relPath;
+    if (arg.is_absolute())
+    {
+        return relPath;
+    }
+
+    std::filesystem::path root =  GET(Lotus::Config).ResourceRoot;
+    return root.append(relPath).string();
+}
 
 namespace Lotus
 {

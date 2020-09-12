@@ -7,42 +7,20 @@ void setup()
     auto& assetRegistry = AssetRegistry::Get();
 
     // Create the shaders to be used
-    auto shader = assetRegistry.LoadShader(
-        R"(D:\code\lotus\lotus\src\rendering\shaders\pbr.vert)",
-        R"(D:\code\lotus\lotus\src\rendering\shaders\pbr.frag)"
-    );
-
-    auto skyShader = assetRegistry.LoadShader(
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.vert)",
-        R"(D:\code\lotus\examples\quickstart\resources\shaders\skybox.frag)"
-    );
+    auto shader = assetRegistry.LoadShader(SHADER_PBR);
 
     // Initialize and import the model
-    auto model = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\sphere.json)");
-    auto planeModel = assetRegistry.LoadModel(R"(D:\code\lotus\examples\quickstart\resources\mesh\plane.json)");
+    auto model = assetRegistry.LoadModel(RESOURCE("mesh/sphere.json"));
+    auto planeModel = assetRegistry.LoadModel(RESOURCE("mesh/plane.json"));
 
-    // std::vector<std::string> faces
-    // {
-    //     R"(D:\code\lotus\examples\quickstart\resources\skybox\right.jpg)",
-    //     R"(D:\code\lotus\examples\quickstart\resources\skybox\left.jpg)",
-    //     R"(D:\code\lotus\examples\quickstart\resources\skybox\top.jpg)",
-    //     R"(D:\code\lotus\examples\quickstart\resources\skybox\bottom.jpg)",
-    //     R"(D:\code\lotus\examples\quickstart\resources\skybox\front.jpg)",
-    //     R"(D:\code\lotus\examples\quickstart\resources\skybox\back.jpg)",
-    // };
-    // Handle<Cubemap> cubemap = assetRegistry.LoadCubemap(faces);
-
-    Handle<Cubemap> cubemap = assetRegistry.LoadCubemap(
-        R"(D:\code\lotus\examples\quickstart\resources\skybox\klopp.hdr)"
-    );
+    Handle<Cubemap> cubemap = assetRegistry.LoadCubemap(RESOURCE("skybox/klopp.hdr"));
 
     SceneManager& sceneManager = SceneManager::Get();
-    const URef<Scene>& scene = sceneManager.LoadScene(R"(D:\code\lotus\examples\quickstart\resources\scenes\SampleScene.json)");
+    const URef<Scene>& scene = sceneManager.LoadScene(RESOURCE("scenes/SampleScene.json"));
 
     // Sky
     Entity sky = scene->CreateEntity();
     CSkybox cSkybox;
-    cSkybox.Shader = skyShader;
     cSkybox.Map = cubemap;
     sky.AddComponent<CSkybox>(cSkybox);
 

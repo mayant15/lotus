@@ -13,7 +13,7 @@ namespace Lotus
         try
         {
             stbi_set_flip_vertically_on_load(flipY);
-            auto handle = AssetRegistry::Get().LoadTexture(data.at(key));
+            auto handle = GET(AssetRegistry).LoadTexture(RESOURCE(data.at(key)));
             return std::optional<Handle<Texture>>{handle};
         }
         catch (const std::exception& e)

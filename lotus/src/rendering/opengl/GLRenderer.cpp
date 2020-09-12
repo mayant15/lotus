@@ -78,11 +78,10 @@ namespace Lotus
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }
 
-        // TODO: Manage internal standard shaders provided by the engine
-        _shadowShader = AssetRegistry::Get().LoadShader(
-            R"(D:\code\lotus\lotus\src\rendering\shaders\shadow.vert)",
-            R"(D:\code\lotus\lotus\src\rendering\shaders\shadow.frag)"
-        );
+        // Setup internal shaders
+        auto& cache = GET(AssetRegistry);
+        _shadowShader = cache.LoadShader(INTERNAL_SHADERS("shadow"));
+        _skyShader = cache.LoadShader(INTERNAL_SHADERS("skybox"));
     }
 
     unsigned int GLRenderer::createTexture(unsigned char* data, int width, int height, unsigned int format)
@@ -268,9 +267,9 @@ namespace Lotus
             const auto& sky = skyView.get<CSkybox>(skyView.front());
 
             glDepthFunc(GL_LEQUAL);
-            sky.Shader->Use();
-            sky.Shader->SetMat4f("view", Matrix4f (Matrix3f (view)));
-            sky.Shader->SetMat4f("projection", projection);
+            _skyShader->Use();
+            _skyShader->SetMat4f("view", Matrix4f (Matrix3f (view)));
+            _skyShader->SetMat4f("projection", projection);
 
             // skybox cube
             glBindVertexArray(sky.Map->VAO);

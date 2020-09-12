@@ -8,17 +8,6 @@
 namespace Lotus
 {
     /**
-     * Options to initialize the engine with.
-     */
-    struct LOTUS_API LotusOp
-    {
-        ERenderAPI RenderAPI = ERenderAPI::OPEN_GL;
-        bool IsDebug = true;
-        unsigned int Width = 800;
-        unsigned int Height = 600;
-    };
-
-    /**
      * Core Lotus engine class that handles all subsystems and the main gameplay loop.
      */
     class LOTUS_API Engine : public Singleton<Engine>
@@ -38,7 +27,7 @@ namespace Lotus
          * Initialize the engine and setup core subsystems.
          * @param options Options to configure the engine with
          */
-        void Initialize(const LotusOp& options);
+        void Initialize();
 
         /**
          * Start the main gameplay loop.

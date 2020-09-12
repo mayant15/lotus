@@ -10,6 +10,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+add_compile_definitions(SHADER_ROOT="${CMAKE_SOURCE_DIR}/lotus/src/shaders/")
+
 # Build libraries
 add_subdirectory(lotus)
 add_subdirectory(examples/quickstart)

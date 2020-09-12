@@ -97,32 +97,34 @@ namespace Lotus
         return map;
     }
 
-    void captureCubemap(unsigned int textureID, unsigned int FBO, unsigned int VAO)
+    void captureCubemap(unsigned int flatmap, unsigned int cubemap, unsigned int FBO, unsigned int VAO)
     {
-        // TODO: Clean up
         Matrix4f captureProjection = LPerspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-        glm::mat4 captureViews[] = 
+        Matrix4f captureViews[] = 
         {
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+            LLookAt(ORIGIN,         X_AXIS, -1.0f * Y_AXIS),
+            LLookAt(ORIGIN, -1.0f * X_AXIS, -1.0f * Y_AXIS),
+            LLookAt(ORIGIN,         Y_AXIS,         Z_AXIS),
+            LLookAt(ORIGIN, -1.0f * Y_AXIS, -1.0f * Z_AXIS),
+            LLookAt(ORIGIN,         Z_AXIS, -1.0f * Y_AXIS),
+            LLookAt(ORIGIN, -1.0f * Z_AXIS, -1.0f * Y_AXIS),
+
+           // glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+           // glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+           // glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+           // glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+           // glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
         };
 
         // convert HDR equirectangular environment map to cubemap equivalent
-        auto shader= GET(AssetRegistry).LoadShader(
-            R"(D:\code\lotus\lotus\src\rendering\shaders\loadHDRI.vert)",
-            R"(D:\code\lotus\lotus\src\rendering\shaders\loadHDRI.frag)"
-        );
+        auto shader= GET(AssetRegistry).LoadShader(INTERNAL_SHADERS("loadHDRI"));
 
         shader->Use();
         shader->SetInt("hdri", 0);
         shader->SetMat4f("projection", captureProjection);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTexture(GL_TEXTURE_2D, flatmap);
 
         // Configure the viewport to the capture dimensions
         glViewport(0, 0, 512, 512);
@@ -131,13 +133,15 @@ namespace Lotus
         {
             shader->SetMat4f("view", captureViews[i]);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                                   GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, textureID, 0);
+                                   GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 36);
             glBindVertexArray(0);
         }
+
+        glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
@@ -164,9 +168,11 @@ namespace Lotus
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-        unsigned int envCubemap;
-        glGenTextures(1, &envCubemap);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        unsigned int cubemap;
+        glGenTextures(1, &cubemap);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
         for (unsigned int i = 0; i < 6; ++i)
         {
             // note that we store each face with 16 bit floating point values
@@ -180,14 +186,14 @@ namespace Lotus
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        unsigned int tex2D;
+        unsigned int flatmap;
         stbi_set_flip_vertically_on_load(true);
         int width, height, nChannels;
         float* data = stbi_loadf(hdri.c_str(), &width, &height, &nChannels, 0);
         if (data)
         {
-            glGenTextures(1, &tex2D);
-            glBindTexture(GL_TEXTURE_2D, tex2D);
+            glGenTextures(1, &flatmap);
+            glBindTexture(GL_TEXTURE_2D, flatmap);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
         
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -195,7 +201,7 @@ namespace Lotus
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-            captureCubemap(envCubemap, captureFBO, map->VAO);
+            captureCubemap(flatmap, cubemap, captureFBO, map->VAO);
 
             stbi_image_free(data);
         }
@@ -206,7 +212,7 @@ namespace Lotus
             throw std::invalid_argument("Cubemap load failed.");
         }
 
-        map->ID = envCubemap;
+        map->ID = cubemap;
         return map;
     }
 }

@@ -15,6 +15,7 @@ namespace Lotus
     {
         /**
          * Load a cubemap with six images that are to be used as the cube's faces.
+         * Order of images: right, left, top, bottom, front, back
          */
         SRef<Cubemap> Load(const std::vector<std::string>& faces) const;
 

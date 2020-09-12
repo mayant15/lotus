@@ -1,7 +1,7 @@
 {
   "type": "PBR",
-  "albedo": "D:\\code\\lotus\\examples\\quickstart\\resources\\textures\\rock\\Albedo.jpg",
-  "normal": "D:\\code\\lotus\\examples\\quickstart\\resources\\textures\\rock\\Normal.jpg",
+  "albedo": "textures/rock/Albedo.jpg",
+  "normal": "textures/rock/Normal.jpg",
   "metallic": 0.0,
   "roughness": 1.0,
   "ao": 1.0

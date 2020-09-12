@@ -16,7 +16,6 @@ namespace Lotus
 
     struct CSkybox
     {
-       Handle<Shader> Shader;
-       Handle<Cubemap> Map;
+        Handle<Cubemap> Map;
     };
 }

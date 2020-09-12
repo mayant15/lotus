@@ -2,12 +2,13 @@
 #include "lotus/debug.h"
 #include "GLRenderer.h"
 #include "lotus/scene/SceneManager.h"
+#include "lotus/Config.h"
 
 namespace Lotus
 {
     void Engine::OnEvent(Event& event)
     {
-        Engine& engine = Engine::Get();
+        Engine& engine = GET(Engine);
         if (event.Type == EEventType::WINDOW_CLOSE_EVENT)
         {
             engine._isRunning = false;
@@ -32,11 +33,12 @@ namespace Lotus
         }
     }
 
-    void Engine::Initialize(const LotusOp& options)
+    void Engine::Initialize()
     {
-        _eventManager = &EventManager::Get();
+        auto& options = GET(Config);
 
-        _inputManager = &Input::Get();
+        _eventManager = &GET(EventManager);
+        _inputManager = &GET(Input);
         _eventManager->Bind<MouseEvent, &Input::UpdateMouseState>(_inputManager);
         _eventManager->Bind<KeyboardEvent, &Input::UpdateKeyState>(_inputManager);
 

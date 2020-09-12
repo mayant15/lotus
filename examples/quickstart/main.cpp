@@ -7,18 +7,20 @@
 int main()
 {
     // Have to initialize the engine first
-    auto& engine = Engine::Get();
-    LotusOp config;
+    auto& config = GET(Config);
     config.RenderAPI = ERenderAPI::OPEN_GL;
     config.IsDebug = true;
     config.Width = 1024;
     config.Height = 800;
-    engine.Initialize(config);
+    config.ResourceRoot = DEFAULT_RESOURCE_ROOT;
+
+    auto& engine = GET(Engine);
+    engine.Initialize();
 
     setup();
 
     // Test out python script
-    exec_file(R"(D:\code\lotus\examples\quickstart\resources\scripts\hello.py)");
+    exec_file(RESOURCE("scripts/hello.py"));
 
     // Bind event callbacks
     CameraSystem cameraSystem;

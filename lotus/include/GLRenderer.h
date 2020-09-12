@@ -14,6 +14,7 @@ namespace Lotus
         unsigned int _shadowFBO = 0;
         unsigned int _shadowDepthTexture = 0;
         Handle<Shader> _shadowShader;
+        Handle<Shader> _skyShader;
 
         std::vector<CPointLight> ptLightParams;
         std::vector<CSpotlight> spLightParams;

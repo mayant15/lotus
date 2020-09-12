@@ -26,12 +26,12 @@ namespace Lotus
         auto& cache = AssetRegistry::Get();
 
         // TODO: Modify to accommodate sub meshes
-        Handle<Material> material = cache.LoadMaterial(data["material"]);
+        Handle<Material> material = cache.LoadMaterial(RESOURCE(data["material"]));
 
         SRef<Model> model = std::make_shared<Model>();
 
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(data["mesh"], aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(RESOURCE(data["mesh"]), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
