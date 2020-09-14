@@ -4,11 +4,11 @@ import os
 # -- Project information -----------------------------------------------------
 
 project = 'Lotus'
-copyright = '2020, Mayant Mukul'
+copyright = '2020, Studio Centauri'
 author = 'Mayant Mukul'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.1.0'
 
 # -- General configuration ---------------------------------------------------
 
@@ -39,6 +39,14 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_logo = '_static/images/logo.png'
+html_css_files = [
+    'css/navbar.css'
+]
+
+html_theme_options = {
+    'logo_only': True
+}
 
 
 # -- Read The Docs ----------------------------------------------------------

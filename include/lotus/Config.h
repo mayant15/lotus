@@ -4,6 +4,9 @@
 
 namespace Lotus
 {
+    /**
+     * @brief Singleton class that holds all configuration options for the engine.
+    */
     class Config : public Singleton<Config>
     {
         Config() = default;
