@@ -5,9 +5,12 @@ out/
 CMakeFiles/
 .idea/
 .vs/
+.vscode/
+
 docs/doxygen/
 docs/sphinx/
 docs/api/
+docs/.vscode/
 
 CMakeLists.txt.user
 CMakeCache.txt

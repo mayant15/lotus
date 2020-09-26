@@ -17,7 +17,8 @@ set(GLFW_INSTALL OFF CACHE BOOL "GLFW lib only")
 add_subdirectory(ext/glfw)
 
 # Assimp
-add_subdirectory(ext/assimp)
+# add_subdirectory(ext/assimp)
+find_package(Assimp CONFIG REQUIRED)
 
 # spdlog
 add_subdirectory(ext/spdlog)
@@ -51,7 +52,7 @@ set(SOURCES
         src/scene/SceneManager.cpp
 )
 add_library(lotus SHARED ${SOURCES})
-target_link_libraries(lotus pybind11::embed glfw assimp spdlog::spdlog)
+target_link_libraries(lotus PRIVATE pybind11::embed glfw spdlog::spdlog assimp::assimp)
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 generate_export_header( lotus
           BASE_NAME lotus

@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
+
+# vcpkg
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake
+  CACHE STRING "Vcpkg toolchain file")
+
 project(lotus)
 
 # Set C++ standard
@@ -10,7 +15,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-option(LOTUS_BUILD_DOCS "Build the Lotus documentation" ON)
+option(LOTUS_BUILD_DOCS "Build the Lotus documentation" OFF)
 option(LOTUS_BUILD_EXAMPLE "Build an example demonstrating the usage of the engine" ON)
 
 add_compile_definitions(SHADER_ROOT="${CMAKE_SOURCE_DIR}/lotus/src/shaders/")

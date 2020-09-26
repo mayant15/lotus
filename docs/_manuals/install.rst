@@ -17,6 +17,8 @@ Clone with ``git clone --recurse-submodules`` to get all submodules. Then in the
     cmake ..
     cmake --build .
 
+.. NOTE::
+   Do not clone the repository to a path with spaces. We use ``vcpkg`` for dependency management, which currently has an issue with spaces. See `this <https://github.com/microsoft/vcpkg/pull/13126>`_ pull request for more information.
 
 You should now have an output library file at ``build/lib/`` and the example executable using that file in ``build/bin``.
 

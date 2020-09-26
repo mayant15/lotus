@@ -4,9 +4,9 @@
 [submodule "lotus/ext/glfw"]
 	path = lotus/ext/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "lotus/ext/assimp"]
-	path = lotus/ext/assimp
-	url = https://github.com/assimp/assimp.git
 [submodule "lotus/ext/spdlog"]
 	path = lotus/ext/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule ".\\external\\vcpkg"]
+	path = .\\external\\vcpkg
+	url = https://github.com/Microsoft/vcpkg
