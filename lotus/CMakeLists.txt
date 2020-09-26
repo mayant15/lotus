@@ -6,22 +6,12 @@ include_directories(${CMAKE_SOURCE_DIR}/include/lotus/internal)
 
 # Internal headers
 include_directories(include)
-#include_directories(ext/glfw/include)
 
-# pybind
-add_subdirectory(ext/pybind11)
-
-# GLFW
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "GLFW lib only")
-set(GLFW_INSTALL OFF CACHE BOOL "GLFW lib only")
-add_subdirectory(ext/glfw)
-
-# Assimp
-# add_subdirectory(ext/assimp)
+# Dependencies
 find_package(Assimp CONFIG REQUIRED)
-
-# spdlog
-add_subdirectory(ext/spdlog)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 
 set(SOURCES
         src/Engine.cpp
