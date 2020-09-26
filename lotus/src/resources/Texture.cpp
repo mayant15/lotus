@@ -1,6 +1,7 @@
 #include "lotus/debug.h"
 #include "lotus/resources/Texture.h"
-#include "GLRenderer.h"
+
+#include "rendering/opengl/GLRenderer.h"
 #include "stb_image.h"
 
 namespace Lotus

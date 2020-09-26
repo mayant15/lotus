@@ -1,8 +1,12 @@
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/include/lotus/internal)
+
+# lotus include paths
+include_directories(${PUBLIC_INCLUDE_DIR})
+
+# Header only libraries need to be present on the include path while building the examples
+include_directories(${PUBLIC_INCLUDE_DIR}/lotus/internal)
 
 add_executable(example main.cpp)
-add_dependencies(example lotus) # in an actual app you would have to find_library lotus and then link below
+add_dependencies(example lotus)
 target_link_libraries(example lotus)
 
 target_compile_definitions(example PRIVATE 

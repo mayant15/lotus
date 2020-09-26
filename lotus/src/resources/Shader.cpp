@@ -1,5 +1,6 @@
 #include "lotus/resources/Shader.h"
-#include "GLShader.h"
+
+#include "rendering/opengl/GLShader.h"
 
 namespace Lotus
 {

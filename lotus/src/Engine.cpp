@@ -1,6 +1,6 @@
 #include "lotus/Engine.h"
 #include "lotus/debug.h"
-#include "GLRenderer.h"
+#include "rendering/opengl/GLRenderer.h"
 #include "lotus/scene/SceneManager.h"
 #include "lotus/Config.h"
 
