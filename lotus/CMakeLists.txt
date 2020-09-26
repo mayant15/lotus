@@ -8,6 +8,8 @@ find_package(Assimp CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
+find_package(PhysX REQUIRED)
+
 
 set(SOURCES
         external/glad.c
@@ -39,7 +41,7 @@ set(SOURCES
         src/scene/SceneManager.cpp
 )
 add_library(lotus SHARED ${SOURCES})
-target_link_libraries(lotus PRIVATE pybind11::embed glfw spdlog::spdlog assimp::assimp)
+target_link_libraries(lotus PRIVATE pybind11::embed glfw spdlog::spdlog assimp::assimp PhysX)
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 
 if (LOTUS_BUILD_DOCS)

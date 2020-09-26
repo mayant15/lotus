@@ -16,7 +16,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/external/cmake" ${CMAKE_MODULE_PATH})
 set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lotus/include)
 
-option(LOTUS_BUILD_DOCS "Build the Lotus documentation" ON)
+option(LOTUS_BUILD_DOCS "Build the Lotus documentation" OFF)
 option(LOTUS_BUILD_EXAMPLE "Build an example demonstrating the usage of the engine" ON)
 
 # TODO: Find a better way to get shader paths

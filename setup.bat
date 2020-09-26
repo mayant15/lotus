@@ -14,3 +14,4 @@ SET VCPKG_EXEC=%VCPKG_ROOT_DIR%\vcpkg.exe
 %VCPKG_EXEC% install glfw3:x64-windows
 %VCPKG_EXEC% install pybind11:x64-windows
 %VCPKG_EXEC% install spdlog:x64-windows
+%VCPKG_EXEC% install physx:x64-windows

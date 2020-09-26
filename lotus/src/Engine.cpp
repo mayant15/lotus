@@ -4,6 +4,8 @@
 #include "lotus/scene/SceneManager.h"
 #include "lotus/Config.h"
 
+#include "physx/PxPhysicsAPI.h"
+
 namespace Lotus
 {
     void Engine::OnEvent(Event& event)
