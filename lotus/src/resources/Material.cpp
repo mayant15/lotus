@@ -10,18 +10,16 @@ namespace Lotus
     // TODO: Create json helpers/serialization functions
     std::optional<Handle<Texture>> getTexture(const json& data, const std::string& key, bool flipY = true)
     {
-        try
+        if (data.contains(key) && data.at(key).is_string())
         {
             stbi_set_flip_vertically_on_load(flipY);
             auto handle = GET(AssetRegistry).LoadTexture(RESOURCE(data.at(key)));
             return std::optional<Handle<Texture>>{handle};
         }
-        catch (const std::exception& e)
+        else
         {
-            LOG_WARN(e.what());
+            return {};
         }
-
-        return {};
     }
 
     Vector3f getVector(const json& data, const std::string& key)

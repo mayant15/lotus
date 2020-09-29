@@ -8,13 +8,12 @@ namespace Lotus
 
     void Input::UpdateKeyState(const KeyboardEvent& event)
     {
-        try
+        if (_state.find(event.KeyCode) != _state.end())
         {
             _state.at(event.KeyCode) = event.State;
         }
-        catch (const std::exception& e)
+        else
         {
-            // TODO: Error if exception is legit, and not just a "no key found"
             _state.insert({event.KeyCode, event.State});
         }
     }
@@ -37,14 +36,13 @@ namespace Lotus
 
     bool Input::GetKeyPressed(int key)
     {
-        try
+        if (_state.find(key) != _state.end())
         {
             int state = _state.at(key);
             return (state == L_KEY_PRESS || state == L_KEY_REPEAT);
         }
-        catch (const std::exception& e)
+        else
         {
-            // TODO: Error if exception is legit, and not just a "no key found"
             return false;
         }
     }

@@ -7,6 +7,7 @@ Requirements
 * CMake > 3.16
 * A compiler toolchain with C++17 support
 * A python interpreter on your PATH
+* A 64-bit OS
 
 Build
 ------

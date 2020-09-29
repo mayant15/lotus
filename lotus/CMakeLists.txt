@@ -8,19 +8,51 @@ find_package(Assimp CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
-find_package(PhysX REQUIRED)
 
+# PhysX does not export its targets, like others do. Manually find files.
+set(VCPKG_LIB_PATHS_DEBUG
+    ${PROJECT_SOURCE_DIR}/external/vcpkg/installed/x64-windows/debug/lib
+    ${PROJECT_SOURCE_DIR}/external/vcpkg/installed/x64-linux/debug/lib
+    ${PROJECT_SOURCE_DIR}/external/vcpkg/installed/x64-osx/debug/lib
+)
 
+set(VCPKG_LIB_PATHS_RELEASE
+    ${PROJECT_SOURCE_DIR}/external/vcpkg/installed/x64-windows/lib
+    ${PROJECT_SOURCE_DIR}/external/vcpkg/installed/x64-linux/lib
+    ${PROJECT_SOURCE_DIR}/external/vcpkg/installed/x64-osx/lib
+)
+
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    set(PHYSX_LIB_DIR ${VCPKG_LIB_PATHS_RELEASE})
+    message("-- Using release PhysX")
+else()
+    set(PHYSX_LIB_DIR ${VCPKG_LIB_PATHS_DEBUG})
+    message("-- Using debug PhysX")
+endif()
+
+find_library(PHYSX_BASE NAMES PhysX_64 PhysX_32 PATHS ${PHYSX_LIB_DIR})
+find_library(PHYSX_COMMON NAMES PhysXCommon_64 PhysXCommon_32 PATHS ${PHYSX_LIB_DIR})
+find_library(PHYSX_FOUNDATION NAMES PhysXFoundation_64 PhysXFoundation_32 PATHS ${PHYSX_LIB_DIR})
+find_library(PHYSX_EXTENSIONS NAMES PhysXExtensions_static_64 PhysXExtensions_static_32 PATHS ${PHYSX_LIB_DIR})
+find_library(PHYSX_PVD NAMES PhysXPvdSDK_static_64 PhysXPvdSDK_static_32 PATHS ${PHYSX_LIB_DIR})
+set(PHYSX_LINK_LIBS ${PHYSX_COMMON} ${PHYSX_FOUNDATION} ${PHYSX_BASE} ${PHYSX_EXTENSIONS} ${PHYSX_PVD})
+
+set(DEPENDENCIES pybind11::embed glfw spdlog::spdlog assimp::assimp ${PHYSX_LINK_LIBS})
+
+# Set all source files
 set(SOURCES
         external/glad.c
         external/stb_image.cpp
 
+        src/core/SubsystemManager.cpp
         src/Engine.cpp
 
         src/events/GLWindow.cpp
         src/events/Input.cpp
 
         src/physics/math/operations.cpp
+        src/physics/PxImpl.cpp
+        src/physics/PhysicsSubsystem.cpp
 
         src/python/Interpreter.cpp
         src/python/module.cpp
@@ -40,8 +72,9 @@ set(SOURCES
         src/scene/ACamera.cpp
         src/scene/SceneManager.cpp
 )
+
 add_library(lotus SHARED ${SOURCES})
-target_link_libraries(lotus PRIVATE pybind11::embed glfw spdlog::spdlog assimp::assimp PhysX)
+target_link_libraries(lotus PRIVATE ${DEPENDENCIES})
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 
 if (LOTUS_BUILD_DOCS)

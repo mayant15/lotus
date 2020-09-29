@@ -4,7 +4,7 @@
 #include "lotus/scene/SceneManager.h"
 #include "lotus/Config.h"
 
-#include "physx/PxPhysicsAPI.h"
+#include "core/SubsystemManager.h"
 
 namespace Lotus
 {
@@ -96,6 +96,9 @@ namespace Lotus
 
         // Save scene
         _eventManager->Bind<PreDestroyEvent, &SceneManager::OnPreDestroy>(&SceneManager::Get());
+
+        // Start 
+        GET(SubsystemManager).Start();
     }
 
     void Engine::Run()
@@ -116,6 +119,7 @@ namespace Lotus
 
     void Engine::Shutdown()
     {
+        GET(SubsystemManager).Shutdown();
         _eventManager->Invoke(PreDestroyEvent {});
         _eventManager->Invoke(DestroyEvent {});
         _eventManager->Invoke(ShutdownEvent {});
@@ -123,6 +127,8 @@ namespace Lotus
 
     void Engine::tick(float delta)
     {
+        GET(SubsystemManager).Update(delta);
+
         UpdateEvent updateEvent;
         updateEvent.DeltaTime = delta;
         PreUpdateEvent preUpdateEvent;
