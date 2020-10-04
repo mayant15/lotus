@@ -1,8 +1,7 @@
 #pragma once
 
-#include "events/GLWindow.h"
 #include "lotus/Renderer.h"
-#include "lotus/components/lights.h"
+#include "core/platform/GLWindow.h"
 
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
 GLenum glCheckError_(const char* file, int line);
@@ -16,9 +15,9 @@ namespace Lotus
         Handle<Shader> _shadowShader;
         Handle<Shader> _skyShader;
 
-        std::vector<CPointLight> ptLightParams;
-        std::vector<CSpotlight> spLightParams;
-        std::vector<CDirectionalLight> dirLightParams;
+        std::vector<PointLightInfo> ptLightParams;
+        std::vector<SpotLightInfo> spLightParams;
+        std::vector<LightInfo> dirLightParams;
 
         Matrix4f view{};
         Matrix4f projection{};

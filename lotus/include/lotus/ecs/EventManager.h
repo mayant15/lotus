@@ -2,6 +2,10 @@
 
 #include "lotus/lcommon.h"
 #include "lotus/internal/entt/entt.hpp"
+#include "lotus/ecs/Event.h"
+
+template<typename T>
+constexpr auto CREATE_OF_TYPE = std::remove_reference<T>();
 
 namespace Lotus
 {
@@ -15,25 +19,27 @@ namespace Lotus
     public:
 
         /**
-         * Invoke an event immediately
-         * @tparam T Type of the event to invoke
-         * @param event Data to invoke the event with
+         * @brief Dispatch an event
+         *
+         * Use this function to dispatch an event. If the `Immediate` property is true,
+         * the registered callback will be immediately invoked. Otherwise, the event will
+         * be queued and dispatched at the end of the frame.
+         *
+         * @tparam T Type parameter for the event to be dispatched
+         * @param event Event object to be dispatched
          */
         template<typename T>
-        void Invoke(T& event)
+        void Dispatch(T event)
         {
-            _dispatcher.trigger<T>(event);
-        }
-
-        /**
-         * Add an event to the queue, to be called at the end of the frame
-         * @tparam T Type of the event to queue
-         * @param event Data to queue the event with
-         */
-        template<typename T>
-        void Queue(T event)
-        {
-            _dispatcher.enqueue<T>(event);
+            static_assert(std::is_base_of_v<Event, T>);
+            if (event.Immediate)
+            {
+                _dispatcher.trigger<T>(event);
+            }
+            else
+            {
+                _dispatcher.enqueue<T>(event);
+            }
         }
 
         /**
@@ -46,6 +52,7 @@ namespace Lotus
         template<typename E, auto F, typename L>
         void Bind(L arg)
         {
+            static_assert(std::is_base_of_v<Event, E>);
             _dispatcher.sink<E>().template connect<F>(std::forward<L>(arg));
         }
 
@@ -57,14 +64,14 @@ namespace Lotus
         template<typename E, auto F>
         void Bind()
         {
-            // Register a callback for an event
+            static_assert(std::is_base_of_v<Event, E>);
             _dispatcher.sink<E>().template connect<F>();
         }
 
         /**
          * Dispatch all queued events
          */
-        void BroadcastQueue() const
+        void DispatchAll() const
         {
             // Call all events in queue
             _dispatcher.update();
@@ -72,7 +79,6 @@ namespace Lotus
 
     private:
         friend Singleton<EventManager>;
-
         EventManager() = default;
     };
 }

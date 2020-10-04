@@ -1,8 +1,9 @@
 #pragma once
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "lotus/events/IWindow.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include "core/IWindow.h"
 
 namespace Lotus
 {

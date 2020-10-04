@@ -1,10 +1,13 @@
-#include "lotus/debug.h"
 #include "GLRenderer.h"
-#include "GLShader.h"
+
 #include "lotus/resources/AssetRegistry.h"
 #include "lotus/resources/Model.h"
+#include "lotus/ecs/EntityRegistry.h"
+#include "lotus/ecs/ACamera.h"
 #include "lotus/scene/SceneManager.h"
-#include "lotus/scene/ACamera.h"
+#include "lotus/debug.h"
+
+#include "rendering/opengl/GLShader.h"
 
 constexpr unsigned int SHADOW_WIDTH = 1024;
 constexpr unsigned int SHADOW_HEIGHT = 1024;
@@ -163,53 +166,94 @@ namespace Lotus
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glCheckError();
 
-        const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
-
         // Process lighting
         ptLightParams.clear();
-        auto ptView = scene->Find<CPointLight>();
+        auto ptView = FindEntitiesByComponent<CPointLight, CTransform>();
         for (auto light : ptView)
         {
-            const auto& params = ptView.get<CPointLight>(light);
-            ptLightParams.push_back(params);
+            const auto& [params, transform] = ptView.get<CPointLight, CTransform>(light);
+            PointLightInfo info (params);
+            info.position = transform.Position;
+            ptLightParams.push_back(info);
         }
 
         spLightParams.clear();
-        auto spView = scene->Find<CSpotlight>();
+        auto spView = FindEntitiesByComponent<CSpotlight, CTransform>();
         for (auto light : spView)
         {
-            const auto& params = spView.get<CSpotlight>(light);
-            spLightParams.push_back(params);
+            const auto& [params, transform] = spView.get<CSpotlight, CTransform>(light);
+            SpotLightInfo info (params);
+            info.position = transform.Position;
+
+            Vector3f rotation = transform.Rotation;
+            float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+            float y = sin(glm::radians(rotation.x));
+            float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+            info.direction = LNormalize(Vector3f(x, y, z));
+
+            spLightParams.push_back(info);
         }
 
         dirLightParams.clear();
-        auto dirView = scene->Find<CDirectionalLight, CTransform>();
+        auto dirView = FindEntitiesByComponent<CLight, CTransform>();
         for (auto light : dirView)
         {
-            const auto& params = dirView.get<CDirectionalLight>(light);
-            dirLightParams.push_back(params);
+            const auto& [params, transform] = dirView.get<CLight, CTransform>(light);
+            LightInfo info (params);
+            Vector3f rotation = transform.Rotation;
+            float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+            float y = sin(glm::radians(rotation.x));
+            float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+            info.direction = LNormalize(Vector3f(x, y, z));
+            dirLightParams.push_back(info);
         }
 
-        // Setup light view proj
+        // Setup light view proj for shadow map
         if (!dirView.empty())
         {
-            const auto& [param, transform] = dirView.get<CDirectionalLight, CTransform>(dirView.front());
-            lightView = LLookAt(transform.Position, transform.Position + param.direction * 10.0f, UP);
+            const auto& [param, transform] = dirView.get<CLight, CTransform>(dirView.front());
+
+            // This light's direction is calculated from its forward vector
+            Vector3f rotation = transform.Rotation;
+            float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+            float y = sin(glm::radians(rotation.x));
+            float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+
+            Vector3f forward = LNormalize(Vector3f(x, y, z));
+
+            lightView = LLookAt(transform.Position, transform.Position + forward * 10.0f, UP);
             lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
         }
 
-        ACamera camera = scene->GetActiveCamera();
-        view = camera.GetViewMatrix();
-        cameraPos = camera.GetAbsolutePosition();
+        auto cameraView = FindEntitiesByComponent<CCamera, CTransform>();
+        for (auto entity : cameraView)
+        {
+            const auto& [camera, transform] = cameraView.get<CCamera, CTransform>(entity);
+            if (camera.IsActive)
+            {
+                Vector3f rotation = transform.Rotation;
+                float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+                float y = sin(glm::radians(rotation.x));
+                float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
 
-        const float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
-        projection = LPerspective(glm::radians(camera.GetFieldOfView()), aspectRatio, 0.1f, 100.0f);
+                Vector3f forward = LNormalize(Vector3f(x, y, z));
+                Vector3f right = LNormalize(LCross(forward, UP));
+                Vector3f up = LNormalize(LCross(right, forward));
+
+                cameraPos = transform.Position;
+                view = LLookAt(cameraPos, cameraPos + forward, up);
+
+                const float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
+                projection = LPerspective(glm::radians(camera.FOV), aspectRatio, 0.1f, 100.0f);
+
+                // Set the results of the first active camera that you find, then break
+                break;
+            }
+        }
     }
 
     void GLRenderer::OnUpdate(const UpdateEvent& event)
     {
-        const URef<Scene>& scene = SceneManager::Get().GetActiveScene();
-
         // TODO: Bake the shadow map, don't generate it on update
 
         // Render shadow map for the first directional light in the scene
@@ -222,7 +266,7 @@ namespace Lotus
         _shadowShader->SetMat4f("lightView", lightView);
         _shadowShader->SetMat4f("lightProjection", lightProjection);
         
-        auto entityView = scene->Find<CMeshRenderer, CTransform>();
+        auto entityView = FindEntitiesByComponent<CMeshRenderer, CTransform>();
         for (auto entity : entityView)
         {
             const auto&[data, transform] = entityView.get<CMeshRenderer, CTransform>(entity);
@@ -261,7 +305,7 @@ namespace Lotus
         }
 
         // Draw skybox
-        auto skyView = scene->Find<CSkybox>();
+        auto skyView = FindEntitiesByComponent<CSkybox>();
         if (!skyView.empty())
         {
             const auto& sky = skyView.get<CSkybox>(skyView.front());

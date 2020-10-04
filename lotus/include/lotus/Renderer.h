@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ILifecycle.h"
-#include "lotus/events/IWindow.h"
-#include "lotus/components/rendering.h"
-#include "lotus/components/scene.h"
+#include "lotus/ILifecycle.h"
+#include "lotus/resources/Model.h"
+#include "lotus/resources/Shader.h"
+#include "lotus/ecs/AActor.h"
 
 namespace Lotus
 {
@@ -31,6 +31,13 @@ namespace Lotus
          * Height of the created viewport
          */
         uint32_t ViewportHeight;
+    };
+
+    struct CMeshRenderer
+    {
+        // Render data
+        Handle<Shader> Shader;
+        Handle<Model> Model;
     };
 
     /**

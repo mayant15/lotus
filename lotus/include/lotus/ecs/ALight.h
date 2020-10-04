@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lotus/physics.h"
+#include "lotus/physics/physics.h"
 
 namespace Lotus
 {
@@ -13,21 +13,13 @@ namespace Lotus
 
     struct CPointLight : CLight
     {
-        Vector3f position = Vector3f(0.0f);
         float constant = 1.0f;
         float linear = 0.22f;
         float quadratic = 0.20f;
     };
 
-    struct CDirectionalLight : CLight
-    {
-        Vector3f direction = Vector3f(0.0f);
-    };
-
     struct CSpotlight : CLight
     {
-        Vector3f position = Vector3f(0.0f);
-        Vector3f direction = Vector3f(0.0f);
         float constant = 1.0f;
         float linear = 0.07f;
         float quadratic = 0.017f;

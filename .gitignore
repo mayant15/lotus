@@ -2,6 +2,7 @@ build/
 lib/
 bin/
 out/
+cmake-build-debug/
 CMakeFiles/
 .idea/
 .vs/

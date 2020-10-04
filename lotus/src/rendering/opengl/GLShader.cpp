@@ -1,6 +1,7 @@
+#include "GLShader.h"
+
 #include "glad/glad.h"
 #include "lotus/debug.h"
-#include "GLShader.h"
 
 #include <fstream>
 
@@ -99,7 +100,7 @@ namespace Lotus
         glUniform3fv(loc, 1, valuePtr(vec));
     }
 
-    void GLShader::SetPointLight(const std::string& name, const CPointLight& options) const
+    void GLShader::SetPointLight(const std::string& name, const PointLightInfo& options) const
     {
         SetFloat(name + ".constant", options.constant);
         SetFloat(name + ".linear", options.linear);
@@ -110,7 +111,7 @@ namespace Lotus
         SetVec3f(name + ".specular", options.specular);
     }
 
-    void GLShader::SetSpotlight(const std::string& name, const CSpotlight& options) const
+    void GLShader::SetSpotlight(const std::string& name, const SpotLightInfo& options) const
     {
         SetFloat(name + ".constant", options.constant);
         SetFloat(name + ".linear", options.linear);
@@ -125,7 +126,7 @@ namespace Lotus
         SetVec3f(name + ".specular", options.specular);
     }
 
-    void GLShader::SetDirectionalLight(const std::string& name, const CDirectionalLight& options) const
+    void GLShader::SetDirectionalLight(const std::string& name, const LightInfo& options) const
     {
         SetVec3f(name + ".direction", options.direction);
         SetVec3f(name + ".ambient", options.ambient);
@@ -133,29 +134,29 @@ namespace Lotus
         SetVec3f(name + ".specular", options.specular);
     }
 
-    void GLShader::SetPointLightArray(const std::string& name, const std::vector<CPointLight>& lights) const
+    void GLShader::SetPointLightArray(const std::string& name, const std::vector<PointLightInfo>& lights) const
     {
         unsigned int i = 0;
-        for (const CPointLight& light : lights)
+        for (const PointLightInfo& light : lights)
         {
             SetPointLight(name + "[" + std::to_string(i) + "]", light);
             i++;
         }
     }
 
-    void GLShader::SetSpotlightArray(const std::string& name, const std::vector<CSpotlight>& lights) const
+    void GLShader::SetSpotlightArray(const std::string& name, const std::vector<SpotLightInfo>& lights) const
     {
         unsigned int i = 0;
-        for (const CSpotlight& light : lights)
+        for (const SpotLightInfo& light : lights)
         {
             SetSpotlight(name + "[" + std::to_string(i) + "]", light);
         }
     }
 
-    void GLShader::SetDirLightArray(const std::string& name, const std::vector<CDirectionalLight>& lights) const
+    void GLShader::SetDirLightArray(const std::string& name, const std::vector<LightInfo>& lights) const
     {
         unsigned int i = 0;
-        for (const CDirectionalLight& light : lights)
+        for (const LightInfo& light : lights)
         {
             SetDirectionalLight(name + "[" + std::to_string(i) + "]", light);
         }

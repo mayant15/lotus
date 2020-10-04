@@ -44,11 +44,17 @@ set(SOURCES
         external/glad.c
         external/stb_image.cpp
 
-        src/core/SubsystemManager.cpp
-        src/Engine.cpp
+        src/lotus.cpp
 
-        src/events/GLWindow.cpp
-        src/events/Input.cpp
+        src/core/platform/DXWindow.cpp
+        src/core/platform/GLWindow.cpp
+        src/core/Engine.cpp
+        src/core/Input.cpp
+        src/core/IWindow.cpp
+        src/core/SystemRegistry.cpp
+
+        src/ecs/AActor.cpp
+        src/ecs/ACamera.cpp
 
         src/physics/math/operations.cpp
         src/physics/PxImpl.cpp
@@ -59,18 +65,15 @@ set(SOURCES
 
         src/rendering/opengl/GLRenderer.cpp
         src/rendering/opengl/GLShader.cpp
-        src/rendering/opengl/GLTextureLoader.cpp
-        
-        src/resources/Shader.cpp
-        src/resources/Model.cpp
-        src/resources/Texture.cpp
+
         src/resources/Cubemap.cpp
         src/resources/Material.cpp
+        src/resources/Model.cpp
+        src/resources/Shader.cpp
+        src/resources/Texture.cpp
 
-        src/scene/Scene.cpp
-        src/scene/AActor.cpp
-        src/scene/ACamera.cpp
         src/scene/SceneManager.cpp
+        src/scene/SceneTreeNode.cpp
 )
 
 add_library(lotus SHARED ${SOURCES})

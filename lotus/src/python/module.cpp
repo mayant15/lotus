@@ -7,7 +7,7 @@ int add(int i, int j)
     return i + j;
 }
 
-void exec_file(const std::string& filepath)
+void Lotus::exec_file(const std::string& filepath)
 {
     Interpreter::exec_file(filepath);
 }

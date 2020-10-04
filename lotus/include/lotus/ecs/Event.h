@@ -5,6 +5,20 @@
 template<int X>
 static constexpr int BIT = (1 << X);
 
+// TODO: Have sequential macros instead of this
+constexpr int L_KEY_NONE = 0;
+constexpr int L_KEY_ESC = 1;
+constexpr int L_KEY_W   = 2;
+constexpr int L_KEY_S   = 3;
+constexpr int L_KEY_A   = 4;
+constexpr int L_KEY_D   = 5;
+constexpr int L_KEY_E   = 6;
+constexpr int L_KEY_Q   = 7;
+
+constexpr int L_KEY_PRESS   = 0;
+constexpr int L_KEY_REPEAT  = 1;
+constexpr int L_KEY_RELEASE = 2;
+
 namespace Lotus
 {
     enum class LOTUS_API EEventType
@@ -39,6 +53,7 @@ namespace Lotus
     {
         EEventCategory Category = EEventCategory::NONE;
         EEventType Type = EEventType::NONE;
+        bool Immediate = false;
     };
 
     struct LOTUS_API WindowCloseEvent : public Event
@@ -47,6 +62,7 @@ namespace Lotus
         {
             Category = EEventCategory::WINDOW;
             Type = EEventType::WINDOW_CLOSE_EVENT;
+            Immediate = true;
         }
     };
 
@@ -59,20 +75,6 @@ namespace Lotus
     /**
      * Input events
      */
-
-    // TODO: Have sequential macros instead of this
-constexpr int L_KEY_NONE = 0;
-constexpr int L_KEY_ESC = 1;
-constexpr int L_KEY_W   = 2;
-constexpr int L_KEY_S   = 3;
-constexpr int L_KEY_A   = 4;
-constexpr int L_KEY_D   = 5;
-constexpr int L_KEY_E   = 6;
-constexpr int L_KEY_Q   = 7;
-
-constexpr int L_KEY_PRESS   = 0;
-constexpr int L_KEY_REPEAT  = 1;
-constexpr int L_KEY_RELEASE = 2;
 
     struct LOTUS_API KeyboardEvent : public Event
     {
@@ -97,5 +99,11 @@ constexpr int L_KEY_RELEASE = 2;
             Type = EEventType::MOUSE_EVENT;
             Category = EEventCategory::INPUT;
         }
+    };
+
+    template <typename T>
+    struct LOTUS_API ComponentCreateEvent : public Event
+    {
+        const T& Component;
     };
 }

@@ -1,9 +1,9 @@
+#include "glad/glad.h"
+#include "stb_image.h"
+
 #include "lotus/resources/Cubemap.h"
 #include "lotus/resources/AssetRegistry.h"
 #include "lotus/debug.h"
-#include "lotus/physics.h"
-#include "glad/glad.h"
-#include "stb_image.h"
 
 namespace Lotus
 {

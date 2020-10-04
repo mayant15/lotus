@@ -7,28 +7,30 @@
 #include <string>
 #include <filesystem>
 
-#include "physics.h"
+#include "lcommon.h"
+#include "physics/physics.h"
 
-#include "components/scene.h"
-#include "components/lights.h"
-#include "components/rendering.h"
+#include "ecs/EntityRegistry.h"
+#include "ecs/Entity.h"
+#include "ecs/AActor.h"
+#include "ecs/ACamera.h"
+#include "ecs/ALight.h"
+#include "ecs/Event.h"
+#include "ecs/EventManager.h"
+#include "ecs/ISystem.h"
 
-#include "resources/Shader.h"
 #include "resources/AssetRegistry.h"
 #include "resources/Cubemap.h"
+#include "resources/Material.h"
 #include "resources/Model.h"
+#include "resources/Shader.h"
 #include "resources/Texture.h"
 
-#include "Renderer.h"
-
-#include "events/Event.h"
-#include "events/IWindow.h"
-#include "events/Input.h"
-
-#include "scene/Scene.h"
 #include "scene/SceneManager.h"
-#include "scene/AActor.h"
-#include "scene/ACamera.h"
 
+#include "Config.h"
+#include "entry.h"
+#include "ILifecycle.h"
+#include "Input.h"
 #include "python.h"
-#include "Engine.h"
+#include "Renderer.h"

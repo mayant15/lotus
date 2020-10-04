@@ -1,7 +1,6 @@
 #pragma once
 
-#include "lotus/physics.h"
-#include "Material.h"
+#include "lotus/resources/Material.h"
 
 namespace Lotus
 {

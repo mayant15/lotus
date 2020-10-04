@@ -1,10 +1,9 @@
 #pragma once
 
 #include "lotus/lcommon.h"
-#include "Event.h"
+#include "lotus/ecs/Event.h"
 
 #include <unordered_map>
-
 
 namespace Lotus
 {

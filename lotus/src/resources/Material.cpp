@@ -1,6 +1,6 @@
-#include "lotus/resources/Material.h"
-#include "lotus/debug.h"
 #include "stb_image.h"
+
+#include "lotus/resources/Material.h"
 #include "lotus/resources/AssetRegistry.h"
 
 namespace Lotus

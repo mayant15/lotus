@@ -1,23 +1,23 @@
 #pragma once
 
-#include "Model.h"
-#include "Cubemap.h"
-#include "Shader.h"
 #include "lotus/Config.h"
+#include "lotus/resources/Model.h"
+#include "lotus/resources/Shader.h"
+#include "lotus/resources/Cubemap.h"
 
 #include <filesystem>
 
 
 #ifdef SHADER_ROOT
 
-#define __VERTEX_PATH(x)   __concatPath(SHADER_ROOT, x ".vert")
-#define __FRAGMENT_PATH(x) __concatPath(SHADER_ROOT, x ".frag")
+#define VERTEX_PATH(x)   concatPath(SHADER_ROOT, x ".vert")
+#define FRAGMENT_PATH(x) concatPath(SHADER_ROOT, x ".frag")
 
-#define SHADER_PBR_VERT  __VERTEX_PATH("pbr")
-#define SHADER_PBR_FRAG  __FRAGMENT_PATH("pbr")
+#define SHADER_PBR_VERT  VERTEX_PATH("pbr")
+#define SHADER_PBR_FRAG  FRAGMENT_PATH("pbr")
 #define SHADER_PBR SHADER_PBR_VERT, SHADER_PBR_FRAG
 
-#define INTERNAL_SHADERS(x) __VERTEX_PATH(x), __FRAGMENT_PATH(x)
+#define INTERNAL_SHADERS(x) VERTEX_PATH(x), FRAGMENT_PATH(x)
 
 #else
 
@@ -25,15 +25,15 @@
 
 #endif
 
-#define RESOURCE(x) __getConfigResourcePath(x)
+#define RESOURCE(x) getConfigResourcePath(x)
 
-inline std::string __concatPath(const std::string& path1, const std::string& path2)
+inline std::string concatPath(const std::string& path1, const std::string& path2)
 {
     std::filesystem::path base(path1);
     return base.append(path2).string();
 }
 
-inline std::string __getConfigResourcePath(const std::string& relPath)
+inline std::string getConfigResourcePath(const std::string& relPath)
 {
     std::filesystem::path arg = relPath;
     if (arg.is_absolute())
@@ -55,7 +55,8 @@ namespace Lotus
         entt::resource_cache<Shader> _shaders;
         entt::resource_cache<Material> _materials;
 
-        uint32_t _currentID;
+        // TODO: Get identifiers from asset path
+        uint32_t _currentID = 0;
 
     public:
         // size_t Size() const

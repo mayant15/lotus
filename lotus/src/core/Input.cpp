@@ -1,4 +1,4 @@
-#include "lotus/events/Input.h"
+#include "lotus/Input.h"
 
 namespace Lotus
 {

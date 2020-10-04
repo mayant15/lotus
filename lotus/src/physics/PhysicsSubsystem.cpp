@@ -1,12 +1,30 @@
 #include "PhysicsSubsystem.h"
 
+#include "lotus/ecs/EntityRegistry.h"
 #include "lotus/debug.h"
+
+#include "core/SystemRegistry.h"
 
 #define PX_RELEASE(x) if(x) { x->release(); x = nullptr; }
 #define PVD_HOST "127.0.0.1"
 
 namespace Lotus::Physics
 {
+    // TODO: Do not use entt types here
+//    void onCRigidBodyConstruct(entt::registry& registry, entt::entity entity)
+//    {
+//        auto&& [rb, collider, transform] = registry.get<CRigidBody, CCollider, CTransform>(entity);
+//
+//        PhysicsObjectInfo info;
+//        info.Gravity = rb.Gravity;
+//        info.IsKinematic = rb.IsKinematic;
+//
+//        // TODO: Init collider info too
+//
+//        // TODO: Fire an event that the physics subsystem will catch
+//        GetSubsystem<PhysicsSubsystem>().CreateRigidBody(info);
+//    }
+
     PhysicsSubsystem::PhysicsSubsystem(bool usePVD)
     {
         LOG_INFO("Creating physics world");
@@ -20,6 +38,8 @@ namespace Lotus::Physics
         }
 
         _pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *_pFoundation, PxTolerancesScale(), true, _pPVD);
+
+//        GET(ECS::EntityRegistry).BindOnConstruct<CRigidBody>(onCRigidBodyConstruct);
     }
 
     void PhysicsSubsystem::CreateScene(const PhysicsSceneInfo& info)
@@ -43,19 +63,35 @@ namespace Lotus::Physics
             pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
             pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
         }
-
-        // TODO: Add geometry to scene
-        const auto defMat = _pPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-        const PxSphereGeometry geom(1.0f);
-        const PxTransform transform(PxVec3(1.0f, 1.0f, 1.0f));
-
-        PxShape* shape = _pPhysics->createShape(geom, *defMat, true);
-        PxRigidDynamic* actor = PxCreateDynamic(*_pPhysics, transform, *shape, 1.0f);
-        _pActiveScene->addActor(*actor);
-        
-        // PxRigidStatic* groundPlane = PxCreatePlane(*_pPhysics, PxPlane(0, 1, 0, 0), *defMat);
-        // _pActiveScene->addActor(*groundPlane);
     }
+
+    void PhysicsSubsystem::CreateRigidBody(const PhysicsObjectInfo& info) const
+    {
+        // TODO: Create physics materials
+        const PxMaterial* mat = _pPhysics->createMaterial(info.Material.StaticFriction, info.Material.DynamicFriction, info.Material.Restitution);
+
+        if (info.Collider->Shape == EPhysicsShape::SPHERE)
+        {
+            auto* collider = static_cast<PhysicsSphereColliderInfo*>(info.Collider);
+
+            const PxSphereGeometry geom(collider->Radius);
+            const PxTransform transform(collider->Position.x, collider->Position.y, collider->Position.z);
+
+            PxShape* shape = _pPhysics->createShape(geom, *mat, true);
+
+            PxRigidActor* actor;
+            if (info.IsKinematic)
+            {
+                actor = PxCreateStatic(*_pPhysics, transform, *shape);
+            }
+            else
+            {
+                actor = PxCreateDynamic(*_pPhysics, transform, *shape, info.Material.Density);
+            }
+            _pActiveScene->addActor(*actor);
+        }
+    }
+
 
     void PhysicsSubsystem::Update(float delta) const
     {

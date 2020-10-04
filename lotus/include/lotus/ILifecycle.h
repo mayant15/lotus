@@ -1,6 +1,6 @@
 #pragma once
 
-#include "events/Event.h"
+#include "lotus/ecs/Event.h"
 
 namespace Lotus
 {

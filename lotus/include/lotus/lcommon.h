@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <fstream>
+#include <type_traits>
 
 #include "lotus_export.h"
 #include "lotus/internal/entt/entt.hpp"
@@ -61,7 +62,7 @@ namespace Lotus
          */
         static T& Get()
         {
-            static T instance;  // NOLINT(clang-diagnostic-exit-time-destructors)
+            static T instance;
             return instance;
         }
 

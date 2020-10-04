@@ -1,5 +1,6 @@
-#include "lotus/debug.h"
 #include "GLWindow.h"
+
+#include "lotus/debug.h"
 
 namespace Lotus
 {

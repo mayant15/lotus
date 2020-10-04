@@ -1,15 +1,21 @@
 #pragma once
 
-#include "lotus/events/Event.h"
 #include "lotus/lcommon.h"
+#include "lotus/Config.h"
+#include "lotus/ILifecycle.h"
+#include "lotus/ecs/Event.h"
 
 #include <functional>
 #include <utility>
 
-#include "lotus/ILifecycle.h"
-
 namespace Lotus
 {
+    enum class EWindowBackend
+    {
+        GLFW,
+        DIRECTX
+    };
+
     /**
      * Options to configure windows
      */
@@ -34,6 +40,11 @@ namespace Lotus
          * Is this a debug context
          */
         bool IsDebug = true;
+
+        EWindowBackend Backend = EWindowBackend::GLFW;
+
+        WindowOp() = default;
+        explicit WindowOp(const Config& config);
     };
 
     /**

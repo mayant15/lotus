@@ -5,9 +5,10 @@
 #pragma once
 
 // TODO: Remove glm here to make it a dev dependency only
-#include "internal/glm/glm.hpp"
-#include "internal/glm/gtc/matrix_transform.hpp"
-#include "internal/glm/gtx/matrix_decompose.hpp"
+#include "lotus/internal/glm/glm.hpp"
+#include "lotus/internal/glm/gtc/matrix_transform.hpp"
+#include "lotus/internal/glm/gtx/matrix_decompose.hpp"
+#include "lotus/internal/glm/gtc/type_ptr.hpp"
 
 /**
  * Convenience typedefs
@@ -117,4 +118,21 @@ namespace Lotus
      * @return Float pointer to the vector data
      */
     const float* valuePtr(const Vector3f& vec);
+
+    struct CCollider
+    {
+        //
+    };
+
+    struct CSphereCollider : CCollider
+    {
+        float Radius = 1.0f;
+        Vector3f Center = Vector3f(0.0f);
+    };
+
+    struct CRigidBody
+    {
+        float Gravity = 1.0f;
+        bool IsKinematic = false;
+    };
 }

@@ -4,6 +4,8 @@
 // Include the scene that you want to render
 #include "PBR.hpp"
 
+// TODO: Eventually, the game classes should just describe behavior
+// Lotus should create a main function, driver facade
 int main()
 {
     // Have to initialize the engine first
@@ -14,8 +16,11 @@ int main()
     config.Height = 800;
     config.ResourceRoot = DEFAULT_RESOURCE_ROOT;
 
-    auto& engine = GET(Engine);
-    engine.Initialize();
+    // TODO: Move the engine class inside
+    Lotus::Initialize(config);
+
+//    auto& engine = GET(Engine);
+//    engine.Initialize();
 
     setup();
 
@@ -23,13 +28,13 @@ int main()
     exec_file(RESOURCE("scripts/hello.py"));
 
     // Bind event callbacks
-    CameraSystem cameraSystem;
     EventManager& em = EventManager::Get();
-    em.Bind<UpdateEvent, &CameraSystem::OnUpdate>(cameraSystem);
-    em.Bind<MouseEvent, &CameraSystem::OnMouseEvent>(cameraSystem);
+    em.Bind<UpdateEvent, &CameraSystem::OnUpdate>();
+    em.Bind<MouseEvent, &CameraSystem::OnMouseEvent>();
 
     // Run the main render loop
-    engine.Run();
+    // engine.Run();
+    Lotus::Run();
 
     return 0;
 }

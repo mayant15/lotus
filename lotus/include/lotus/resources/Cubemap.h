@@ -24,4 +24,9 @@ namespace Lotus
          */
         SRef<Cubemap> Load(const std::string& hdri) const;
     };
+
+    struct CSkybox
+    {
+        Handle<Cubemap> Map;
+    };
 }
