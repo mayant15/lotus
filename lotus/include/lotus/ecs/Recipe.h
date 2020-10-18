@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lotus/lcommon.h"
-#include "lotus/ecs/IComponentInfo.h"
+#include "lotus/ecs/components/IComponentInfo.h"
 
 namespace Lotus
 {

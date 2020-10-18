@@ -2,7 +2,7 @@
 
 #include "lotus/lcommon.h"
 #include "lotus/physics/physics.h"
-#include "lotus/ecs/ALight.h"
+#include "lotus/ecs/components/CLight.h"
 #include "lotus/resources/Material.h"
 
 namespace Lotus

@@ -3,7 +3,7 @@
 #include "lotus/ILifecycle.h"
 #include "lotus/resources/Model.h"
 #include "lotus/resources/Shader.h"
-#include "lotus/ecs/AActor.h"
+#include "lotus/ecs/components/CTransform.h"
 
 namespace Lotus
 {

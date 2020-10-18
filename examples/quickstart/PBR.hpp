@@ -21,13 +21,14 @@ void setup()
     cSkybox.Map = cubemap;
     sky.AddComponent<CSkybox>(cSkybox);
 
+    CTransform transform;
+    CMeshRenderer meshRenderer;
+
     // Sphere
     auto entity = CreateEntity();
-    CTransform transform;
     transform.Position = 2.0f * Y_AXIS;
     entity.AddComponent<CTransform>(transform);
 
-    CMeshRenderer meshRenderer;
     meshRenderer.Shader = shader;
     meshRenderer.Model = model;
     entity.AddComponent<CMeshRenderer>(meshRenderer);
@@ -40,65 +41,61 @@ void setup()
     // rb.Gravity = 1.0f;
     // rb.IsKinematic = false;
     // entity.AddComponent<CRigidBody>(rb);
-    //
+
     // Plane
     auto plane = CreateEntity();
-    CTransform transformPlane;
-    transformPlane.Position = -1.2f * Y_AXIS;
-    plane.AddComponent<CTransform>(transformPlane);
+    transform.Position = -1.2f * Y_AXIS;
+    plane.AddComponent<CTransform>(transform);
 
-    CMeshRenderer planeRenderer;
-    planeRenderer.Shader = shader;
-    planeRenderer.Model = planeModel;
-    plane.AddComponent<CMeshRenderer>(planeRenderer);
+    meshRenderer.Shader = shader;
+    meshRenderer.Model = planeModel;
+    plane.AddComponent<CMeshRenderer>(meshRenderer);
 
+    // Directional light
+    auto dirLight = CreateEntity();
+    transform.Rotation = Vector3f (-45.0f, -45.0f, 0.0f);
+    dirLight.AddComponent<CTransform>(transform);
+    dirLight.AddComponent<CLight>(CLight {});
 
-    // // Directional light
-    // AActor dirLight = AActor::Create(5.0f * X_AXIS);
-    // CDirectionalLight cDirectionalLight;
-    // cDirectionalLight.direction = Vector3f(-1.0f, -1.0f, 0.5f);
-    // dirLight.AddComponent<CDirectionalLight>(cDirectionalLight);
-    //
-    // // Spotlight
-    // AActor spotlight = AActor::Create(3.0f * Y_AXIS);
-    // CSpotlight cSpotlight;
-    // cSpotlight.position = 3.0f * Y_AXIS;
-    // cSpotlight.direction = -1.0f * Y_AXIS;
-    // cSpotlight.innerCutOff = 30;
-    // cSpotlight.outerCutOff = 45;
-    // spotlight.AddComponent<CSpotlight>(cSpotlight);
-    //
-    // // Point light
-    // AActor pointLight = AActor::Create(2.0f * X_AXIS);
-    // CPointLight cPointLight;
-    // cPointLight.position = 2.0f * X_AXIS;
-    // cPointLight.diffuse = Vector3f(1.0f);
-    // pointLight.AddComponent<CPointLight>(cPointLight);
-    //
-    // AActor pointLight2 = AActor::Create(-2.0f * X_AXIS);
-    // CPointLight cPointLight2;
-    // cPointLight2.position = -2.0f * X_AXIS;
-    // cPointLight2.diffuse = Vector3f(1.0f);
-    // pointLight2.AddComponent<CPointLight>(cPointLight2);
-    //
-    // AActor pointLight3 = AActor::Create(2.0f * Z_AXIS);
-    // CPointLight cPointLight3;
-    // cPointLight3.position = 2.0f * Z_AXIS;
-    // cPointLight3.diffuse = Vector3f(1.0f);
-    // pointLight3.AddComponent<CPointLight>(cPointLight3);
-    //
-    // AActor pointLight4 = AActor::Create(-2.0f * Z_AXIS);
-    // CPointLight cPointLight4;
-    // cPointLight4.position = -2.0f * Z_AXIS;
-    // cPointLight4.diffuse = Vector3f(1.0f);
-    // pointLight4.AddComponent<CPointLight>(cPointLight4);
+    // Spotlight
+    auto spotlight = CreateEntity();
+    transform.Position = 3.0f * Y_AXIS;
+    transform.Rotation = Vector3f (-90.0f, -90.0f, 0.0f);
+    spotlight.AddComponent<CTransform>(transform);
+
+    CSpotlight cSpotlight;
+    cSpotlight.innerCutOff = 30;
+    cSpotlight.outerCutOff = 45;
+    spotlight.AddComponent<CSpotlight>(cSpotlight);
+
+    CPointLight cPointLight;
+
+    // Point light
+    auto pointLight = CreateEntity();
+    transform.Position = 2.0f * X_AXIS;
+    pointLight.AddComponent<CTransform>(transform);
+    pointLight.AddComponent<CPointLight>(cPointLight);
+
+    auto pointLight2 = CreateEntity();
+    transform.Position = -2.0f * X_AXIS;
+    pointLight2.AddComponent<CTransform>(transform);
+    pointLight2.AddComponent<CPointLight>(cPointLight);
+
+    auto pointLight3 = CreateEntity();
+    transform.Position = 2.0f * Z_AXIS;
+    pointLight3.AddComponent<CTransform>(transform);
+    pointLight3.AddComponent<CPointLight>(cPointLight);
+
+    auto pointLight4 = CreateEntity();
+    transform.Position = -2.0f * Z_AXIS;
+    pointLight4.AddComponent<CTransform>(transform);
+    pointLight4.AddComponent<CPointLight>(cPointLight);
 
     // Camera
     auto camera = CreateEntity();
-    CTransform transformCamera;
-    transformCamera.Position = 10.0f * Z_AXIS + 5.0f * Y_AXIS;
-    transformCamera.Rotation = Vector3f(-20, -90, 0);
-    camera.AddComponent<CTransform>(transformCamera);
+    transform.Position = 10.0f * Z_AXIS + 5.0f * Y_AXIS;
+    transform.Rotation = Vector3f(-20, -90, 0);
+    camera.AddComponent<CTransform>(transform);
 
     CCamera cameraComponent;
     cameraComponent.FOV = 45;

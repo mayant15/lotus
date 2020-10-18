@@ -1,7 +1,8 @@
 #include "GLRenderer.h"
 
 #include "lotus/resources/AssetRegistry.h"
-#include "lotus/ecs/ACamera.h"
+#include "lotus/ecs/Entity.h"
+#include "lotus/ecs/components/CCamera.h"
 #include "lotus/debug.h"
 
 constexpr unsigned int SHADOW_WIDTH = 1024;
@@ -182,13 +183,7 @@ namespace Lotus
             const auto& [params, transform] = spView.get<CSpotlight, CTransform>(light);
             SpotLightInfo info (params);
             info.position = transform.Position;
-
-            Vector3f rotation = transform.Rotation;
-            float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-            float y = sin(glm::radians(rotation.x));
-            float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-            info.direction = LNormalize(Vector3f(x, y, z));
-
+            info.direction = GetForwardVector(transform);
             spLightParams.push_back(info);
         }
 
@@ -198,11 +193,7 @@ namespace Lotus
         {
             const auto& [params, transform] = dirView.get<CLight, CTransform>(light);
             LightInfo info (params);
-            Vector3f rotation = transform.Rotation;
-            float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-            float y = sin(glm::radians(rotation.x));
-            float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-            info.direction = LNormalize(Vector3f(x, y, z));
+            info.direction = GetForwardVector(transform);
             dirLightParams.push_back(info);
         }
 
@@ -212,13 +203,7 @@ namespace Lotus
             const auto& [param, transform] = dirView.get<CLight, CTransform>(dirView.front());
 
             // This light's direction is calculated from its forward vector
-            Vector3f rotation = transform.Rotation;
-            float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-            float y = sin(glm::radians(rotation.x));
-            float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-
-            Vector3f forward = LNormalize(Vector3f(x, y, z));
-
+            Vector3f forward = GetForwardVector(transform);
             lightView = LLookAt(transform.Position, transform.Position + forward * 10.0f, UP);
             lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
         }
@@ -229,19 +214,10 @@ namespace Lotus
             const auto& [camera, transform] = cameraView.get<CCamera, CTransform>(entity);
             if (camera.IsActive)
             {
-                Vector3f rotation = transform.Rotation;
-                float x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-                float y = sin(glm::radians(rotation.x));
-                float z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-
-                Vector3f forward = LNormalize(Vector3f(x, y, z));
-                Vector3f right = LNormalize(LCross(forward, UP));
-                Vector3f up = LNormalize(LCross(right, forward));
+                const float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
 
                 cameraPos = transform.Position;
-                view = LLookAt(cameraPos, cameraPos + forward, up);
-
-                const float aspectRatio = (float) _options.ViewportWidth / _options.ViewportHeight;
+                view = GetViewMatrix(transform);
                 projection = LPerspective(glm::radians(camera.FOV), aspectRatio, 0.1f, 100.0f);
 
                 // Set the results of the first active camera that you find, then break

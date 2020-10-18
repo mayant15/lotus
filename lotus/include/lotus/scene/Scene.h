@@ -2,7 +2,7 @@
 
 
 #include "lotus/lcommon.h"
-#include "lotus/ecs/ACamera.h"
+#include "lotus/ecs/Entity.h"
 #include "lotus/scene/SceneTreeNode.h"
 
 namespace Lotus

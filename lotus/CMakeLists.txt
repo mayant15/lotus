@@ -54,8 +54,6 @@ set(SOURCES
         src/core/SystemRegistry.cpp
 
         src/ecs/Entity.cpp
-        src/ecs/AActor.cpp
-        src/ecs/ACamera.cpp
         src/ecs/Recipe.cpp
 
         src/physics/math/operations.cpp
