@@ -8,10 +8,10 @@ CMakeFiles/
 .vs/
 .vscode/
 
-docs/doxygen/
-docs/sphinx/
-docs/api/
-docs/.vscode/
+lotus/docs/doxygen/
+lotus/docs/sphinx/
+lotus/docs/api/
+lotus/docs/.vscode/
 
 CMakeLists.txt.user
 CMakeCache.txt

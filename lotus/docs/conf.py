@@ -8,7 +8,7 @@ copyright = '2020, Studio Centauri'
 author = 'Mayant Mukul'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 
