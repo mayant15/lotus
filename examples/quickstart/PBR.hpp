@@ -16,13 +16,13 @@ void setup()
     // TODO: Load scene from file
 
     // Sky
-    auto sky = CreateEntity<Entity>();
+    auto sky = CreateEntity();
     CSkybox cSkybox;
     cSkybox.Map = cubemap;
     sky.AddComponent<CSkybox>(cSkybox);
 
     // Sphere
-    auto entity = CreateEntity<Entity>();
+    auto entity = CreateEntity();
     CTransform transform;
     transform.Position = 2.0f * Y_AXIS;
     entity.AddComponent<CTransform>(transform);
@@ -41,13 +41,18 @@ void setup()
     // rb.IsKinematic = false;
     // entity.AddComponent<CRigidBody>(rb);
     //
-    // // Plane
-    // AActor plane = AActor::Create(-1.2f * Y_AXIS);
-    // CMeshRenderer planeRenderer;
-    // planeRenderer.Shader = shader;
-    // planeRenderer.Model = planeModel;
-    // plane.AddComponent<CMeshRenderer>(planeRenderer);
-    //
+    // Plane
+    auto plane = CreateEntity();
+    CTransform transformPlane;
+    transformPlane.Position = -1.2f * Y_AXIS;
+    plane.AddComponent<CTransform>(transformPlane);
+
+    CMeshRenderer planeRenderer;
+    planeRenderer.Shader = shader;
+    planeRenderer.Model = planeModel;
+    plane.AddComponent<CMeshRenderer>(planeRenderer);
+
+
     // // Directional light
     // AActor dirLight = AActor::Create(5.0f * X_AXIS);
     // CDirectionalLight cDirectionalLight;
@@ -89,11 +94,11 @@ void setup()
     // pointLight4.AddComponent<CPointLight>(cPointLight4);
 
     // Camera
-    auto camera = CreateEntity<Entity>();
-    CTransform transform1;
-    transform1.Position = 10.0f * Z_AXIS + 5.0f * Y_AXIS;
-    transform1.Rotation = Vector3f(-20, -90, 0);
-    camera.AddComponent<CTransform>(transform1);
+    auto camera = CreateEntity();
+    CTransform transformCamera;
+    transformCamera.Position = 10.0f * Z_AXIS + 5.0f * Y_AXIS;
+    transformCamera.Rotation = Vector3f(-20, -90, 0);
+    camera.AddComponent<CTransform>(transformCamera);
 
     CCamera cameraComponent;
     cameraComponent.FOV = 45;

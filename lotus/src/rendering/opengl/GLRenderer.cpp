@@ -1,13 +1,8 @@
 #include "GLRenderer.h"
 
 #include "lotus/resources/AssetRegistry.h"
-#include "lotus/resources/Model.h"
-#include "lotus/ecs/EntityRegistry.h"
 #include "lotus/ecs/ACamera.h"
-#include "lotus/scene/SceneManager.h"
 #include "lotus/debug.h"
-
-#include "rendering/opengl/GLShader.h"
 
 constexpr unsigned int SHADOW_WIDTH = 1024;
 constexpr unsigned int SHADOW_HEIGHT = 1024;
@@ -166,9 +161,12 @@ namespace Lotus
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glCheckError();
 
+        // TODO: Custom view function
+        auto registry = GetRegistry();
+
         // Process lighting
         ptLightParams.clear();
-        auto ptView = FindEntitiesByComponent<CPointLight, CTransform>();
+        auto ptView = registry->view<CPointLight, CTransform>();
         for (auto light : ptView)
         {
             const auto& [params, transform] = ptView.get<CPointLight, CTransform>(light);
@@ -178,7 +176,7 @@ namespace Lotus
         }
 
         spLightParams.clear();
-        auto spView = FindEntitiesByComponent<CSpotlight, CTransform>();
+        auto spView = registry->view<CSpotlight, CTransform>();
         for (auto light : spView)
         {
             const auto& [params, transform] = spView.get<CSpotlight, CTransform>(light);
@@ -195,7 +193,7 @@ namespace Lotus
         }
 
         dirLightParams.clear();
-        auto dirView = FindEntitiesByComponent<CLight, CTransform>();
+        auto dirView = registry->view<CLight, CTransform>();
         for (auto light : dirView)
         {
             const auto& [params, transform] = dirView.get<CLight, CTransform>(light);
@@ -225,7 +223,7 @@ namespace Lotus
             lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
         }
 
-        auto cameraView = FindEntitiesByComponent<CCamera, CTransform>();
+        auto cameraView = registry->view<CCamera, CTransform>();
         for (auto entity : cameraView)
         {
             const auto& [camera, transform] = cameraView.get<CCamera, CTransform>(entity);
@@ -265,8 +263,10 @@ namespace Lotus
         _shadowShader->Use();
         _shadowShader->SetMat4f("lightView", lightView);
         _shadowShader->SetMat4f("lightProjection", lightProjection);
+
+        auto registry = GetRegistry();
         
-        auto entityView = FindEntitiesByComponent<CMeshRenderer, CTransform>();
+        auto entityView = registry->view<CMeshRenderer, CTransform>();
         for (auto entity : entityView)
         {
             const auto&[data, transform] = entityView.get<CMeshRenderer, CTransform>(entity);
@@ -305,7 +305,7 @@ namespace Lotus
         }
 
         // Draw skybox
-        auto skyView = FindEntitiesByComponent<CSkybox>();
+        auto skyView = registry->view<CSkybox>();
         if (!skyView.empty())
         {
             const auto& sky = skyView.get<CSkybox>(skyView.front());

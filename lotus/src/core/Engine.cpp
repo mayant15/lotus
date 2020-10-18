@@ -80,7 +80,7 @@ namespace Lotus
         eventManager.Dispatch(ShutdownEvent {});
 
         // TODO: Shutdown system registry is required?
-//        _systemRegistry->Shutdown();
+        _systemRegistry->Shutdown();
     }
 
     void Engine::tick(float delta)

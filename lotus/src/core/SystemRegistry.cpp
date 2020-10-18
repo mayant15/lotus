@@ -2,7 +2,7 @@
 
 #include "lotus/debug.h"
 #include "lotus/ecs/EventManager.h"
-#include "lotus/ecs/EntityRegistry.h"
+#include "lotus/ecs/Entity.h"
 #include "rendering/opengl/GLRenderer.h"
 
 namespace Lotus
@@ -10,7 +10,7 @@ namespace Lotus
     void SystemRegistry::Initialize(const Config& config)
     {
         // Create the entity registry
-        GET(EntityRegistry);
+        ECSInitialize();
 
         auto& eventManager = GET(EventManager);
 
@@ -53,7 +53,7 @@ namespace Lotus
 
     void SystemRegistry::Shutdown() const
     {
-        //
+        ECSShutdown();
     }
 
 //    void SubsystemManager::Start() const

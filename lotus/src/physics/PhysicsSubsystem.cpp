@@ -1,6 +1,5 @@
 #include "PhysicsSubsystem.h"
 
-#include "lotus/ecs/EntityRegistry.h"
 #include "lotus/debug.h"
 
 #include "core/SystemRegistry.h"

@@ -53,8 +53,10 @@ set(SOURCES
         src/core/IWindow.cpp
         src/core/SystemRegistry.cpp
 
+        src/ecs/Entity.cpp
         src/ecs/AActor.cpp
         src/ecs/ACamera.cpp
+        src/ecs/Recipe.cpp
 
         src/physics/math/operations.cpp
         src/physics/PxImpl.cpp
@@ -74,7 +76,7 @@ set(SOURCES
 
         src/scene/SceneManager.cpp
         src/scene/SceneTreeNode.cpp
-)
+        src/ecs/Recipe.cpp)
 
 add_library(lotus SHARED ${SOURCES})
 target_link_libraries(lotus PRIVATE ${DEPENDENCIES})

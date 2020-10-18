@@ -10,7 +10,6 @@
 #include "lcommon.h"
 #include "physics/physics.h"
 
-#include "ecs/EntityRegistry.h"
 #include "ecs/Entity.h"
 #include "ecs/AActor.h"
 #include "ecs/ACamera.h"

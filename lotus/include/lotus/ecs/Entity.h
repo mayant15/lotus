@@ -1,9 +1,16 @@
 #pragma once
 
-#include "lotus/ecs/EntityRegistry.h"
+#include "lotus/ecs/Recipe.h"
 
 namespace Lotus
 {
+    /**
+     * @brief An entity handle, essentially just an int.
+    */
+    typedef entt::entity EntityID;
+
+    constexpr auto NULL_ENTITY = entt::null;
+
     /**
     * @brief Lightweight wrapper class to represent entities.
     *
@@ -11,22 +18,19 @@ namespace Lotus
     * It provides methods to manipulate components and destroy the entity. The class wraps
     * an entity handle and a registry pointer, and is therefore lightweight enough to be passed
     * around.
-    *
-    * @note Creating this object is **not** the same as creating an entity with the registry.
-    * If you want to instantiate a new entity, use Lotus::ECS::Create<Entity>() instead.
    */
     class LOTUS_API Entity
     {
         EntityID _id = entt::null;
-        EntityRegistry* _registry = nullptr;
+        entt::registry* _registry = nullptr;
 
     public:
-        Entity(EntityID id, EntityRegistry* registry) : _id(id), _registry(registry) {}
+        Entity(EntityID id, entt::registry* registry) : _id(id), _registry(registry) {}
 
         /**
          * @brief Overload this operator to allow casts to EntityID.
         */
-        operator EntityID() const
+        explicit operator EntityID() const
         {
             return _id;
         }
@@ -41,7 +45,7 @@ namespace Lotus
         template<typename Component, typename ...Args>
         Component& AddComponent(Args&& ...args)
         {
-            return _registry->AddComponentToEntity<Component>(_id, std::forward<Args>(args)...);
+            return _registry->emplace<Component>(_id, std::forward<Args>(args)...);
         }
 
         /**
@@ -52,7 +56,7 @@ namespace Lotus
         template<typename... Components>
         decltype(auto) GetComponent()
         {
-            return _registry->GetComponentFromEntity<Components...>(_id);
+            return _registry->get<Components...>(_id);
         }
 
         /**
@@ -61,7 +65,7 @@ namespace Lotus
         // ReSharper disable once CppMemberFunctionMayBeConst
         void Destroy()
         {
-            _registry->DestroyEntity(_id);
+            _registry->destroy(_id);
         }
 
         // TODO: Implement
@@ -74,4 +78,11 @@ namespace Lotus
             return { data };
         }
     };
+
+    void ECSInitialize();
+    void ECSShutdown();
+
+    LOTUS_API entt::registry* GetRegistry();
+    LOTUS_API Entity CreateEntity();
+    LOTUS_API Entity CreateEntity(const Recipe& recipe);
 }

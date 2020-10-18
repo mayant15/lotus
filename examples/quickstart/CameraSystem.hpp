@@ -36,7 +36,7 @@ public:
 
     static void OnMouseEvent(const MouseEvent& event)
     {
-        auto view = FindEntitiesByComponent<CCamera, CTransform>();
+        auto view = GetRegistry()->view<CCamera, CTransform>();
         for (auto entity : view)
         {
             const auto& [camera, transform] = view.get<CCamera, CTransform>(entity);

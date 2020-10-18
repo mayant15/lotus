@@ -1,5 +1,8 @@
 #pragma once
 
+#include "lotus/lcommon.h"
+#include "lotus/ecs/IComponentInfo.h"
+
 namespace Lotus
 {
     /**
@@ -7,8 +10,21 @@ namespace Lotus
      *
      * Equivalent to a prefab
      */
-    class Recipe
+    class LOTUS_API Recipe
     {
-        //
+        std::vector<IComponentInfo> _components;
+
+    public:
+        Recipe(const std::string& path);
+
+        [[nodiscard]] auto begin() const noexcept
+        {
+            return _components.begin();
+        }
+
+        [[nodiscard]] auto end() const noexcept
+        {
+            return _components.end();
+        }
     };
 }
