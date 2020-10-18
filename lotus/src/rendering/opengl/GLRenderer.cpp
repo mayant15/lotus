@@ -327,6 +327,7 @@ namespace Lotus
                 sourceString = "Source: Application";
                 break;
             case GL_DEBUG_SOURCE_OTHER:
+            default:
                 sourceString = "Source: Other";
                 break;
         }
@@ -357,6 +358,7 @@ namespace Lotus
                 typeString = "Type: Pop Group";
                 break;
             case GL_DEBUG_TYPE_OTHER:
+            default:
                 typeString = "Type: Other";
                 break;
         }
@@ -366,12 +368,11 @@ namespace Lotus
                 LOG_ERROR ("({}): {}. {}. {}", id, message, sourceString, typeString);
                 break;
             case GL_DEBUG_SEVERITY_MEDIUM:
-                LOG_WARN  ("({}): {}. {}. {}", id, message, sourceString, typeString);
-                break;
             case GL_DEBUG_SEVERITY_LOW:
                 LOG_WARN  ("({}): {}. {}. {}", id, message, sourceString, typeString);
                 break;
             case GL_DEBUG_SEVERITY_NOTIFICATION:
+            default:
                 LOG_INFO  ("({}): {}. {}. {}", id, message, sourceString, typeString);
                 break;
         }

@@ -51,8 +51,8 @@ set(SOURCES
         src/core/Engine.cpp
         src/core/Input.cpp
         src/core/IWindow.cpp
-        src/core/SystemRegistry.cpp
 
+        src/ecs/SystemRegistry.cpp
         src/ecs/Entity.cpp
         src/ecs/Recipe.cpp
 

@@ -16,11 +16,7 @@ int main()
     config.Height = 800;
     config.ResourceRoot = DEFAULT_RESOURCE_ROOT;
 
-    // TODO: Move the engine class inside
     Lotus::Initialize(config);
-
-//    auto& engine = GET(Engine);
-//    engine.Initialize();
 
     setup();
 
@@ -28,12 +24,12 @@ int main()
     exec_file(RESOURCE("scripts/hello.py"));
 
     // Bind event callbacks
+    // TODO: Bind with reflection
     EventManager& em = EventManager::Get();
     em.Bind<UpdateEvent, &CameraSystem::OnUpdate>();
     em.Bind<MouseEvent, &CameraSystem::OnMouseEvent>();
 
     // Run the main render loop
-    // engine.Run();
     Lotus::Run();
 
     return 0;

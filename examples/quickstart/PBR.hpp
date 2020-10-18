@@ -33,14 +33,16 @@ void setup()
     meshRenderer.Model = model;
     entity.AddComponent<CMeshRenderer>(meshRenderer);
 
-    // CSphereCollider collider;
-    // collider.Radius = 2.0f;
-    // entity.AddComponent<CSphereCollider>(collider);
-    //
-    // CRigidBody rb;
-    // rb.Gravity = 1.0f;
-    // rb.IsKinematic = false;
-    // entity.AddComponent<CRigidBody>(rb);
+    CCollider collider;
+    collider.Radius = 2.0f;
+    collider.Shape = EPhysicsShape::SPHERE;
+    collider.Position = 2.0f * Y_AXIS;
+    entity.AddComponent<CCollider>(collider);
+
+    CRigidBody rb;
+    rb.Gravity = 1.0f;
+    rb.IsKinematic = false;
+    entity.AddComponent<CRigidBody>(rb);
 
     // Plane
     auto plane = CreateEntity();

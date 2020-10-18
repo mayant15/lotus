@@ -43,11 +43,9 @@ namespace Lotus
         eventManager.Bind<DestroyEvent, &IWindow::OnDestroy>(_window.get());
         eventManager.Bind<ShutdownEvent, &IWindow::OnShutdown>(_window.get());
 
-        eventManager.Bind<WindowCloseEvent, &Engine::onWindowClose>(this);
+        eventManager.Bind<WindowCloseEvent, &Engine::OnWindowClose>(this);
 
-        _systemRegistry = std::make_unique<SystemRegistry>();
-        _systemRegistry->Initialize(config);
-
+        _systemRegistry = std::make_unique<SystemRegistry>(config);
         eventManager.Dispatch(InitEvent {});
     }
 
@@ -103,7 +101,7 @@ namespace Lotus
         eventManager.DispatchAll();
     }
 
-    void Engine::onWindowClose(const WindowCloseEvent &event)
+    void Engine::OnWindowClose(const WindowCloseEvent &event)
     {
         _isRunning = false;
     }

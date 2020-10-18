@@ -5,6 +5,8 @@
 #include "lotus/Renderer.h"
 #include "lotus/Input.h"
 
+#include "physics/PhysicsSubsystem.h"
+
 namespace Lotus
 {
     /**
@@ -20,23 +22,17 @@ namespace Lotus
     {
         Renderer* _renderer;
         Input* _input;
-//        std::unordered_map<std::string, ISystem> _userSystems;
+        URef<Physics::PhysicsSubsystem> _physics;
 
     public:
         /**
          * @brief Starts all subsystems
         */
-        void Initialize(const Config& config);
-
-        /**
-         * @brief Run the tick for each subsystem
-         * @param delta timestep
-         * TODO: Ticks should run independently
-        */
-        void Update(float delta) const;
+        explicit SystemRegistry(const Config& config);
 
         /**
          * @brief Shutdown all subsystems
+         * TODO: This only handles ECS for now. Move that to an event-based thing too
         */
         void Shutdown() const;
     };

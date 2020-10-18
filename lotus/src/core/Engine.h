@@ -5,8 +5,8 @@
 #include "lotus/ecs/Event.h"
 #include "lotus/Config.h"
 
-#include "core/SystemRegistry.h"
 #include "core/IWindow.h"
+#include "ecs/SystemRegistry.h"
 
 namespace Lotus
 {
@@ -39,13 +39,13 @@ namespace Lotus
          */
         void Shutdown();
 
+        void OnWindowClose(const WindowCloseEvent& event);
+
     private:
         friend Singleton<Engine>;
 
         Engine() = default;
 
         void tick(float delta);
-
-        void onWindowClose(const WindowCloseEvent& event);
     };
 }

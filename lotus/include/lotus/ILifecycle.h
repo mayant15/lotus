@@ -5,14 +5,63 @@
 namespace Lotus
 {
 
-    struct InitEvent : Event {};
-    struct BeginEvent : Event {};
-    struct PreUpdateEvent : Event {};
-    struct UpdateEvent : Event { float DeltaTime = 0.0f; };
-    struct PostUpdateEvent : Event {};
-    struct PreDestroyEvent : Event {};
-    struct DestroyEvent : Event {};
-    struct ShutdownEvent : Event {};
+    struct InitEvent : Event
+    {
+        InitEvent()
+        {
+            Immediate = true;
+        }
+    };
+
+    struct BeginEvent : Event
+    {
+        BeginEvent()
+        {
+            Immediate = true;
+        }
+    };
+
+    struct PreUpdateEvent : Event
+    {
+        PreUpdateEvent()
+        {
+            Immediate = true;
+        }
+    };
+
+    struct UpdateEvent : Event
+    {
+        float DeltaTime = 0.0f;
+
+        UpdateEvent()
+        {
+            Immediate = true;
+        }
+    };
+
+    struct PostUpdateEvent : Event
+    {
+        PostUpdateEvent()
+        {
+            Immediate = true;
+        }
+    };
+
+    struct PreDestroyEvent : Event
+    {
+        PreDestroyEvent()
+        {
+            Immediate = true;
+        }
+    };
+
+    struct DestroyEvent : Event
+    {
+    };
+
+    struct ShutdownEvent : Event
+    {
+    };
 
     /**
      * Base class to define lifecycle hooks

@@ -2,12 +2,13 @@
 
 #include "lotus/debug.h"
 #include "lotus/ecs/EventManager.h"
-#include "lotus/ecs/Entity.h"
+
 #include "rendering/opengl/GLRenderer.h"
+
 
 namespace Lotus
 {
-    void SystemRegistry::Initialize(const Config& config)
+    SystemRegistry::SystemRegistry(const Config& config)
     {
         // Create the entity registry
         ECSInitialize();
@@ -30,7 +31,7 @@ namespace Lotus
             case ERenderAPI::VULKAN: LOG_ERROR("Vulkan is not yet supported."); break;
         }
 
-        RendererOp rendererOp;
+        RendererOp rendererOp {};
         rendererOp.IsDebug = config.IsDebug;
         rendererOp.RenderAPI = config.RenderAPI;
         rendererOp.ViewportWidth = config.Width;
@@ -38,37 +39,25 @@ namespace Lotus
         _renderer->Initialize(rendererOp);
 
         // Register Events
-        // TODO: Bind with reflection
         eventManager.Bind<PreUpdateEvent, &Renderer::OnPreUpdate>(_renderer);
         eventManager.Bind<UpdateEvent, &Renderer::OnUpdate>(_renderer);
 
         // Create Physics
-        // Register Events
-    }
+        _physics = std::make_unique<Physics::PhysicsSubsystem>();
 
-    void SystemRegistry::Update(float delta) const
-    {
-        //
+        // Register Events
+        {
+            using namespace Physics;
+            eventManager.Bind<InitEvent, &PhysicsSubsystem::OnInit>(_physics.get());
+            eventManager.Bind<BeginEvent, &PhysicsSubsystem::OnBegin>(_physics.get());
+            eventManager.Bind<UpdateEvent, &PhysicsSubsystem::OnUpdate>(_physics.get());
+            eventManager.Bind<DestroyEvent, &PhysicsSubsystem::OnDestroy>(_physics.get());
+            eventManager.Bind<ComponentCreateEvent<CRigidBody>, &PhysicsSubsystem::OnRigidbodyCreate>(_physics.get());
+        }
     }
 
     void SystemRegistry::Shutdown() const
     {
         ECSShutdown();
     }
-
-//    void SubsystemManager::Start() const
-//    {
-//        // TODO: Create scenes through the scene manager
-//        _pPhysics->CreateScene(Physics::PhysicsSceneInfo()); // default scene info
-//    }
-
-//    void SubsystemManager::Update(float delta) const
-//    {
-//        _pPhysics->Update(delta);
-//    }
-
-//    void SubsystemManager::Shutdown() const
-//    {
-//        _pPhysics->Shutdown();
-//    }
 }

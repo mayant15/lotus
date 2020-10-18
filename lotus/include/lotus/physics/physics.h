@@ -119,17 +119,24 @@ namespace Lotus
      */
     const float* valuePtr(const Vector3f& vec);
 
+    enum class EPhysicsShape
+    {
+        SPHERE,
+        CAPSULE,
+        BOX
+    };
+
+    // TODO: Implement other shapes
     struct CCollider
     {
-        //
-    };
-
-    struct CSphereCollider : CCollider
-    {
+        EPhysicsShape Shape;
         float Radius = 1.0f;
-        Vector3f Center = Vector3f(0.0f);
+        Vector3f Position = Vector3f {1.0f};
     };
 
+    /**
+     * @attention You must add a collider and a transform before adding a rigidbody component
+     */
     struct CRigidBody
     {
         float Gravity = 1.0f;

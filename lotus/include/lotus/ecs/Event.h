@@ -100,10 +100,4 @@ namespace Lotus
             Category = EEventCategory::INPUT;
         }
     };
-
-    template <typename T>
-    struct LOTUS_API ComponentCreateEvent : public Event
-    {
-        const T& Component;
-    };
 }

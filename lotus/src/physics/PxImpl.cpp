@@ -5,7 +5,7 @@ namespace Lotus::Physics
 {
     void PhysXErrorCallback::reportError(PxErrorCode::Enum code, const char* message, const char* file, int line)
     {
-        const char* errorCode = NULL;
+        const char* errorCode = nullptr;
 
         switch (code)
         {

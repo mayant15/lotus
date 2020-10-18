@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lotus/ecs/Recipe.h"
+#include "Event.h"
 
 namespace Lotus
 {
@@ -77,6 +78,12 @@ namespace Lotus
 
             return { data };
         }
+    };
+
+    template <typename T>
+    struct LOTUS_API ComponentCreateEvent : public Event
+    {
+        EntityID entityID;
     };
 
     void ECSInitialize();

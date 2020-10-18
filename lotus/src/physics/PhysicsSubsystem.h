@@ -1,6 +1,9 @@
 #pragma once
 
 #include "lotus/physics/physics.h"
+#include "lotus/ILifecycle.h"
+#include "lotus/ecs/Entity.h"
+
 #include "physics/PxImpl.h"
 
 namespace Lotus::Physics
@@ -44,20 +47,25 @@ namespace Lotus::Physics
         float Density = 1.0f;
     };
 
-    enum class EPhysicsShape
-    {
-        SPHERE
-    };
-
     struct PhysicsColliderInfo
     {
-        EPhysicsShape Shape = EPhysicsShape::SPHERE;
         Vector3f Position = Vector3f(0.0f);
     };
 
     struct PhysicsSphereColliderInfo : PhysicsColliderInfo
     {
         float Radius = 1.0f;
+    };
+
+    struct PhysicsCapsuleColliderInfo : PhysicsColliderInfo
+    {
+        float Radius = 0.5f;
+        float Height = 1.0f;
+    };
+
+    struct PhysicsBoxColliderInfo : PhysicsColliderInfo
+    {
+        Vector3f Dimensions = Vector3f (1.0f);
     };
 
     struct PhysicsObjectInfo
@@ -93,8 +101,9 @@ namespace Lotus::Physics
      * provides methods that can be used by other subsystems to interact with the
      * physics world.
     */
-    class PhysicsSubsystem
+    class PhysicsSubsystem : public ILifecycle
     {
+        bool _usePVD = true;
         PxDefaultAllocator _allocator;
         PhysXErrorCallback _errorCallback;
         PxFoundation* _pFoundation = nullptr;
@@ -108,28 +117,34 @@ namespace Lotus::Physics
          * @brief Create and intialize the subsystem object.
          * @param usePVD Whether to connect to PhysX Visual Debugger. Will not work in release builds.
         */
-        PhysicsSubsystem(bool usePVD = true);
+        explicit PhysicsSubsystem(bool usePVD = true) : _usePVD(usePVD) {}
+
+        void OnRigidbodyCreate(const ComponentCreateEvent<CRigidBody>& event);
+
+        void OnInit(const InitEvent& event) override;
+
+        void OnBegin(const BeginEvent& event) override;
+
+        void OnPreUpdate(const PreUpdateEvent& event) override;
+
+        void OnUpdate(const UpdateEvent& event) override;
+
+        void OnPostUpdate(const PostUpdateEvent& event) override;
+
+        void OnPreDestroy(const PreDestroyEvent& event) override;
+
+        void OnDestroy(const DestroyEvent& event) override;
+
+        void OnShutdown(const ShutdownEvent& event) override;
+
+    private:
+        void createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry) const;
 
         /**
          * @brief Create a new physics scene. These scenes are independent from the ones that
          * are rendered, and are used by PhysX internally for simulation.
          * @param info Config for the scene's physical properties.
         */
-        void CreateScene(const PhysicsSceneInfo& info);
-
-
-        void CreateRigidBody(const PhysicsObjectInfo& info) const;
-
-        /**
-         * @brief Progress the simulation
-         * @param delta timestep
-        */
-        void Update(float delta) const;
-
-        /**
-         * @brief Shutdown the simulation and destroy PhysX objects
-        */
-        void Shutdown();
-
+        void createScene(const PhysicsSceneInfo& info);
     };
 }
