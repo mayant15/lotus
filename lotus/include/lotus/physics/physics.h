@@ -129,9 +129,43 @@ namespace Lotus
     // TODO: Implement other shapes
     struct CCollider
     {
+        /**
+         * The shape of the collider
+         */
         EPhysicsShape Shape;
+
+        /**
+         * Position of the collider's center, relative to the transform
+         */
+        Vector3f Position = Vector3f {0.0f};
+    };
+
+    struct CSphereCollider : CCollider
+    {
         float Radius = 1.0f;
-        Vector3f Position = Vector3f {1.0f};
+        CSphereCollider()
+        {
+            Shape = EPhysicsShape::SPHERE;
+        }
+    };
+
+    struct CBoxCollider : CCollider
+    {
+        Vector3f Dimensions = Vector3f {1.0f};
+        CBoxCollider()
+        {
+            Shape = EPhysicsShape::BOX;
+        }
+    };
+
+    struct CCapsuleCollider : CCollider
+    {
+        float Radius = 1.0f;
+        float Height = 1.0f;
+        CCapsuleCollider()
+        {
+            Shape = EPhysicsShape::CAPSULE;
+        }
     };
 
     /**

@@ -51,6 +51,7 @@ namespace Lotus
             eventManager.Bind<InitEvent, &PhysicsSubsystem::OnInit>(_physics.get());
             eventManager.Bind<BeginEvent, &PhysicsSubsystem::OnBegin>(_physics.get());
             eventManager.Bind<UpdateEvent, &PhysicsSubsystem::OnUpdate>(_physics.get());
+            eventManager.Bind<PostUpdateEvent, &PhysicsSubsystem::OnPostUpdate>(_physics.get());
             eventManager.Bind<DestroyEvent, &PhysicsSubsystem::OnDestroy>(_physics.get());
             eventManager.Bind<ComponentCreateEvent<CRigidBody>, &PhysicsSubsystem::OnRigidbodyCreate>(_physics.get());
         }

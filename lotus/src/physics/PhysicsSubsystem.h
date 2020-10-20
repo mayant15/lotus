@@ -138,7 +138,7 @@ namespace Lotus::Physics
         void OnShutdown(const ShutdownEvent& event) override;
 
     private:
-        void createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry) const;
+        PxRigidActor* createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry) const;
 
         /**
          * @brief Create a new physics scene. These scenes are independent from the ones that

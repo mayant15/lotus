@@ -26,18 +26,16 @@ void setup()
 
     // Sphere
     auto entity = CreateEntity();
-    transform.Position = 2.0f * Y_AXIS;
+    transform.Position = 7.0f * Y_AXIS;
     entity.AddComponent<CTransform>(transform);
 
     meshRenderer.Shader = shader;
     meshRenderer.Model = model;
     entity.AddComponent<CMeshRenderer>(meshRenderer);
 
-    CCollider collider;
+    CSphereCollider collider;
     collider.Radius = 2.0f;
-    collider.Shape = EPhysicsShape::SPHERE;
-    collider.Position = 2.0f * Y_AXIS;
-    entity.AddComponent<CCollider>(collider);
+    entity.AddComponent<CSphereCollider>(collider);
 
     CRigidBody rb;
     rb.Gravity = 1.0f;
@@ -52,6 +50,14 @@ void setup()
     meshRenderer.Shader = shader;
     meshRenderer.Model = planeModel;
     plane.AddComponent<CMeshRenderer>(meshRenderer);
+
+    CBoxCollider boxCollider;
+    boxCollider.Dimensions = Vector3f {5.0, 0.2f, 5.0f};
+    plane.AddComponent<CBoxCollider>(boxCollider);
+
+    rb.Gravity = 1.0f;
+    rb.IsKinematic = true;
+    plane.AddComponent<CRigidBody>(rb);
 
     // Directional light
     auto dirLight = CreateEntity();
