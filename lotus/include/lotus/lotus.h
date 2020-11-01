@@ -22,7 +22,7 @@
 #include "ecs/Recipe.h"
 
 #include "resources/AssetRegistry.h"
-#include "resources/Cubemap.h"
+#include "resources/HDRI.h"
 #include "resources/Material.h"
 #include "resources/Model.h"
 #include "resources/Shader.h"

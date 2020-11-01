@@ -5,6 +5,8 @@
 #include "lotus/ecs/components/CCamera.h"
 #include "lotus/debug.h"
 
+#include "rendering/Primitives.h"
+
 constexpr unsigned int SHADOW_WIDTH = 1024;
 constexpr unsigned int SHADOW_HEIGHT = 1024;
 
@@ -292,9 +294,9 @@ namespace Lotus
             _skyShader->SetMat4f("projection", projection);
 
             // skybox cube
-            glBindVertexArray(sky.Map->VAO);
+            glBindVertexArray(RHI::GetCubeVAO());
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, sky.Map->ID);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, sky.Map->EnvironmentMap);
             glDrawArrays(GL_TRIANGLES, 0, 36);
             glBindVertexArray(0);
             glDepthFunc(GL_LESS); // set depth function back to default

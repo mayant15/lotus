@@ -65,8 +65,10 @@ set(SOURCES
 
         src/rendering/opengl/GLRenderer.cpp
         src/rendering/opengl/GLShader.cpp
+        src/rendering/opengl/RHIImpl.cpp
+        src/rendering/Primitives.cpp
 
-        src/resources/Cubemap.cpp
+        src/resources/HDRI.cpp
         src/resources/Material.cpp
         src/resources/Model.cpp
         src/resources/Shader.cpp
@@ -74,7 +76,9 @@ set(SOURCES
 
         src/scene/SceneManager.cpp
         src/scene/SceneTreeNode.cpp
-        src/ecs/Recipe.cpp)
+
+        src/ecs/Recipe.cpp
+)
 
 add_library(lotus SHARED ${SOURCES})
 target_link_libraries(lotus PRIVATE ${DEPENDENCIES})

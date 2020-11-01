@@ -12,13 +12,13 @@ void setup()
     // Initialize and import the model
     auto model = assetRegistry.LoadModel(RESOURCE("mesh/sphere.json"));
     auto planeModel = assetRegistry.LoadModel(RESOURCE("mesh/plane.json"));
-    auto cubemap = assetRegistry.LoadCubemap(RESOURCE("skybox/klopp.hdr"));
+    auto hdri = assetRegistry.LoadHDRI(RESOURCE("skybox/klopp.hdr"));
     // TODO: Load scene from file
 
     // Sky
     auto sky = CreateEntity();
     CSkybox cSkybox;
-    cSkybox.Map = cubemap;
+    cSkybox.Map = hdri;
     sky.AddComponent<CSkybox>(cSkybox);
 
     CTransform transform;
@@ -26,21 +26,21 @@ void setup()
 
     // Sphere
     auto entity = CreateEntity();
-    transform.Position = 7.0f * Y_AXIS;
+    transform.Position = 1.0f * Y_AXIS;
     entity.AddComponent<CTransform>(transform);
 
     meshRenderer.Shader = shader;
     meshRenderer.Model = model;
     entity.AddComponent<CMeshRenderer>(meshRenderer);
 
-    CSphereCollider collider;
-    collider.Radius = 2.0f;
-    entity.AddComponent<CSphereCollider>(collider);
-
-    CRigidBody rb;
-    rb.Gravity = 1.0f;
-    rb.IsKinematic = false;
-    entity.AddComponent<CRigidBody>(rb);
+//    CSphereCollider collider;
+//    collider.Radius = 2.0f;
+//    entity.AddComponent<CSphereCollider>(collider);
+//
+//    CRigidBody rb;
+//    rb.Gravity = 1.0f;
+//    rb.IsKinematic = false;
+//    entity.AddComponent<CRigidBody>(rb);
 
     // Plane
     auto plane = CreateEntity();
@@ -51,13 +51,13 @@ void setup()
     meshRenderer.Model = planeModel;
     plane.AddComponent<CMeshRenderer>(meshRenderer);
 
-    CBoxCollider boxCollider;
-    boxCollider.Dimensions = Vector3f {5.0, 0.2f, 5.0f};
-    plane.AddComponent<CBoxCollider>(boxCollider);
-
-    rb.Gravity = 1.0f;
-    rb.IsKinematic = true;
-    plane.AddComponent<CRigidBody>(rb);
+//    CBoxCollider boxCollider;
+//    boxCollider.Dimensions = Vector3f {5.0, 0.2f, 5.0f};
+//    plane.AddComponent<CBoxCollider>(boxCollider);
+//
+//    rb.Gravity = 1.0f;
+//    rb.IsKinematic = true;
+//    plane.AddComponent<CRigidBody>(rb);
 
     // Directional light
     auto dirLight = CreateEntity();
@@ -83,21 +83,21 @@ void setup()
     transform.Position = 2.0f * X_AXIS;
     pointLight.AddComponent<CTransform>(transform);
     pointLight.AddComponent<CPointLight>(cPointLight);
-
-    auto pointLight2 = CreateEntity();
-    transform.Position = -2.0f * X_AXIS;
-    pointLight2.AddComponent<CTransform>(transform);
-    pointLight2.AddComponent<CPointLight>(cPointLight);
-
-    auto pointLight3 = CreateEntity();
-    transform.Position = 2.0f * Z_AXIS;
-    pointLight3.AddComponent<CTransform>(transform);
-    pointLight3.AddComponent<CPointLight>(cPointLight);
-
-    auto pointLight4 = CreateEntity();
-    transform.Position = -2.0f * Z_AXIS;
-    pointLight4.AddComponent<CTransform>(transform);
-    pointLight4.AddComponent<CPointLight>(cPointLight);
+//
+//    auto pointLight2 = CreateEntity();
+//    transform.Position = -2.0f * X_AXIS;
+//    pointLight2.AddComponent<CTransform>(transform);
+//    pointLight2.AddComponent<CPointLight>(cPointLight);
+//
+//    auto pointLight3 = CreateEntity();
+//    transform.Position = 2.0f * Z_AXIS;
+//    pointLight3.AddComponent<CTransform>(transform);
+//    pointLight3.AddComponent<CPointLight>(cPointLight);
+//
+//    auto pointLight4 = CreateEntity();
+//    transform.Position = -2.0f * Z_AXIS;
+//    pointLight4.AddComponent<CTransform>(transform);
+//    pointLight4.AddComponent<CPointLight>(cPointLight);
 
     // Camera
     auto camera = CreateEntity();

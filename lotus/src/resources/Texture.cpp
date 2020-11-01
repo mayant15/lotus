@@ -1,36 +1,28 @@
-#include "lotus/debug.h"
 #include "lotus/resources/Texture.h"
+#include "lotus/debug.h"
 
-#include "rendering/opengl/GLRenderer.h"
-#include "stb_image.h"
+#include "rendering/RHI.h"
+
+#include <stb_image.h>
 
 namespace Lotus
 {
     SRef<Texture> TextureLoader::Load(const std::string& path) const
     {
-        int width, height, nrComponents;
-        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
-        unsigned int format;
+        SRef<Texture> texture = std::make_shared<Texture>();
+
+        int width, height, nChannels;
+        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nChannels, 0);
         if (data)
         {
-            if (nrComponents == 1)
-            {
-                format = RED;
-            }
-            else if (nrComponents == 3)
-            {
-                format = RGB;
-            }
-            else if (nrComponents == 4)
-            {
-                format = RGBA;
-            }
-            else
-            {
-                LOG_ERROR("Cannot load texture. Invalid image color format.");
-                stbi_image_free(data);
-                throw std::invalid_argument("image color format unknown");
-            }
+            RHI::TextureInfo info {};
+            info.Data = data;
+            info.Width = width;
+            info.Height = height;
+            info.Format = RHI::FormatFromChannel(nChannels);
+            info.InternalFormat = info.Format; // Use the same format
+            info.DataType = GL_UNSIGNED_BYTE;
+            texture->ID = RHI::CreateTexture(info);
         }
         else
         {
@@ -39,12 +31,6 @@ namespace Lotus
             throw std::invalid_argument("image data invalid");
         }
 
-        // TODO: Make API independent. Fire an event?
-        GLRenderer& renderer = GLRenderer::Get();
-        const uint32_t textureID = renderer.createTexture(data, width, height, format);
-
-        SRef<Texture> texture = std::make_shared<Texture>();
-        texture->ID = textureID;
         return texture;
     }
 }

@@ -3,7 +3,7 @@
 #include "lotus/Config.h"
 #include "lotus/resources/Model.h"
 #include "lotus/resources/Shader.h"
-#include "lotus/resources/Cubemap.h"
+#include "lotus/resources/HDRI.h"
 
 #include <filesystem>
 
@@ -17,6 +17,7 @@
 #define SHADER_PBR_FRAG  FRAGMENT_PATH("pbr")
 #define SHADER_PBR SHADER_PBR_VERT, SHADER_PBR_FRAG
 
+// TODO: Internal shaders are only used by the engine. Move this definition somewhere inside
 #define INTERNAL_SHADERS(x) VERTEX_PATH(x), FRAGMENT_PATH(x)
 
 #else
@@ -51,7 +52,7 @@ namespace Lotus
     {
         entt::resource_cache<Texture> _textures;
         entt::resource_cache<Model> _models;
-        entt::resource_cache<Cubemap> _cubemaps;
+        entt::resource_cache<HDRI> _cubemaps;
         entt::resource_cache<Shader> _shaders;
         entt::resource_cache<Material> _materials;
 
@@ -99,11 +100,11 @@ namespace Lotus
         }
 
         template<typename... Args>
-        Handle<Cubemap> LoadCubemap(Args&& ...args)
+        Handle<HDRI> LoadHDRI(Args&& ...args)
         {
             auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
             _currentID++;
-            return _cubemaps.load<CubemapLoader>(identifier, std::forward<Args>(args)...);
+            return _cubemaps.load<HDRILoader>(identifier, std::forward<Args>(args)...);
         }
 
         template<typename... Args>

@@ -2,18 +2,11 @@
 
 #include "lotus/lcommon.h"
 
-#define DIFFUSE_TEXTURE "texture_diffuse"
-#define SPECULAR_TEXTURE "texture_specular"
-
-#define RED GL_RED
-#define RGB GL_RGB
-#define RGBA GL_RGBA
-
 namespace Lotus
 {
-    struct LOTUS_API Texture
+    struct Texture
     {
-        uint32_t ID = 0;
+        unsigned int ID = 0;
     };
 
     LOADER(TextureLoader, Texture)
