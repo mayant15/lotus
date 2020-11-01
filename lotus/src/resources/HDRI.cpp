@@ -33,12 +33,22 @@ namespace Lotus
         texInfo.InternalFormat = RHI::ETextureFormat::RGB16F;
         texInfo.Format = RHI::ETextureFormat::RGB;
         auto envMap = RHI::CreateCubeMap(texInfo);
+
+        texInfo.Width = 32;
+        texInfo.Height = 32;
         auto irradianceMap = RHI::CreateCubeMap(texInfo);
 
         auto vao = RHI::GetCubeVAO();
 
         RHI::FrameBufferInfo fbInfo {};
         auto frameBuffer = RHI::CreateFrameBuffer(fbInfo);
+
+        RHI::RenderBufferAttachmentInfo rbInfo {};
+        rbInfo.Type = RHI::EAttachmentType::DEPTH;
+        rbInfo.InternalFomat = GL_DEPTH_COMPONENT24;
+        rbInfo.Width = 512;
+        rbInfo.Height = 512;
+        RHI::AttachRenderBuffer(frameBuffer, rbInfo);
 
         stbi_set_flip_vertically_on_load(true);
         int width, height, nChannels;
@@ -72,7 +82,12 @@ namespace Lotus
                 shader->SetMat4f("view", captureViews[i]);
 
                 // Attach color target and render
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envMap, 0);
+                RHI::TextureAttachmentInfo txAttInfo {};
+                txAttInfo.Type = RHI::EAttachmentType::COLOR;
+                txAttInfo.TextureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+                txAttInfo.ID = envMap;
+                RHI::AttachTexture(frameBuffer, txAttInfo);
+
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 RHI::BindVAO(vao);
                 RHI::DrawTriangles(36);
@@ -91,7 +106,47 @@ namespace Lotus
         }
 
         hdri->EnvironmentMap = envMap;
+
+        // Create the irradiance map
+        rbInfo.Height = 32;
+        rbInfo.Width = 32;
+        RHI::AttachRenderBuffer(frameBuffer, rbInfo);
+
+        // convert HDR equirectangular environment map to cubemap equivalent
+        auto convShader = GET(AssetRegistry).LoadShader(INTERNAL_SHADERS("convolution"));
+
+        convShader->Use();
+        convShader->SetInt("envMap", 1);
+        convShader->SetMat4f("projection", captureProjection);
+
+        RHI::SetActiveTextureSlot(1);
+        RHI::BindCubeMap(envMap);
+
+        // Configure the viewport to the capture dimensions
+        RHI::SetViewport(32, 32); // The irradiance map is going to be 32x32
+        RHI::BindFrameBuffer(frameBuffer);
+        for (unsigned int i = 0; i < 6; ++i)
+        {
+            convShader->SetMat4f("view", captureViews[i]);
+
+            // Attach color target and render
+            RHI::TextureAttachmentInfo txAttInfo {};
+            txAttInfo.Type = RHI::EAttachmentType::COLOR;
+            txAttInfo.TextureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+            txAttInfo.ID = irradianceMap;
+            RHI::AttachTexture(frameBuffer, txAttInfo);
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            RHI::BindVAO(vao);
+            RHI::DrawTriangles(36);
+            RHI::BindVAO(0);
+        }
+
+        RHI::BindTexture(0);
+        RHI::BindFrameBuffer(0);
+
         hdri->Irradiance = irradianceMap;
+
         return hdri;
     }
 }

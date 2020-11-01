@@ -17,13 +17,36 @@ namespace Lotus::RHI
     typedef unsigned int VBO;
 
     typedef unsigned int TextureID;
-    typedef unsigned int TextureSlot;
     typedef unsigned int CubeMap;
+    // TODO: Formalize texture slots. Have a specification for the purpose of each slot
+    typedef unsigned int TextureSlot;
 
 
     struct FrameBufferInfo
     {
         //
+    };
+
+    enum class EAttachmentType
+    {
+        COLOR,
+        DEPTH,
+        STENCIL
+    };
+
+    struct RenderBufferAttachmentInfo
+    {
+        EAttachmentType Type;
+        unsigned int InternalFomat;
+        unsigned int Width;
+        unsigned int Height;
+    };
+
+    struct TextureAttachmentInfo
+    {
+        EAttachmentType Type;
+        TextureID ID;
+        unsigned int TextureTarget;
     };
 
     /**
@@ -122,11 +145,21 @@ namespace Lotus::RHI
     void BindTexture(TextureID id);
 
     /**
+     * @brief Bind a cubemap to the active slot
+     * @param id Identifier for the texture to bind
+     */
+    void BindCubeMap(TextureID id);
+
+    /**
      * @brief Create a frame buffer
      * @param info Options
      * @return Identifier for the created frame buffer
      */
     FrameBuffer CreateFrameBuffer(const FrameBufferInfo& info);
+
+    // TODO: Attach renderbuffer then choose depth/color or vice versa?
+    void AttachRenderBuffer(FrameBuffer fb, const RenderBufferAttachmentInfo& info);
+    void AttachTexture(FrameBuffer fb, const TextureAttachmentInfo& info);
 
     /**
      * @brief Bind a frame buffer

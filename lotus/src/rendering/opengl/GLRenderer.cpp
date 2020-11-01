@@ -128,7 +128,6 @@ namespace Lotus
         shader->SetMat4f("lightProjection", lightProjection);
         shader->SetVec3f("camPos", cameraPos);
 
-
         // Set lighting
         shader->SetDirLightArray("dirLight", dirLightParams);
         shader->SetInt("numDirLight", dirLightParams.size());
@@ -139,18 +138,30 @@ namespace Lotus
         shader->SetSpotlightArray("spotlight", spLightParams);
         shader->SetInt("numSpotlight", spLightParams.size());
 
+        auto registry = GetRegistry();
+        auto skyView = registry->view<CSkybox>();
+        RHI::TextureID irradianceMap;
+        if (!skyView.empty())
+        {
+            const auto& sky = skyView.get<CSkybox>(skyView.front());
+            irradianceMap = sky.Map->Irradiance;
+        }
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
+        shader->SetInt("shadowMap", 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+        shader->SetInt("irradianceMap", 1);
+
+
         std::vector<SubMesh> meshes = data.Model->Meshes;
         for (SubMesh& mesh : meshes)
         {
             // Material
             Handle<Material> material = mesh.Material;
-
             shader->SetMaterial("material", material);
-
-            // Reset the active texture
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
-            shader->SetInt("shadowMap", 0);
 
             glBindVertexArray(mesh.VAO);
             glDrawElements(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, nullptr);

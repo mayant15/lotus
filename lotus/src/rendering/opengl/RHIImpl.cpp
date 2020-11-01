@@ -39,6 +39,11 @@ namespace Lotus::RHI
         glBindTexture(GL_TEXTURE_2D, id);
     }
 
+    void BindCubeMap(TextureID id)
+    {
+        glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+    }
+
     void SetViewport(unsigned int width, unsigned int height)
     {
         glViewport(0, 0, width, height);
@@ -77,15 +82,49 @@ namespace Lotus::RHI
         FrameBuffer fb;
         RenderBuffer rb;
         glGenFramebuffers(1, &fb);
-        glGenRenderbuffers(1, &rb);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, fb);
-        glBindRenderbuffer(GL_RENDERBUFFER, rb);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
         return fb;
+    }
+
+    void AttachRenderBuffer(FrameBuffer fb, const RenderBufferAttachmentInfo& info)
+    {
+        BindFrameBuffer(fb);
+
+        RenderBuffer rb;
+        glGenRenderbuffers(1, &rb);
+        glBindRenderbuffer(GL_RENDERBUFFER, rb);
+        glRenderbufferStorage(GL_RENDERBUFFER, info.InternalFomat, info.Width, info.Height);
+
+        switch (info.Type)
+        {
+            case EAttachmentType::COLOR:
+                glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rb);
+                break;
+            case EAttachmentType::DEPTH:
+                glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb);
+                break;
+            case EAttachmentType::STENCIL:
+                glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rb);
+                break;
+        }
+
+        BindFrameBuffer(0);
+    }
+
+    void AttachTexture(FrameBuffer fb, const TextureAttachmentInfo& info)
+    {
+        switch (info.Type)
+        {
+            case EAttachmentType::COLOR:
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, info.TextureTarget, info.ID, 0);
+                break;
+            case EAttachmentType::DEPTH:
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_COMPONENT24, info.TextureTarget, info.ID, 0);
+                break;
+            case EAttachmentType::STENCIL:
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, info.TextureTarget, info.ID, 0);
+                break;
+        }
+
     }
 
     TextureID CreateTexture(const TextureInfo& info)

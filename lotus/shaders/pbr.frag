@@ -60,6 +60,7 @@ in vec4 FragPosLightSpace;
 in mat3 TBN;
 
 uniform sampler2D shadowMap;
+uniform samplerCube irradianceMap;
 
 uniform vec3 camPos;
 
@@ -88,7 +89,7 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
     denom = M_PI * denom * denom;
 
-    return nom / max(denom, 0.001); // prevent divide by zero for roughness=0.0 and NdotH=1.0
+    return max(nom, 0.001) / max(denom, 0.001);// prevent divide by zero for roughness=0.0 and NdotH=1.0
 }
 
 
@@ -113,7 +114,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     float NdotV = max(dot(N, V), 0.0);
     float ggx2 = GeometrySchlickGGX(NdotV, roughness);
 
-    return ggx1; // * ggx2;
+    return ggx1;// * ggx2;
 }
 
 
@@ -122,6 +123,11 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 vec3 FresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
 
@@ -142,12 +148,12 @@ vec3 calculateIrradiance(vec3 radiance, vec3 N, vec3 L, vec3 V, vec3 F0)
 
     // Calculate Cook Torrance specular component
     float denom = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-    vec3 specular = D * G * F / max(denom, 0.001); // to avoid division by zero
+    vec3 specular = D * G * F / max(denom, 0.001);// to avoid division by zero
 
     // Calculate diffuse and specular contributions
     vec3 ks = F;
     vec3 kd = vec3(1.0) - ks;
-    kd = kd * (1.0 - material.fMetallic); // nullify the diffuse component if material is metallic
+    kd = kd * (1.0 - material.fMetallic);// nullify the diffuse component if material is metallic
 
     vec3 albedo = getAlbedo();
 
@@ -159,6 +165,7 @@ vec3 calculateIrradiance(vec3 radiance, vec3 N, vec3 L, vec3 V, vec3 F0)
     }
 
     return ((kd * albedo / M_PI) + specular) * radiance * max(dot(N, L), 0.0);
+    //    return vec3 (D);
 }
 
 
@@ -172,7 +179,7 @@ float calculateShadow(vec3 N, vec3 L)
     projCoord = projCoord * 0.5 + 0.5;
 
     // For points outside the light frustum's far plane
-    if(projCoord.z > 1.0)
+    if (projCoord.z > 1.0)
     {
         return 0.0;
     }
@@ -180,16 +187,16 @@ float calculateShadow(vec3 N, vec3 L)
     float closestDepth = texture(shadowMap, projCoord.xy).r;
     float currentDepth = projCoord.z;
 
-    
+
     // To treat shadow acne https://stackoverflow.com/questions/36908835/what-causes-shadow-acne
     float bias = max(0.05 * (1.0 - dot(N, L)), 0.005);
 
     // Percentage Closer Filtering
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-    for(int x = -1; x <= 1; ++x)
+    for (int x = -1; x <= 1; ++x)
     {
-        for(int y = -1; y <= 1; ++y)
+        for (int y = -1; y <= 1; ++y)
         {
             float pcfDepth = texture(shadowMap, projCoord.xy + vec2(x, y) * texelSize).r;
             shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
@@ -228,7 +235,7 @@ vec3 calculateSpotlight(Spotlight light, vec3 N, vec3 V, vec3 F0)
     vec3 L = normalize(light.position - WorldPos);
     vec3 H = normalize(L + V);
     vec3 lightDir = normalize(light.direction);
-    
+
     float cosTheta = dot(L, -lightDir);
 
     float angle1 = light.innerCutOff * M_PI / 180;
@@ -241,7 +248,7 @@ vec3 calculateSpotlight(Spotlight light, vec3 N, vec3 V, vec3 F0)
     float attenuation = 1.0f / (distance * distance);
 
     vec3 radiance = light.diffuse * intensity * attenuation;
-    
+
     return calculateIrradiance(radiance, N, L, V, F0);
 }
 
@@ -276,7 +283,7 @@ void main()
     // and tinted with the materials albedo for metals
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, material.fMetallic);
-    
+
     vec3 L0 = vec3(0.0f);
     for (int i = 0; i < numPointLight; i++)
     {
@@ -292,10 +299,14 @@ void main()
     {
         L0 += calculateSpotlight(spotlight[i], N, V, F0);
     }
-    
+
     // TODO: Raytraced GI?
-    vec3 ambient = vec3(0.03) * albedo * material.fAO;
-    vec3 color = L0;
+    vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, material.fRoughness);
+    vec3 kD = 1.0 - kS;
+    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse    = irradiance * albedo;
+    vec3 ambient    = (kD * diffuse) * material.fAO;
+    vec3 color = L0 + ambient;
 
     // HDR/Gamma correction
     color = color / (color + vec3(1.0));
