@@ -4,7 +4,8 @@
 
 void setup()
 {
-    auto& assetRegistry = AssetRegistry::Get();
+    using namespace Lotus;
+    auto& assetRegistry = GET(AssetRegistry);
 
     // Create the shaders to be used
     auto shader = assetRegistry.LoadShader(SHADER_PBR);

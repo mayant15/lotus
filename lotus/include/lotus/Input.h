@@ -3,52 +3,35 @@
 #include "lotus/lcommon.h"
 #include "lotus/ecs/Event.h"
 
-#include <unordered_map>
-
-namespace Lotus
+/**
+ * Input manager that receives window events and maintains input state. Users should query this class
+ * to get input information. This is to avoid end users interacting with low level window implementations
+ * themselves.
+ */
+namespace Lotus::Input
 {
     /**
-     * Input manager that receives window events and maintains input state. Users should query this class
-     * to get input information. This is to avoid end users interacting with low level window implementations
-     * themselves.
+     * KeyboardEvent receiver that updates internal keyboard state.
+     * @param event Keyboard input data
      */
-    class LOTUS_API Input final : public Singleton<Input>
-    {
-        std::unordered_map<int, int> _state;
+    LOTUS_API void UpdateKeyState(const KeyboardEvent& event);
 
-        float _xOffset = 0.0f;
-        float _yOffset = 0.0f;
+    /**
+     * MouseEvent receiver that updates internal mouse state.
+     * @param event Mouse input data
+     */
+    LOTUS_API void UpdateMouseState(const MouseEvent& event);
 
-    public:
+    /**
+     * Query the keyboard state for a particular key
+     * @param key Keycode for the requested key
+     * @return True if the key is pressed
+     */
+    LOTUS_API bool GetKeyPressed(int key);
 
-        /**
-         * KeyboardEvent receiver that updates internal keyboard state.
-         * @param event Keyboard input data
-         */
-        void UpdateKeyState(const KeyboardEvent& event);
-
-        /**
-         * MouseEvent receiver that updates internal mouse state.
-         * @param event Mouse input data
-         */
-        void UpdateMouseState(const MouseEvent& event);
-
-        /**
-         * Query the keyboard state for a particular key
-         * @param key Keycode for the requested key
-         * @return True if the key is pressed
-         */
-        bool GetKeyPressed(int key);
-
-        /**
-         * Query the mouse state for mouse cursor delta since the last mouse event
-         * @return Pair of floats with X and Y deltas
-         */
-        std::pair<float, float> GetMouseDelta();
-
-    private:
-        friend Singleton<Input>;
-
-        Input() = default;
-    };
+    /**
+     * Query the mouse state for mouse cursor delta since the last mouse event
+     * @return Pair of floats with X and Y deltas
+     */
+    LOTUS_API std::pair<float, float> GetMouseDelta();
 }

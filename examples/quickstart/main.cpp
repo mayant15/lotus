@@ -8,6 +8,7 @@
 // Lotus should create a main function, driver facade
 int main()
 {
+    using namespace Lotus;
     // Have to initialize the engine first
     auto& config = GET(Config);
     config.RenderAPI = ERenderAPI::OPEN_GL;
@@ -25,9 +26,9 @@ int main()
 
     // Bind event callbacks
     // TODO: Bind with reflection
-    EventManager& em = EventManager::Get();
-    em.Bind<UpdateEvent, &CameraSystem::OnUpdate>();
-    em.Bind<MouseEvent, &CameraSystem::OnMouseEvent>();
+    EventManager& em = GET(EventManager);
+    em.Bind<UpdateEvent, CameraSystem::OnUpdate>();
+    em.Bind<MouseEvent, CameraSystem::OnMouseEvent>();
 
     // Run the main render loop
     Lotus::Run();

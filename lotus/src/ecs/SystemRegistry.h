@@ -21,7 +21,6 @@ namespace Lotus
     class SystemRegistry
     {
         Renderer* _renderer;
-        Input* _input;
         URef<Physics::PhysicsSubsystem> _physics;
 
     public:

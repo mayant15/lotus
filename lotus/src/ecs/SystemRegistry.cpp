@@ -19,9 +19,8 @@ namespace Lotus
         // Register Events
 
         // Create Input and register events
-        _input = &GET(Input);
-        eventManager.Bind<MouseEvent, &Input::UpdateMouseState>(_input);
-        eventManager.Bind<KeyboardEvent, &Input::UpdateKeyState>(_input);
+        eventManager.Bind<MouseEvent, Input::UpdateMouseState>();
+        eventManager.Bind<KeyboardEvent, Input::UpdateKeyState>();
 
         // Create Renderer
         switch (config.RenderAPI)
