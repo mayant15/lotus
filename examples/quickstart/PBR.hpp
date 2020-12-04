@@ -28,20 +28,22 @@ void setup()
     // Sphere
     auto entity = CreateEntity();
     transform.Position = 1.0f * Y_AXIS;
+    transform.Scale = Vector3f {0.3f, 0.3f, 0.3f}; // The sphere was 1m radius, is now 0.2m
     entity.AddComponent<CTransform>(transform);
+    transform.Scale = Vector3f {1.0f}; // Reset scale
 
     meshRenderer.Shader = shader;
     meshRenderer.Model = model;
     entity.AddComponent<CMeshRenderer>(meshRenderer);
 
-//    CSphereCollider collider;
-//    collider.Radius = 2.0f;
-//    entity.AddComponent<CSphereCollider>(collider);
-//
-//    CRigidBody rb;
-//    rb.Gravity = 1.0f;
-//    rb.IsKinematic = false;
-//    entity.AddComponent<CRigidBody>(rb);
+    CSphereCollider collider;
+    collider.Radius = 0.3f;
+    entity.AddComponent<CSphereCollider>(collider);
+
+    CRigidBody rb;
+    rb.Gravity = 1.0f;
+    rb.IsKinematic = false;
+    entity.AddComponent<CRigidBody>(rb);
 
     // Plane
     auto plane = CreateEntity();
@@ -52,13 +54,13 @@ void setup()
     meshRenderer.Model = planeModel;
     plane.AddComponent<CMeshRenderer>(meshRenderer);
 
-//    CBoxCollider boxCollider;
-//    boxCollider.Dimensions = Vector3f {5.0, 0.2f, 5.0f};
-//    plane.AddComponent<CBoxCollider>(boxCollider);
-//
-//    rb.Gravity = 1.0f;
-//    rb.IsKinematic = true;
-//    plane.AddComponent<CRigidBody>(rb);
+    CBoxCollider boxCollider;
+    boxCollider.Dimensions = Vector3f {3.0, 0.05f, 3.0f};
+    plane.AddComponent<CBoxCollider>(boxCollider);
+
+    rb.Gravity = 1.0f;
+    rb.IsKinematic = true;
+    plane.AddComponent<CRigidBody>(rb);
 
     // Directional light
     auto dirLight = CreateEntity();
