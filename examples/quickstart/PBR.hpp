@@ -79,37 +79,23 @@ void setup()
     cSpotlight.outerCutOff = 45;
     spotlight.AddComponent<CSpotlight>(cSpotlight);
 
-    CPointLight cPointLight;
+    // Point lights
+    auto pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
+    auto& t = pointLight.GetComponent<CTransform>();
+    t.Rotation = 2.0f * X_AXIS;
 
-    // Point light
-    auto pointLight = CreateEntity();
-    transform.Position = 2.0f * X_AXIS;
-    pointLight.AddComponent<CTransform>(transform);
-    pointLight.AddComponent<CPointLight>(cPointLight);
-//
-//    auto pointLight2 = CreateEntity();
-//    transform.Position = -2.0f * X_AXIS;
-//    pointLight2.AddComponent<CTransform>(transform);
-//    pointLight2.AddComponent<CPointLight>(cPointLight);
-//
-//    auto pointLight3 = CreateEntity();
-//    transform.Position = 2.0f * Z_AXIS;
-//    pointLight3.AddComponent<CTransform>(transform);
-//    pointLight3.AddComponent<CPointLight>(cPointLight);
-//
-//    auto pointLight4 = CreateEntity();
-//    transform.Position = -2.0f * Z_AXIS;
-//    pointLight4.AddComponent<CTransform>(transform);
-//    pointLight4.AddComponent<CPointLight>(cPointLight);
+    pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
+    t = pointLight.GetComponent<CTransform>();
+    t.Rotation = -2.0f * X_AXIS;
+
+    pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
+    t = pointLight.GetComponent<CTransform>();
+    t.Rotation = -2.0f * Z_AXIS;
+
+    pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
+    t = pointLight.GetComponent<CTransform>();
+    t.Rotation = 2.0f * Z_AXIS;
 
     // Camera
-    auto camera = CreateEntity();
-    transform.Position = 10.0f * Z_AXIS + 5.0f * Y_AXIS;
-    transform.Rotation = Vector3f(-20, -90, 0);
-    camera.AddComponent<CTransform>(transform);
-
-    CCamera cameraComponent;
-    cameraComponent.FOV = 45;
-    cameraComponent.IsActive = true;
-    camera.AddComponent<CCamera>(cameraComponent);
+    auto camera = CreateEntity(RESOURCE("recipe/camera.json"));
 }

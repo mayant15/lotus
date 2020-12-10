@@ -1,6 +1,5 @@
 #pragma once
 
-#include "lotus/ecs/Recipe.h"
 #include "Event.h"
 
 namespace Lotus
@@ -91,5 +90,5 @@ namespace Lotus
 
     LOTUS_API entt::registry* GetRegistry();
     LOTUS_API Entity CreateEntity();
-    LOTUS_API Entity CreateEntity(const Recipe& recipe);
+    LOTUS_API Entity CreateEntity(const std::string& path);
 }

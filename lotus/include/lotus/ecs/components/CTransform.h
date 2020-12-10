@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lotus/physics/physics.h"
+#include "lotus/ecs/ComponentRegistry.h"
 
 namespace Lotus
 {
@@ -9,7 +10,11 @@ namespace Lotus
         Vector3f Position {0.0f,  0.0f,  0.0f};
         Vector3f Rotation {0.0f, -90.0f, 0.0f};
         Vector3f Scale    {1.0f,  1.0f,  1.0f};
+
+        REGISTER_DECL();
     };
+    SERIALIZE(CTransform, Position, Rotation, Scale);
+    REGISTER_BODY(CTransform);
 
     inline Vector3f GetForwardVector(const CTransform& transform)
     {

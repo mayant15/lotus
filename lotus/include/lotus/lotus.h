@@ -12,14 +12,12 @@
 
 #include "ecs/components/CTransform.h"
 #include "ecs/components/CCamera.h"
-#include "ecs/components/IComponentInfo.h"
 #include "ecs/components/CLight.h"
-#include "ecs/components/ComponentFactory.h"
+#include "ecs/ComponentRegistry.h"
 #include "ecs/Entity.h"
 #include "ecs/Event.h"
 #include "ecs/EventManager.h"
 #include "ecs/ISystem.h"
-#include "ecs/Recipe.h"
 
 #include "resources/AssetRegistry.h"
 #include "resources/HDRI.h"

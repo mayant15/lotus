@@ -1,0 +1,11 @@
+{
+  "CCamera": {
+    "IsActive": true,
+    "FOV": 45
+  },
+  "CTransform": {
+    "Position": [0.0, 5.0, 10.0],
+    "Rotation": [-20.0, -90.0, 0.0],
+    "Scale": [1.0, 1.0, 1.0]
+  }
+}

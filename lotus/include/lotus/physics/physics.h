@@ -23,6 +23,25 @@ typedef glm::vec2 Vector2f;
 typedef glm::vec3 Vector3f;
 typedef glm::vec4 Vector4f;
 
+namespace glm
+{
+    // TODO: Maybe do some pointer memcpy magic to generalize this to vectors of all dimensions
+    inline void to_json(nlohmann::json& data, const Vector3f& vec)
+    {
+        data = nlohmann::json::array();
+        data[0] = vec.x;
+        data[1] = vec.y;
+        data[2] = vec.z;
+    }
+
+    inline void from_json(const nlohmann::json& data, Vector3f& vec)
+    {
+        vec.x = data[0];
+        vec.y = data[1];
+        vec.z = data[2];
+    }
+}
+
 typedef glm::imat2x2 Matrix2i;
 typedef glm::imat3x3 Matrix3i;
 typedef glm::imat4x4 Matrix4i;

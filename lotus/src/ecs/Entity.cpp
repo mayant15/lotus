@@ -2,6 +2,11 @@
 #include "lotus/ecs/Entity.h"
 #include "lotus/ecs/EventManager.h"
 
+#include "lotus/ecs/ComponentRegistry.h"
+
+#include <fstream>
+#include <lotus/debug.h>
+
 namespace Lotus
 {
     entt::registry* pRegistry = nullptr;
@@ -38,16 +43,26 @@ namespace Lotus
         return {id, pRegistry};
     }
 
-    Entity CreateEntity(const Recipe &recipe)
+    Entity CreateEntity(const std::string& path)
     {
         // Create empty
         EntityID id = pRegistry->create();
 
-        for (const auto& component : recipe)
+        nlohmann::json data;
+        std::ifstream infile (path);
+        infile >> data;
+
+        for (auto& el : data.items())
         {
-            // TODO: Deserialize the component and add it to the entity
-            // TODO: Make recipies resources and handle them through the AssetRegistry
-//            auto type_id = entt::resolve_id(entt::hashed_string {component.Name.c_str()});
+            try
+            {
+                auto ct = GET_COMPONENT_CTOR (el.key());
+                ct(id, *pRegistry, el.value());
+            }
+            catch (const std::exception& e)
+            {
+                LOG_WARN("Invalid component: {}", el.key());
+            }
         }
 
         return {id, pRegistry};

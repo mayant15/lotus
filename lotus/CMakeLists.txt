@@ -54,7 +54,6 @@ set(SOURCES
 
         src/ecs/SystemRegistry.cpp
         src/ecs/Entity.cpp
-        src/ecs/Recipe.cpp
 
         src/physics/math/operations.cpp
         src/physics/PxImpl.cpp
@@ -76,8 +75,6 @@ set(SOURCES
 
         src/scene/SceneManager.cpp
         src/scene/SceneTreeNode.cpp
-
-        src/ecs/Recipe.cpp
 )
 
 add_library(lotus SHARED ${SOURCES})

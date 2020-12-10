@@ -12,6 +12,10 @@
 #include "lotus/internal/entt/entt.hpp"
 #include "lotus/internal/nlohmann/json.hpp"
 
+#define Q(x) #x
+#define QUOTE(x) Q(x)
+
+#define SERIALIZE(Type, ...) NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Type, __VA_ARGS__)
 
 // TODO: Convenient, but not very readable I guess.
 #define LOADER(x, y) struct LOTUS_API x final: entt::resource_loader<x, y>

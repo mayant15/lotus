@@ -1,0 +1,15 @@
+{
+  "CTransform": {
+    "Position": [0.0, 0.0, 0.0],
+    "Rotation": [0.0, -90.0, 0.0],
+    "Scale": [1.0, 1.0, 1.0]
+  },
+  "CPointLight": {
+    "ambient": [0.0, 0.0, 0.0],
+    "diffuse": [1.0, 0.0, 0.0],
+    "specular": [0.4, 0.4, 0.4],
+    "constant": 1.0,
+    "linear": 0.22,
+    "quadratic": 0.2
+  }
+}
