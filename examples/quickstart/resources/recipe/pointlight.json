@@ -1,9 +1,4 @@
 {
-  "CTransform": {
-    "Position": [0.0, 0.0, 0.0],
-    "Rotation": [0.0, -90.0, 0.0],
-    "Scale": [1.0, 1.0, 1.0]
-  },
   "CPointLight": {
     "ambient": [0.0, 0.0, 0.0],
     "diffuse": [1.0, 0.0, 0.0],

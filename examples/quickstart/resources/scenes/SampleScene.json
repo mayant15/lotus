@@ -5,7 +5,7 @@
   {
     "Recipe": "recipe/pointlight.json",
     "CTransform": {
-      "Position": [2.0, 0.0, 0.0],
+      "Position": [0.7, 0.0, 0.0],
       "Rotation": [0.0, -90.0, 0.0],
       "Scale": [1.0, 1.0, 1.0]
     }
@@ -13,7 +13,7 @@
   {
     "Recipe": "recipe/pointlight.json",
     "CTransform": {
-      "Position": [-2.0, 0.0, 0.0],
+      "Position": [-0.7, 0.0, 0.0],
       "Rotation": [0.0, -90.0, 0.0],
       "Scale": [1.0, 1.0, 1.0]
     }
@@ -21,7 +21,7 @@
   {
     "Recipe": "recipe/pointlight.json",
     "CTransform": {
-      "Position": [0.0, 0.0, 2.0],
+      "Position": [0.0, 0.0, 0.7],
       "Rotation": [0.0, -90.0, 0.0],
       "Scale": [1.0, 1.0, 1.0]
     }
@@ -29,9 +29,38 @@
   {
     "Recipe": "recipe/pointlight.json",
     "CTransform": {
-      "Position": [2.0, 0.0, -2.0],
+      "Position": [0.0, 0.0, -0.7],
       "Rotation": [0.0, -90.0, 0.0],
       "Scale": [1.0, 1.0, 1.0]
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [0.0, 0.0, 0.0],
+      "Rotation": [-45.0, -45.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CLight": {
+      "ambient": [0.0, 0.0, 0.0],
+      "diffuse": [1.0, 1.0, 1.0],
+      "specular": [0.4, 0.4, 0.4]
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [0.0, 3.0, 0.0],
+      "Rotation": [-90.0, -90.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CSpotlight": {
+      "ambient": [0.0, 0.0, 0.0],
+      "diffuse": [1.0, 0.0, 0.0],
+      "specular": [0.4, 0.4, 0.4],
+      "constant": 1.0,
+      "linear": 0.22,
+      "quadratic": 0.2,
+      "innerCutOff": 30,
+      "outerCutOff": 45
     }
   }
 ]

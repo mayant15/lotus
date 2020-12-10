@@ -26,6 +26,8 @@
 #include "resources/Shader.h"
 #include "resources/Texture.h"
 
+#include "scene/Scene.h"
+#include "scene/SceneTreeNode.h"
 #include "scene/SceneManager.h"
 
 #include "Config.h"

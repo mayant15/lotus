@@ -22,6 +22,8 @@ namespace Lotus
     class LOTUS_API Entity
     {
         EntityID _id = entt::null;
+
+        // TODO: I probably don't need to keep this here? Use GetRegistry()
         entt::registry* _registry = nullptr;
 
     public:

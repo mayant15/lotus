@@ -27,7 +27,7 @@ namespace Lotus
     inline void component::assign(const entt::entity entity, entt::registry& registry, const data_t& data) { \
         component tmp; \
         from_json(data, tmp); \
-        registry.emplace<component>(entity, std::move(tmp)); \
+        registry.emplace_or_replace<component>(entity, std::move(tmp)); \
     }
 
 #define GENERATE_COMPONENT_REGISTER_DECL() \

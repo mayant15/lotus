@@ -140,21 +140,18 @@ namespace Lotus
 
         auto registry = GetRegistry();
         auto skyView = registry->view<CSkybox>();
-        RHI::TextureID irradianceMap;
         if (!skyView.empty())
         {
             const auto& sky = skyView.get<CSkybox>(skyView.front());
-            irradianceMap = sky.Map->Irradiance;
+
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, sky.Map->Irradiance);
+            shader->SetInt("irradianceMap", 1);
         }
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
         shader->SetInt("shadowMap", 0);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-        shader->SetInt("irradianceMap", 1);
-
 
         std::vector<SubMesh> meshes = data.Model->Meshes;
         for (SubMesh& mesh : meshes)

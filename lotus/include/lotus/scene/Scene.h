@@ -1,9 +1,10 @@
 #pragma once
 
 
-#include "lotus/lcommon.h"
-#include "lotus/ecs/Entity.h"
-#include "lotus/scene/SceneTreeNode.h"
+#include <lotus/lcommon.h>
+#include <lotus/ecs/Entity.h>
+
+#include "SceneTreeNode.h"
 
 namespace Lotus
 {
@@ -12,6 +13,5 @@ namespace Lotus
     {
         std::string Path;
         SceneTreeNode* Root = nullptr;
-        EntityID ActiveCamera;
     };
 }

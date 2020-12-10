@@ -14,7 +14,6 @@ void setup()
     auto model = assetRegistry.LoadModel(RESOURCE("mesh/sphere.json"));
     auto planeModel = assetRegistry.LoadModel(RESOURCE("mesh/plane.json"));
     auto hdri = assetRegistry.LoadHDRI(RESOURCE("skybox/klopp.hdr"));
-    // TODO: Load scene from file
 
     // Sky
     auto sky = CreateEntity();
@@ -28,7 +27,7 @@ void setup()
     // Sphere
     auto entity = CreateEntity();
     transform.Position = 1.0f * Y_AXIS;
-    transform.Scale = Vector3f {0.3f, 0.3f, 0.3f}; // The sphere was 1m radius, is now 0.2m
+    transform.Scale = Vector3f {0.3f, 0.3f, 0.3f}; // The sphere was 1m radius, is now 0.3m
     entity.AddComponent<CTransform>(transform);
     transform.Scale = Vector3f {1.0f}; // Reset scale
 
@@ -61,41 +60,4 @@ void setup()
     rb.Gravity = 1.0f;
     rb.IsKinematic = true;
     plane.AddComponent<CRigidBody>(rb);
-
-    // Directional light
-    auto dirLight = CreateEntity();
-    transform.Rotation = Vector3f (-45.0f, -45.0f, 0.0f);
-    dirLight.AddComponent<CTransform>(transform);
-    dirLight.AddComponent<CLight>(CLight {});
-
-    // Spotlight
-    auto spotlight = CreateEntity();
-    transform.Position = 3.0f * Y_AXIS;
-    transform.Rotation = Vector3f (-90.0f, -90.0f, 0.0f);
-    spotlight.AddComponent<CTransform>(transform);
-
-    CSpotlight cSpotlight;
-    cSpotlight.innerCutOff = 30;
-    cSpotlight.outerCutOff = 45;
-    spotlight.AddComponent<CSpotlight>(cSpotlight);
-
-    // Point lights
-    auto pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
-    auto& t = pointLight.GetComponent<CTransform>();
-    t.Rotation = 2.0f * X_AXIS;
-
-    pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
-    t = pointLight.GetComponent<CTransform>();
-    t.Rotation = -2.0f * X_AXIS;
-
-    pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
-    t = pointLight.GetComponent<CTransform>();
-    t.Rotation = -2.0f * Z_AXIS;
-
-    pointLight = CreateEntity(RESOURCE("recipe/pointlight.json"));
-    t = pointLight.GetComponent<CTransform>();
-    t.Rotation = 2.0f * Z_AXIS;
-
-    // Camera
-    auto camera = CreateEntity(RESOURCE("recipe/camera.json"));
 }

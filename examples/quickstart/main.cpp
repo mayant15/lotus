@@ -19,6 +19,9 @@ int main()
 
     Lotus::Initialize(config);
 
+    // This should be all that's required to setup all entities (cover everything that setup() does)
+    SceneManager::LoadScene(RESOURCE("scenes/SampleScene.json"));
+
     setup();
 
     // Test out python script

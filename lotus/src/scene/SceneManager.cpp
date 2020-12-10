@@ -1,22 +1,53 @@
-#include "lotus/scene/SceneManager.h"
+#include <lotus/scene/SceneManager.h>
 
-namespace Lotus
+#include <lotus/ecs/Entity.h>
+#include <lotus/resources/AssetRegistry.h>
+#include <lotus/debug.h>
+
+#include <fstream>
+
+namespace Lotus::SceneManager
 {
-    const Scene & SceneManager::GetCurrentScene() const
+    inline void attachComponents(Entity entity, const nlohmann::json& info)
     {
-        return *_activeScene;
+        auto reg = GetRegistry();
+        auto id = (EntityID) entity;
+        for (auto& comp : info.items())
+        {
+            if (comp.key() != "Recipe")
+            {
+                auto ct = GET_COMPONENT_CTOR (comp.key());
+                ct (id, *reg, comp.value());
+            }
+        }
     }
 
-    const Scene & SceneManager::LoadScene(const std::string& path)
+    void LoadScene(const std::string& path)
     {
-        // Read the scene file at the path
-        _activeScene = std::make_unique<Scene>();
-        _activeScene->Path = path;
-        return *_activeScene;
-    }
+        std::ifstream infile (path);
+        nlohmann::json data;
+        infile >> data;
 
-    void SceneManager::RemoveScene()
-    {
-        _activeScene.reset();
+        if (!data.is_array())
+        {
+            LOG_ERROR("Invalid scene format");
+            throw std::exception("invalid scene format");
+        }
+
+        for (auto& entityInfo : data)
+        {
+            if (entityInfo.contains("Recipe"))
+            {
+                auto entity = CreateEntity(RESOURCE(entityInfo.at("Recipe").get<std::string>()));
+                attachComponents(entity, entityInfo);
+            }
+            else
+            {
+                auto entity = CreateEntity();
+                attachComponents(entity, entityInfo);
+            }
+        }
+
+        // TODO: Generate the scene tree
     }
 }

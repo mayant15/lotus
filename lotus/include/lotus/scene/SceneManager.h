@@ -1,22 +1,9 @@
 #pragma once
 
-#include "lotus/lcommon.h"
-#include "lotus/scene/Scene.h"
+#include <lotus/lcommon.h>
+#include "SceneTreeNode.h"
 
-namespace Lotus
+namespace Lotus::SceneManager
 {
-    class SceneManager : public Singleton<SceneManager>
-    {
-        URef<Scene> _activeScene;
-
-    public:
-        const Scene& LoadScene(const std::string& path);
-        void RemoveScene();
-
-        [[nodiscard]] const Scene& GetCurrentScene() const;
-
-    private:
-        SceneManager() = default;
-        friend Singleton<SceneManager>;
-    };
+    LOTUS_API void LoadScene(const std::string& path);
 }
