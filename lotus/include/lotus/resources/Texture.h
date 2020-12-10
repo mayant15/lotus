@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lotus/lcommon.h"
+#include "lotus/resources/AssetRegistry.h"
 
 namespace Lotus
 {
@@ -9,8 +10,8 @@ namespace Lotus
         unsigned int ID = 0;
     };
 
-    LOADER(TextureLoader, Texture)
+    LOADER(Texture)
     {
-        SRef<Texture> Load(const std::string& path) const;
+        [[nodiscard]] SRef<Texture> Load(const std::string& path) const;
     };
 }

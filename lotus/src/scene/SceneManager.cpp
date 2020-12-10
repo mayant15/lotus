@@ -1,5 +1,6 @@
 #include <lotus/scene/SceneManager.h>
 
+#include <lotus/ecs/ComponentRegistry.h>
 #include <lotus/ecs/Entity.h>
 #include <lotus/resources/AssetRegistry.h>
 #include <lotus/debug.h>

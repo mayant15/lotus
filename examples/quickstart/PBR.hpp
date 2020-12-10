@@ -5,15 +5,14 @@
 void setup()
 {
     using namespace Lotus;
-    auto& assetRegistry = GET(AssetRegistry);
 
     // Create the shaders to be used
-    auto shader = assetRegistry.LoadShader(SHADER_PBR);
+    auto shader = LoadAsset<Shader, ShaderLoader>(SHADER_PBR);
 
     // Initialize and import the model
-    auto model = assetRegistry.LoadModel(RESOURCE("mesh/sphere.json"));
-    auto planeModel = assetRegistry.LoadModel(RESOURCE("mesh/plane.json"));
-    auto hdri = assetRegistry.LoadHDRI(RESOURCE("skybox/klopp.hdr"));
+    auto model = LoadAsset<Model, ModelLoader>(RESOURCE("mesh/sphere.json"));
+    auto planeModel = LoadAsset<Model, ModelLoader>(RESOURCE("mesh/plane.json"));
+    auto hdri = LoadAsset<HDRI, HDRILoader>(RESOURCE("skybox/klopp.hdr"));
 
     // Sky
     auto sky = CreateEntity();

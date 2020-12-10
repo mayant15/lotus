@@ -2,6 +2,7 @@
 
 #include "lotus/physics/physics.h"
 #include "lotus/resources/Texture.h"
+#include "lotus/resources/AssetRegistry.h"
 
 #include <variant>
 #include <optional>
@@ -17,8 +18,8 @@ namespace Lotus
         float AO = 1.0f;
     };
 
-    LOADER(MaterialLoader, Material)
+    LOADER(Material)
     {
-        SRef<Material> Load(const std::string& path) const;
+        [[nodiscard]] SRef<Material> Load(const std::string& path) const;
     };
 }

@@ -1,12 +1,8 @@
 #pragma once
 
 #include "lotus/Config.h"
-#include "lotus/resources/Model.h"
-#include "lotus/resources/Shader.h"
-#include "lotus/resources/HDRI.h"
 
 #include <filesystem>
-
 
 #ifdef SHADER_ROOT
 
@@ -28,6 +24,9 @@
 
 #define RESOURCE(x) getConfigResourcePath(x)
 
+#define CONCAT(x, y) x ## y
+#define LOADER(x) struct LOTUS_API CONCAT(x, Loader) final: public entt::resource_loader<CONCAT(x, Loader), x>
+
 inline std::string concatPath(const std::string& path1, const std::string& path2)
 {
     std::filesystem::path base(path1);
@@ -48,85 +47,13 @@ inline std::string getConfigResourcePath(const std::string& relPath)
 
 namespace Lotus
 {
-    class LOTUS_API AssetRegistry : public Singleton<AssetRegistry>
+    template <typename T>
+    struct AssetCache { static inline entt::resource_cache<T> cache {}; };
+
+    template <typename Resource, typename Loader, typename... Args>
+    inline Handle<Resource> LoadAsset(const std::string& path, Args&& ...args)
     {
-        entt::resource_cache<Texture> _textures;
-        entt::resource_cache<Model> _models;
-        entt::resource_cache<HDRI> _cubemaps;
-        entt::resource_cache<Shader> _shaders;
-        entt::resource_cache<Material> _materials;
-
-        // TODO: Get identifiers from asset path
-        uint32_t _currentID = 0;
-
-    public:
-        // size_t Size() const
-        // {
-        //     return _cache.size();
-        // }
-        //
-        // bool IsEmpty() const
-        // {
-        //     return _cache.empty();
-        // }
-
-        // TODO: id_type?
-        // bool Contains(entt::id_type id) const
-        // {
-        //     return _cache.contains(id);
-        // }
-
-        // void Clear()
-        // {
-        //     return _cache.clear();
-        // }
-
-
-        // TODO: Template out everything
-        template<typename... Args>
-        Handle<Texture> LoadTexture(Args&& ...args)
-        {
-            auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
-            _currentID++;
-            return _textures.load<TextureLoader>(identifier, std::forward<Args>(args)...);
-        }
-
-        template<typename... Args>
-        Handle<Model> LoadModel(Args&& ...args)
-        {
-            auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
-            _currentID++;
-            return _models.load<ModelLoader>(identifier, std::forward<Args>(args)...);
-        }
-
-        template<typename... Args>
-        Handle<HDRI> LoadHDRI(Args&& ...args)
-        {
-            auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
-            _currentID++;
-            return _cubemaps.load<HDRILoader>(identifier, std::forward<Args>(args)...);
-        }
-
-        template<typename... Args>
-        Handle<Shader> LoadShader(Args&& ...args)
-        {
-            auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
-            _currentID++;
-            return _shaders.load<ShaderLoader>(identifier, std::forward<Args>(args)...);
-        }
-
-        template<typename... Args>
-        Handle<Material> LoadMaterial(Args&& ...args)
-        {
-            auto identifier = entt::hashed_string(std::to_string(_currentID).c_str());
-            _currentID++;
-            return _materials.load<MaterialLoader>(identifier, std::forward<Args>(args)...);
-        }
-
-        // template<typename Loader, typename... Args>
-        // Handle<T> Reload(Args&& ...args)
-        // {
-        //     return _cache.template reload<Loader>(std::forward<Args>(args)...);
-        // }
-    };
+        auto id = entt::hashed_string::value(path.c_str());
+        return AssetCache<Resource>::cache.template load<Loader>(id, path, std::forward<Args>(args)...);
+    }
 }

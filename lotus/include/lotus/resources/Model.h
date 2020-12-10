@@ -31,8 +31,8 @@ namespace Lotus
         std::vector<SubMesh> Meshes;
     };
 
-    LOADER(ModelLoader, Model)
+    LOADER(Model)
     {
-        SRef<Model> Load(const std::string& path) const;
+        [[nodiscard]] SRef<Model> Load(const std::string& path) const;
     };
 }

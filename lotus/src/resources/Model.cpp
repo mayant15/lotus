@@ -1,5 +1,5 @@
 #include "glad/glad.h"
-#include "lotus/resources/AssetRegistry.h"
+#include "lotus/resources/Model.h"
 #include "lotus/debug.h"
 #include "stb_image.h"
 
@@ -23,10 +23,9 @@ namespace Lotus
 
         // TODO: Save the model as a lotus json too. We should not have to rely on Assimp for material data other than the first import.
         // TODO: Related to the above point, there is a need to separate "import" and "load".
-        auto& cache = AssetRegistry::Get();
 
         // TODO: Modify to accommodate sub meshes
-        Handle<Material> material = cache.LoadMaterial(RESOURCE(data["material"]));
+        Handle<Material> material = LoadAsset<Material, MaterialLoader>(RESOURCE(data["material"]));
 
         SRef<Model> model = std::make_shared<Model>();
 

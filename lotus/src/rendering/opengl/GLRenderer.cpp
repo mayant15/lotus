@@ -1,6 +1,6 @@
 #include "GLRenderer.h"
 
-#include "lotus/resources/AssetRegistry.h"
+#include "lotus/resources/HDRI.h"
 #include "lotus/ecs/Entity.h"
 #include "lotus/ecs/components/CCamera.h"
 #include "lotus/debug.h"
@@ -80,9 +80,8 @@ namespace Lotus
         }
 
         // Setup internal shaders
-        auto& cache = GET(AssetRegistry);
-        _shadowShader = cache.LoadShader(INTERNAL_SHADERS("shadow"));
-        _skyShader = cache.LoadShader(INTERNAL_SHADERS("skybox"));
+        _shadowShader = LoadAsset<Shader, ShaderLoader>(INTERNAL_SHADERS("shadow"));
+        _skyShader = LoadAsset<Shader, ShaderLoader>(INTERNAL_SHADERS("skybox"));
     }
 
     unsigned int GLRenderer::createTexture(unsigned char* data, int width, int height, unsigned int format)
