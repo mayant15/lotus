@@ -1,5 +1,7 @@
-#include "lotus/resources/Material.h"
-#include "stb_image.h"
+#include <lotus/resources/Material.h>
+#include <lotus/filesystem.h>
+
+#include <stb_image.h>
 
 namespace Lotus
 {
@@ -11,7 +13,7 @@ namespace Lotus
         if (data.contains(key) && data.at(key).is_string())
         {
             stbi_set_flip_vertically_on_load(flipY);
-            auto handle = LoadAsset<Texture, TextureLoader>(RESOURCE(data.at(key)));
+            auto handle = LoadAsset<Texture, TextureLoader>(ExpandPath(data.at(key).get<std::string>()));
             return std::optional<Handle<Texture>>{handle};
         }
         else

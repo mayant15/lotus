@@ -1,4 +1,4 @@
 {
-  "mesh": "mesh/plane.fbx",
-  "material": "materials/plane.json"
+  "mesh": "res://mesh/plane.fbx",
+  "material": "res://materials/plane.json"
 }

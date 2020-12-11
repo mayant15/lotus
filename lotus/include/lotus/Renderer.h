@@ -1,9 +1,10 @@
 #pragma once
 
-#include "lotus/ILifecycle.h"
-#include "lotus/resources/Model.h"
-#include "lotus/resources/Shader.h"
-#include "lotus/ecs/components/CTransform.h"
+#include <lotus/ILifecycle.h>
+#include <lotus/resources/Model.h>
+#include <lotus/resources/Shader.h>
+#include <lotus/ecs/components/CTransform.h>
+#include <lotus/filesystem.h>
 
 namespace Lotus
 {
@@ -49,10 +50,10 @@ namespace Lotus
 
     inline void from_json(const nlohmann::json& data, CMeshRenderer& mr)
     {
-        mr.Model = LoadAsset<Model, ModelLoader>(data.at("Model").get<std::string>());
+        mr.Model = LoadAsset<Model, ModelLoader>(ExpandPath(data.at("Model").get<std::string>()));
         mr.Shader = LoadAsset<Shader, ShaderLoader>(
-                data.at("Shader").at("Vertex").get<std::string>(),
-                data.at("Shader").at("Fragment").get<std::string>()
+                ExpandPath(data.at("Shader").at("Vertex").get<std::string>()),
+                ExpandPath(data.at("Shader").at("Fragment").get<std::string>())
         );
     }
 

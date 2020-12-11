@@ -1,11 +1,12 @@
 #include "GLRenderer.h"
 
-#include "lotus/resources/HDRI.h"
-#include "lotus/ecs/Entity.h"
-#include "lotus/ecs/components/CCamera.h"
-#include "lotus/debug.h"
+#include <lotus/resources/HDRI.h>
+#include <lotus/ecs/Entity.h>
+#include <lotus/ecs/components/CCamera.h>
+#include <lotus/debug.h>
+#include <lotus/filesystem.h>
 
-#include "rendering/Primitives.h"
+#include <rendering/Primitives.h>
 
 constexpr unsigned int SHADOW_WIDTH = 1024;
 constexpr unsigned int SHADOW_HEIGHT = 1024;
@@ -80,8 +81,14 @@ namespace Lotus
         }
 
         // Setup internal shaders
-        _shadowShader = LoadAsset<Shader, ShaderLoader>(INTERNAL_SHADERS("shadow"));
-        _skyShader = LoadAsset<Shader, ShaderLoader>(INTERNAL_SHADERS("skybox"));
+        _shadowShader = LoadAsset<Shader, ShaderLoader>(
+                ExpandPath("int://shaders/shadow.vert"),
+                ExpandPath("int://shaders/shadow.frag")
+        );
+        _skyShader = LoadAsset<Shader, ShaderLoader>(
+                ExpandPath("int://shaders/skybox.vert"),
+                ExpandPath("int://shaders/skybox.frag")
+        );
     }
 
     unsigned int GLRenderer::createTexture(unsigned char* data, int width, int height, unsigned int format)

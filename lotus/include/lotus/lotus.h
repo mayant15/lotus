@@ -8,6 +8,7 @@
 #include <filesystem>
 
 #include "lcommon.h"
+#include "filesystem.h"
 
 #include "physics/physics.h"
 #include "physics/components.h"

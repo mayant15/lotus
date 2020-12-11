@@ -19,8 +19,10 @@ set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lotus/include)
 option(LOTUS_BUILD_DOCS "Build the Lotus documentation" ON)
 option(LOTUS_BUILD_EXAMPLE "Build an example demonstrating the usage of the engine" ON)
 
-# TODO: Find a better way to get shader paths
-add_compile_definitions(SHADER_ROOT="${CMAKE_SOURCE_DIR}/lotus/shaders/")
+# The engine needs access to the engine resource root
+# The user project needs access to both the engine and the user resource root
+# So I enabled this definition globally for all targets
+add_compile_definitions(ENGINE_RESOURCE_ROOT="${CMAKE_SOURCE_DIR}/lotus/resources/")
 
 # Build libraries
 add_subdirectory(lotus)

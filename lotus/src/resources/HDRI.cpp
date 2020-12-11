@@ -1,12 +1,13 @@
-#include "lotus/resources/HDRI.h"
+#include <lotus/resources/HDRI.h>
 
-#include "lotus/physics/physics.h"
-#include "lotus/resources/Shader.h"
+#include <lotus/physics/physics.h>
+#include <lotus/resources/Shader.h>
 
-#include "lotus/debug.h"
+#include <lotus/debug.h>
+#include <lotus/filesystem.h>
 
-#include "rendering/RHI.h"
-#include "rendering/Primitives.h"
+#include <rendering/RHI.h>
+#include <rendering/Primitives.h>
 
 #include <stb_image.h>
 
@@ -67,7 +68,10 @@ namespace Lotus
             auto flatmap = RHI::CreateTexture(info);
 
             // convert HDR equirectangular environment map to cubemap equivalent
-            auto shader = LoadAsset<Shader, ShaderLoader>(INTERNAL_SHADERS("loadHDRI"));
+            auto shader = LoadAsset<Shader, ShaderLoader>(
+                    ExpandPath("int://shaders/loadHDRI.vert"),
+                    ExpandPath("int://shaders/loadHDRI.frag")
+            );
 
             shader->Use();
             shader->SetInt("hdri", 0);
@@ -115,7 +119,10 @@ namespace Lotus
         RHI::AttachRenderBuffer(frameBuffer, rbInfo);
 
         // convert HDR equirectangular environment map to cubemap equivalent
-        auto convShader = LoadAsset<Shader, ShaderLoader>(INTERNAL_SHADERS("convolution"));
+        auto convShader = LoadAsset<Shader, ShaderLoader>(
+                ExpandPath("int://shaders/convolution.vert"),
+                ExpandPath("int://shaders/convolution.frag")
+        );
 
         convShader->Use();
         convShader->SetInt("envMap", 1);

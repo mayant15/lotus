@@ -1,7 +1,10 @@
-#include "glad/glad.h"
-#include "lotus/resources/Model.h"
-#include "lotus/debug.h"
-#include "stb_image.h"
+#include <glad/glad.h>
+
+#include <lotus/resources/Model.h>
+#include <lotus/debug.h>
+#include <lotus/filesystem.h>
+
+#include <stb_image.h>
 
 #include <assimp/Importer.hpp>
 #include <utility>
@@ -25,12 +28,13 @@ namespace Lotus
         // TODO: Related to the above point, there is a need to separate "import" and "load".
 
         // TODO: Modify to accommodate sub meshes
-        Handle<Material> material = LoadAsset<Material, MaterialLoader>(RESOURCE(data["material"]));
+        Handle<Material> material = LoadAsset<Material, MaterialLoader>(ExpandPath(data.at("material").get<std::string>()));
 
         SRef<Model> model = std::make_shared<Model>();
 
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(RESOURCE(data["mesh"]), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(ExpandPath(data.at("mesh").get<std::string>()),
+                aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {

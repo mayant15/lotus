@@ -1,8 +1,3 @@
-# Include paths
-include_directories(${PUBLIC_INCLUDE_DIR})
-include_directories(src)
-include_directories(external)
-
 # Dependencies
 find_package(Assimp CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
@@ -37,14 +32,23 @@ find_library(PHYSX_EXTENSIONS NAMES PhysXExtensions_static_64 PhysXExtensions_st
 find_library(PHYSX_PVD NAMES PhysXPvdSDK_static_64 PhysXPvdSDK_static_32 PATHS ${PHYSX_LIB_DIR})
 set(PHYSX_LINK_LIBS ${PHYSX_COMMON} ${PHYSX_FOUNDATION} ${PHYSX_BASE} ${PHYSX_EXTENSIONS} ${PHYSX_PVD})
 
-set(DEPENDENCIES pybind11::embed glfw spdlog::spdlog assimp::assimp ${PHYSX_LINK_LIBS})
+set(LOTUS_PRIVATE_DEPENDENCIES pybind11::embed glfw assimp::assimp ${PHYSX_LINK_LIBS})
+set(LOTUS_PUBLIC_DEPENDENCIES spdlog::spdlog)
+
+set(LOTUS_INCLUDE_DIRS
+        ${PUBLIC_INCLUDE_DIR}
+        ${PUBLIC_INCLUDE_DIR}/lotus/internal
+        src
+        external
+)
 
 # Set all source files
-set(SOURCES
+set(LOTUS_SOURCES
         external/glad.c
         external/stb_image.cpp
 
         src/lotus.cpp
+        src/filesystem.cpp
 
         src/core/platform/DXWindow.cpp
         src/core/platform/GLWindow.cpp
@@ -76,8 +80,9 @@ set(SOURCES
         src/scene/SceneTreeNode.cpp
 )
 
-add_library(lotus SHARED ${SOURCES})
-target_link_libraries(lotus PRIVATE ${DEPENDENCIES})
+add_library(lotus SHARED ${LOTUS_SOURCES})
+target_include_directories(lotus PRIVATE ${LOTUS_INCLUDE_DIRS})
+target_link_libraries(lotus PUBLIC ${LOTUS_PUBLIC_DEPENDENCIES} PRIVATE ${LOTUS_PRIVATE_DEPENDENCIES})
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 
 if (LOTUS_BUILD_DOCS)

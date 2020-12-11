@@ -2,10 +2,9 @@
 
 #include <lotus/ecs/ComponentRegistry.h>
 #include <lotus/ecs/Entity.h>
-#include <lotus/resources/AssetRegistry.h>
 #include <lotus/debug.h>
 
-#include <fstream>
+#include <lotus/filesystem.h>
 
 namespace Lotus::SceneManager
 {
@@ -15,7 +14,7 @@ namespace Lotus::SceneManager
         auto id = (EntityID) entity;
         for (auto& comp : info.items())
         {
-            if (comp.key() != "Recipe")
+            if (comp.key() != "Prefab")
             {
                 auto ct = GET_COMPONENT_CTOR (comp.key());
                 ct (id, *reg, comp.value());
@@ -37,9 +36,9 @@ namespace Lotus::SceneManager
 
         for (auto& entityInfo : data)
         {
-            if (entityInfo.contains("Recipe"))
+            if (entityInfo.contains("Prefab"))
             {
-                auto entity = CreateEntity(RESOURCE(entityInfo.at("Recipe").get<std::string>()));
+                auto entity = CreateEntity(ExpandPath(entityInfo.at("Prefab").get<std::string>()));
                 attachComponents(entity, entityInfo);
             }
             else
