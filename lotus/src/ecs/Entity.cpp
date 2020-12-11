@@ -1,8 +1,8 @@
-#include "lotus/physics/physics.h"
 #include "lotus/ecs/Entity.h"
+
 #include "lotus/ecs/EventManager.h"
 
-#include "lotus/ecs/ComponentRegistry.h"
+#include "lotus/physics/components.h"
 
 #include <fstream>
 #include <lotus/debug.h>

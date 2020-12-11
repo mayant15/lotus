@@ -62,5 +62,54 @@
       "innerCutOff": 30,
       "outerCutOff": 45
     }
+  },
+  {
+    "CTransform": {
+      "Position": [0.0, 1.0, 0.0],
+      "Rotation": [0.0, -90.0, 0.0],
+      "Scale": [0.3, 0.3, 0.3]
+    },
+    "CMeshRenderer": {
+      "Shader": {
+        "Vertex": "D:\\code\\lotus\\lotus\\shaders\\pbr.vert",
+        "Fragment": "D:\\code\\lotus\\lotus\\shaders\\pbr.frag"
+      },
+      "Model": "D:\\code\\lotus\\examples\\quickstart\\resources\\mesh\\sphere.json"
+    },
+    "CSphereCollider": {
+      "Position": [0.0, 0.0, 0.0],
+      "Radius": 0.3
+    },
+    "CRigidBody": {
+      "Gravity": 1.0,
+      "IsKinematic": false
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [0.0, -1.2, 0.0],
+      "Rotation": [0.0, -90.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CMeshRenderer": {
+      "Shader": {
+        "Vertex": "D:\\code\\lotus\\lotus\\shaders\\pbr.vert",
+        "Fragment": "D:\\code\\lotus\\lotus\\shaders\\pbr.frag"
+      },
+      "Model": "D:\\code\\lotus\\examples\\quickstart\\resources\\mesh\\plane.json"
+    },
+    "CBoxCollider": {
+      "Position": [0.0, 0.0, 0.0],
+      "Dimensions": [3.0, 0.05, 3.0]
+    },
+    "CRigidBody": {
+      "Gravity": 1.0,
+      "IsKinematic": true
+    }
+  },
+  {
+    "CSkybox": {
+      "Map": "D:\\code\\lotus\\examples\\quickstart\\resources\\skybox\\klopp.hdr"
+    }
   }
 ]

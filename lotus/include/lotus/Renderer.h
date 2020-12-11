@@ -38,7 +38,26 @@ namespace Lotus
         // Render data
         Handle<Shader> Shader;
         Handle<Model> Model;
+
+        REGISTER_DECL();
     };
+
+    inline void to_json(nlohmann::json& data, const CMeshRenderer& mr)
+    {
+        // TODO: Handle to path
+    }
+
+    inline void from_json(const nlohmann::json& data, CMeshRenderer& mr)
+    {
+        mr.Model = LoadAsset<Model, ModelLoader>(data.at("Model").get<std::string>());
+        mr.Shader = LoadAsset<Shader, ShaderLoader>(
+                data.at("Shader").at("Vertex").get<std::string>(),
+                data.at("Shader").at("Fragment").get<std::string>()
+        );
+    }
+
+    REGISTER_BODY(CMeshRenderer);
+
 
     /**
      * Renderer class used by the end user. Abstracts away platform specific implementation details.

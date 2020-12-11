@@ -1,9 +1,6 @@
 #include "lotus/lotus.h"
 #include "CameraSystem.hpp"
 
-// Include the scene that you want to render
-#include "PBR.hpp"
-
 // TODO: Eventually, the game classes should just describe behavior
 // Lotus should create a main function, driver facade
 int main()
@@ -19,10 +16,7 @@ int main()
 
     Lotus::Initialize(config);
 
-    // This should be all that's required to setup all entities (cover everything that setup() does)
     SceneManager::LoadScene(RESOURCE("scenes/SampleScene.json"));
-
-    setup();
 
     // Test out python script
     exec_file(RESOURCE("scripts/hello.py"));

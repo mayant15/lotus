@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "lotus/internal/entt/entt.hpp"
 
 namespace Lotus
 {
@@ -68,16 +69,6 @@ namespace Lotus
         void Destroy()
         {
             _registry->destroy(_id);
-        }
-
-        // TODO: Implement
-        static std::vector<nlohmann::json> GetRecipe()
-        {
-            const nlohmann::json data = {
-                    {"component_name", "value"}
-            };
-
-            return { data };
         }
     };
 

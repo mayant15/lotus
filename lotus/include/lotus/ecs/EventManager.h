@@ -1,7 +1,6 @@
 #pragma once
 
 #include "lotus/lcommon.h"
-#include "lotus/internal/entt/entt.hpp"
 #include "lotus/ecs/Event.h"
 
 template<typename T>

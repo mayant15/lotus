@@ -55,7 +55,6 @@ set(SOURCES
         src/ecs/SystemRegistry.cpp
         src/ecs/Entity.cpp
 
-        src/physics/math/operations.cpp
         src/physics/PxImpl.cpp
         src/physics/PhysicsSubsystem.cpp
 

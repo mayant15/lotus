@@ -8,7 +8,9 @@
 #include <filesystem>
 
 #include "lcommon.h"
+
 #include "physics/physics.h"
+#include "physics/components.h"
 
 #include "ecs/components/CTransform.h"
 #include "ecs/components/CCamera.h"

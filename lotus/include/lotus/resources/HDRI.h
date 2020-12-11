@@ -4,6 +4,8 @@
 #include "lotus/resources/Texture.h"
 #include "lotus/resources/AssetRegistry.h"
 
+#include "lotus/ecs/ComponentRegistry.h"
+
 namespace Lotus
 {
     struct HDRI
@@ -20,5 +22,19 @@ namespace Lotus
     struct CSkybox
     {
         Handle<HDRI> Map;
+
+        REGISTER_DECL();
     };
+
+    inline void to_json(nlohmann::json& data, const CSkybox& sb)
+    {
+        // TODO: Handle to path
+    }
+
+    inline void from_json(const nlohmann::json& data, CSkybox& sb)
+    {
+        sb.Map = LoadAsset<HDRI, HDRILoader>(data.at("Map").get<std::string>());
+    }
+
+    REGISTER_BODY(CSkybox);
 }

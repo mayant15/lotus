@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lotus/physics/physics.h"
+#include "lotus/physics/components.h"
 #include "lotus/ILifecycle.h"
 #include "lotus/ecs/Entity.h"
 
@@ -19,7 +20,7 @@ namespace Lotus::Physics
         /**
          * @brief Gravitational acceleration for the scene
         */
-        Vector3f Gravity = Vector3f(0.0f, -9.81f, 0.0f);
+        Vector3f Gravity { 0.0f, -9.81f, 0.0f };
     };
 
     struct PhysicsMaterialInfo
