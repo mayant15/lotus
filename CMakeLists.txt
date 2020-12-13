@@ -17,6 +17,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/external/cmake" ${CMAKE_MODULE_PATH
 set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lotus/include)
 
 option(LOTUS_BUILD_DOCS "Build the Lotus documentation" ON)
+option(LOTUS_BUILD_TESTS "Build unit tests for the library" ON)
 option(LOTUS_BUILD_EXAMPLE "Build an example demonstrating the usage of the engine" ON)
 
 # The engine needs access to the engine resource root

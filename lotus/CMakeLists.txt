@@ -88,3 +88,7 @@ target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 if (LOTUS_BUILD_DOCS)
     add_subdirectory(docs)
 endif()
+
+if (LOTUS_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

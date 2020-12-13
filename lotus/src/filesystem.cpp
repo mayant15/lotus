@@ -13,6 +13,16 @@ namespace Lotus
         projectResourceRoot = path;
     }
 
+    std::string GetProjectResourceRoot()
+    {
+        return projectResourceRoot;
+    }
+
+    std::string GetEngineResourceRoot()
+    {
+        return engineResourceRoot;
+    }
+
     std::string ExpandPath(const std::string& path)
     {
         std::filesystem::path arg = path;
