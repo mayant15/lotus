@@ -4,7 +4,7 @@ REM ; You should not need to run this more that once.
 SET VCPKG_ROOT_DIR=%CD%\external\vcpkg
 
 REM ; Bootstrap vcpkg
-%VCPKG_ROOT_DIR%\bootstrap-vcpkg.bat
+call %VCPKG_ROOT_DIR%\bootstrap-vcpkg.bat
 
 REM ; Install dependencies
 REM ; TODO: Detect platform

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(_WIN32) || defined(_WIN64)
+
 #ifdef LOTUS_STATIC_DEFINE
 #  define LOTUS_API
 #  define LOTUS_NO_EXPORT
@@ -35,4 +37,8 @@
 #  ifndef LOTUS_NO_DEPRECATED
 #    define LOTUS_NO_DEPRECATED
 #  endif
+#endif
+
+#else
+#define LOTUS_API // If we're not on Windows this should expand to nothing
 #endif

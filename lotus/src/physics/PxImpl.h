@@ -1,6 +1,13 @@
 #pragma once
 
+// Somehow the include files for PhysX are not installed in the correct vcpkg directory,
+// they're copied right there in the include path
+#if defined(__unix__)
+#define _DEBUG
+#include <PxPhysicsAPI.h>
+#else
 #include <physx/PxPhysicsAPI.h>
+#endif
 
 namespace Lotus::Physics
 {

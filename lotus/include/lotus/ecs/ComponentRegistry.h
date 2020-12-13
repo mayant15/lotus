@@ -6,11 +6,6 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Lotus
-{
-    using key_t = entt::id_type;
-    using data_t = nlohmann::json;
-    using ctor_t = std::function<void(const entt::entity, entt::registry&, const data_t& data)>;
 
 #define GENERATE_COMPONENT_GET_NAME_DECL() \
     static std::string GetName();
@@ -31,10 +26,10 @@ namespace Lotus
     }
 
 #define GENERATE_COMPONENT_REGISTER_DECL() \
-    static const ComponentRegistry registry; \
+    static const Lotus::ComponentRegistry registry; \
 
 #define GENERATE_COMPONENT_REGISTER_BODY(component) \
-    inline const ComponentRegistry component::registry { QUOTE(component)_hs, &component::assign };
+    inline const Lotus::ComponentRegistry component::registry = { entt::hashed_string::value(QUOTE(component)), &component::assign };
 
 #define REGISTER_DECL() \
 public: \
@@ -43,12 +38,19 @@ private: \
     GENERATE_COMPONENT_ASSIGN_DECL() \
     GENERATE_COMPONENT_REGISTER_DECL()
 
-#define REGISTER_BODY(component, ...) \
+#define REGISTER_BODY(component) \
     GENERATE_COMPONENT_GET_NAME_BODY(component) \
     GENERATE_COMPONENT_ASSIGN_BODY(component) \
     GENERATE_COMPONENT_REGISTER_BODY(component)
 
-#define GET_COMPONENT_CTOR(name) ComponentRegistry::Get(entt::hashed_string::value(name.c_str()));
+#define GET_COMPONENT_CTOR(name) Lotus::ComponentRegistry::Get(entt::hashed_string::value(name.c_str()));
+
+
+namespace Lotus
+{
+    using key_t = entt::id_type;
+    using data_t = nlohmann::json;
+    using ctor_t = std::function<void(const entt::entity, entt::registry&, const data_t& data)>;
 
     struct ComponentRegistry
     {

@@ -31,7 +31,7 @@ namespace Lotus::SceneManager
         if (!data.is_array())
         {
             LOG_ERROR("Invalid scene format");
-            throw std::exception("invalid scene format");
+            throw std::exception();
         }
 
         for (auto& entityInfo : data)
