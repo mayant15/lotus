@@ -2,7 +2,6 @@
 set(LOTUS_LINK_LIBS
     CONAN_PKG::glfw
     CONAN_PKG::assimp
-    CONAN_PKG::spdlog
     CONAN_PKG::physx
 )
 

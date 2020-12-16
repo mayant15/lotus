@@ -4,5 +4,5 @@ mkdir build
 cd build
 
 conan install ..
-cmake .. -G Ninja
+cmake .. -G Ninja -DLOTUS_BUILD_DOCS=OFF -DLOTUS_BUILD_EXAMPLE=OFF
 cmake --build .

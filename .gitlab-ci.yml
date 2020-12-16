@@ -1,19 +1,13 @@
-image: studiocentauri/conan:gcc-9.3.0
 stages:
   - build
-  - test
-  - deploy
 
 build:
   stage: build
+  image: studiocentauri/conan:gcc-9.3.0
   script:
     - echo "Building the engine"
     - chmod +x ./ci/build.sh
     - ./ci/build.sh
-
-doctest:
-  stage: test
-  script: 
     - echo "Performing tests"
     - chmod +x ./ci/test.sh
     - ./ci/test.sh
@@ -21,10 +15,3 @@ doctest:
     when: always
     reports:
       junit: ./report.xml
-
-docs:
-  stage: deploy
-  script:
-    - echo "Deploying"
-    - chmod +x ./ci/deploy.sh
-    - ./ci/deploy.sh
