@@ -6,10 +6,10 @@ build:
   image: studiocentauri/conan:gcc-9.3.0
   script:
     - echo "Building the engine"
-    - chmod +x ./ci/build.sh
+    - sudo chmod +x ./ci/build.sh
     - ./ci/build.sh
     - echo "Performing tests"
-    - chmod +x ./ci/test.sh
+    - sudo chmod +x ./ci/test.sh
     - ./ci/test.sh
   artifacts:
     when: always
