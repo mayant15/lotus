@@ -22,9 +22,6 @@ int main()
 
     SceneManager::LoadScene(ExpandPath("res://scenes/SampleScene.json"));
 
-    // Test out python script
-    exec_file(ExpandPath("res://scripts/hello.py"));
-
     // Bind event callbacks
     // TODO: Bind with reflection
     EventManager& em = GET(EventManager);

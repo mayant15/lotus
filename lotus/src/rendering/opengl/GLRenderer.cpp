@@ -115,7 +115,7 @@ namespace Lotus
 
     void GLRenderer::DrawMesh(const CMeshRenderer& data, const CTransform& transform)
     {
-        Handle<Shader> shader = data.Shader;
+        Handle<Shader> shader = data.MeshShader;
         shader->Use();
 
         // Set transforms and draw actor
@@ -159,11 +159,11 @@ namespace Lotus
         glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
         shader->SetInt("shadowMap", 0);
 
-        std::vector<SubMesh> meshes = data.Model->Meshes;
+        std::vector<SubMesh> meshes = data.MeshModel->Meshes;
         for (SubMesh& mesh : meshes)
         {
             // Material
-            Handle<Material> material = mesh.Material;
+            Handle<Material> material = mesh.MeshMaterial;
             shader->SetMaterial("material", material);
 
             glBindVertexArray(mesh.VAO);
@@ -273,7 +273,7 @@ namespace Lotus
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, _shadowDepthTexture);
 
-            for (const auto& mesh : data.Model->Meshes)
+            for (const auto& mesh : data.MeshModel->Meshes)
             {
                 glBindVertexArray(mesh.VAO);
                 glDrawElements(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, nullptr);

@@ -1,5 +1,10 @@
 #pragma once
 
+// Unix needs this defined and wouldn't take CMake's, idk why
+#if defined(__unix__)
+#define _DEBUG
+#endif
+
 // The include files for PhysX are no longer installed in the correct vcpkg directory,
 // they're copied right there in the include path.
 #include <PxPhysicsAPI.h>

@@ -16,7 +16,7 @@ namespace Lotus
     {
         std::vector<Vertex> Vertices;
         std::vector<uint32_t> Indices;
-        Handle<Material> Material;
+        Handle<Material> MeshMaterial;
 
         // TODO: Make meshes API agnostic
         unsigned int VBO = 0;

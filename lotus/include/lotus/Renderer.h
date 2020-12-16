@@ -37,8 +37,8 @@ namespace Lotus
     struct CMeshRenderer
     {
         // Render data
-        Handle<Shader> Shader;
-        Handle<Model> Model;
+        Handle<Shader> MeshShader;
+        Handle<Model> MeshModel;
 
         REGISTER_DECL();
     };
@@ -50,8 +50,8 @@ namespace Lotus
 
     inline void from_json(const nlohmann::json& data, CMeshRenderer& mr)
     {
-        mr.Model = LoadAsset<Model, ModelLoader>(ExpandPath(data.at("Model").get<std::string>()));
-        mr.Shader = LoadAsset<Shader, ShaderLoader>(
+        mr.MeshModel = LoadAsset<Model, ModelLoader>(ExpandPath(data.at("Model").get<std::string>()));
+        mr.MeshShader = LoadAsset<Shader, ShaderLoader>(
                 ExpandPath(data.at("Shader").at("Vertex").get<std::string>()),
                 ExpandPath(data.at("Shader").at("Fragment").get<std::string>())
         );

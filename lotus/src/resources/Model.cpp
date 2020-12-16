@@ -109,7 +109,7 @@ namespace Lotus
     {
         Indices = indices;
         Vertices = vertices;
-        Material = std::move(material);
+        MeshMaterial = std::move(material);
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);

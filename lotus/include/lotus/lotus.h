@@ -37,5 +37,4 @@
 #include "entry.h"
 #include "ILifecycle.h"
 #include "Input.h"
-#include "python.h"
 #include "Renderer.h"

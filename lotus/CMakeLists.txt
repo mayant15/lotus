@@ -1,12 +1,12 @@
 # Dependencies
-find_package(assimp CONFIG REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
-find_package(pybind11 CONFIG REQUIRED)
-include(FindPhysX)
+set(LOTUS_LINK_LIBS
+    CONAN_PKG::glfw
+    CONAN_PKG::assimp
+    CONAN_PKG::spdlog
+    CONAN_PKG::physx
+)
 
-set(LOTUS_LINK_LIBS pybind11::embed glfw assimp::assimp spdlog::spdlog ${PHYSX_LINK_LIBS})
-
+# Other include directories
 set(LOTUS_INCLUDE_DIRS
     ${PUBLIC_INCLUDE_DIR}
     ${PUBLIC_INCLUDE_DIR}/lotus/internal
@@ -33,9 +33,6 @@ set(LOTUS_SOURCES
 
     src/physics/PxImpl.cpp
     src/physics/PhysicsSubsystem.cpp
-
-    src/python/Interpreter.cpp
-    src/python/module.cpp
 
     src/rendering/opengl/GLRenderer.cpp
     src/rendering/opengl/GLShader.cpp
