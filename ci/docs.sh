@@ -8,10 +8,6 @@ set -e
 GH_REPO_NAME="lotus"
 GH_REPO_REF="github.com/studiocentauri/lotus.git"
 
-git config --global push.default simple
-git config user.name "kaka"
-git config user.email "kaka@studiocentauri.in"
-
 # Docs
 OUTPUT_DIR="out"
 DOXY_OUT=$OUTPUT_DIR/doxygen
@@ -42,6 +38,11 @@ echo "" > $OUTPUT_DIR/.nojekyll
 #####################################################################
 
 echo "-- Deploying"
+
+git config --global push.default simple
+git config --global user.name "kaka"
+git config --global user.email "kaka@studiocentauri.in"
+
 git clone https://git@$GH_REPO_REF
 rm -rf $GH_REPO_NAME/*
 cp -r $OUTPUT_DIR/** $GH_REPO_NAME
