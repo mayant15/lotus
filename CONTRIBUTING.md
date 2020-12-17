@@ -2,8 +2,6 @@
 
 ## Guidelines
 
-> When in doubt, copy Unreal Engine
-
 ## Conventions
 
 - If it only stores data, use a struct. If it has more functionality, use a class.

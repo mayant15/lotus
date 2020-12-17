@@ -13,21 +13,19 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-# Custom find modules
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/external/cmake" ${CMAKE_MODULE_PATH})
-
-set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lotus/include)
-
-option(LOTUS_BUILD_DOCS "Build the Lotus documentation" ON)
+# Build options
 option(LOTUS_BUILD_TESTS "Build unit tests for the library" ON)
 option(LOTUS_BUILD_EXAMPLE "Build an example demonstrating the usage of the engine" ON)
+
+# Things like examples also need public headers for lotus
+set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lotus/include) 
 
 # The engine needs access to the engine resource root
 # The user project needs access to both the engine and the user resource root
 # So I enabled this definition globally for all targets
 add_compile_definitions(ENGINE_RESOURCE_ROOT="${CMAKE_SOURCE_DIR}/lotus/resources/")
 
-# Build libraries
+# Build the actual engine
 add_subdirectory(lotus)
 
 if (LOTUS_BUILD_EXAMPLE)

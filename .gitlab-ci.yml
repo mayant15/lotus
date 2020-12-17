@@ -1,5 +1,6 @@
 stages:
   - build
+  - deploy
 
 build:
   stage: build
@@ -15,3 +16,11 @@ build:
     when: always
     reports:
       junit: ./report.xml
+
+docs:
+  stage: deploy
+  image: studiocentauri/sphinx:latest
+  script:
+    - echo "Building documentation"
+    - chmod +x ./ci/docs.sh
+    - ./ci/docs.sh
