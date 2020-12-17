@@ -42,7 +42,7 @@ echo "" > $OUTPUT_DIR/.nojekyll
 #####################################################################
 
 echo "-- Deploying"
-git clone https://git@$GH_REPO_REF`
+git clone https://git@$GH_REPO_REF
 rm -rf $GH_REPO_NAME/*
 cp -r $OUTPUT_DIR/** $GH_REPO_NAME
 
