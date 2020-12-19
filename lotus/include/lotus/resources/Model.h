@@ -4,7 +4,7 @@
 
 namespace Lotus
 {
-    struct LOTUS_API Vertex
+    struct Vertex
     {
         Vector3f Position;
         Vector3f Normal;
@@ -12,7 +12,7 @@ namespace Lotus
         Vector3f Tangent;
     };
 
-    struct LOTUS_API SubMesh
+    struct SubMesh
     {
         std::vector<Vertex> Vertices;
         std::vector<uint32_t> Indices;
@@ -23,10 +23,10 @@ namespace Lotus
         unsigned int EBO = 0;
         unsigned int VAO = 0;
 
-        SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Handle<Lotus::Material> material);
+        LOTUS_API SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Handle<Lotus::Material> material);
     };
 
-    struct LOTUS_API Model
+    struct Model
     {
         std::vector<SubMesh> Meshes;
     };

@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "core/IWindow.h"
+#include <core/IWindow.h>
 
 namespace Lotus
 {

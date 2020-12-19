@@ -20,7 +20,7 @@ namespace Lotus
     * an entity handle and a registry pointer, and is therefore lightweight enough to be passed
     * around.
    */
-    class LOTUS_API Entity
+    class Entity
     {
         EntityID _id = entt::null;
 
@@ -73,7 +73,7 @@ namespace Lotus
     };
 
     template <typename T>
-    struct LOTUS_API ComponentCreateEvent : public Event
+    struct ComponentCreateEvent : public Event
     {
         EntityID entityID;
     };

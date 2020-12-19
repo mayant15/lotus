@@ -1,7 +1,7 @@
-#include "GLShader.h"
+#include <glad/glad.h>
+#include <lotus/debug.h>
 
-#include "glad/glad.h"
-#include "lotus/debug.h"
+#include "GLShader.h"
 
 #include <fstream>
 

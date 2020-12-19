@@ -21,7 +21,7 @@ constexpr int L_KEY_RELEASE = 2;
 
 namespace Lotus
 {
-    enum class LOTUS_API EEventType
+    enum class EEventType
     {
         NONE = 0,
         WINDOW_CLOSE_EVENT,
@@ -29,44 +29,22 @@ namespace Lotus
         MOUSE_EVENT
     };
 
-    // TODO: Do this with plain macros too?
-    enum class LOTUS_API EEventCategory
+    struct Event
     {
-        NONE = 0,
-        WINDOW = BIT<0>,
-        INPUT = BIT<1>,
-        KEYBOARD = BIT<2>,
-        MOUSE = BIT<3>
-    };
-
-    inline LOTUS_API EEventCategory operator|(EEventCategory A, EEventCategory B)
-    {
-        return static_cast<EEventCategory>(static_cast<int>(A) | static_cast<int>(B));
-    }
-
-    inline LOTUS_API EEventCategory operator&(EEventCategory A, EEventCategory B)
-    {
-        return static_cast<EEventCategory>(static_cast<int>(A) & static_cast<int>(B));
-    }
-
-    struct LOTUS_API Event
-    {
-        EEventCategory Category = EEventCategory::NONE;
         EEventType Type = EEventType::NONE;
         bool Immediate = false;
     };
 
-    struct LOTUS_API WindowCloseEvent : public Event
+    struct WindowCloseEvent : public Event
     {
         WindowCloseEvent()
         {
-            Category = EEventCategory::WINDOW;
             Type = EEventType::WINDOW_CLOSE_EVENT;
             Immediate = true;
         }
     };
 
-    struct LOTUS_API WindowResizeEvent
+    struct WindowResizeEvent
     {
         float NewWidth;
         float NewHeight;
@@ -76,20 +54,17 @@ namespace Lotus
      * Input events
      */
 
-    struct LOTUS_API KeyboardEvent : public Event
+    struct KeyboardEvent : public Event
     {
         int KeyCode = L_KEY_NONE;
         int State = L_KEY_NONE;
         KeyboardEvent()
         {
             Type = EEventType::KEYBOARD_EVENT;
-            // TODO: This OR needs a == to got with it
-//            Category = EEventCategory::KEYBOARD | EEventCategory::INPUT;
-            Category = EEventCategory::INPUT;
         }
     };
 
-    struct LOTUS_API MouseEvent : public Event
+    struct MouseEvent : public Event
     {
         float MouseX = 0.0f;
         float MouseY = 0.0f;
@@ -97,7 +72,6 @@ namespace Lotus
         MouseEvent()
         {
             Type = EEventType::MOUSE_EVENT;
-            Category = EEventCategory::INPUT;
         }
     };
 }

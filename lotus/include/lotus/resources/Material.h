@@ -2,7 +2,6 @@
 
 #include "lotus/physics/physics.h"
 #include "lotus/resources/Texture.h"
-#include "lotus/resources/AssetRegistry.h"
 
 #include <variant>
 #include <optional>

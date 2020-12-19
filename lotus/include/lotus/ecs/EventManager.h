@@ -11,7 +11,7 @@ namespace Lotus
     /**
      * Wrapper class over EnTT to bind, queue and dispatch events.
      */
-    class LOTUS_API EventManager : public Singleton<EventManager>
+    class EventManager : public Singleton<EventManager>
     {
         entt::dispatcher _dispatcher{};
 
