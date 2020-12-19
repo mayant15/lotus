@@ -14,4 +14,6 @@ be found here, along with key API documentation. For a complete reference of the
    :caption: Getting Started
 
    manual/install
+   manual/quickstart
+   manual/ecs
    manual/importing
