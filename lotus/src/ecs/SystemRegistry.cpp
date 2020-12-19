@@ -8,7 +8,7 @@
 
 namespace Lotus
 {
-    SystemRegistry::SystemRegistry(const Config& config)
+    SystemRegistry::SystemRegistry()
     {
         // Create the entity registry
         ECSInitialize();
@@ -23,19 +23,14 @@ namespace Lotus
         eventManager.Bind<KeyboardEvent, Input::UpdateKeyState>();
 
         // Create Renderer
-        switch (config.RenderAPI)
+        auto renderConf = GetRenderConfig();
+        switch (renderConf.RenderAPI)
         {
             case ERenderAPI::OPEN_GL: _renderer = &GLRenderer::Get(); break;
             case ERenderAPI::DIRECTX: LOG_ERROR("DirectX is not yet supported."); break;
             case ERenderAPI::VULKAN: LOG_ERROR("Vulkan is not yet supported."); break;
         }
-
-        RendererOp rendererOp {};
-        rendererOp.IsDebug = config.IsDebug;
-        rendererOp.RenderAPI = config.RenderAPI;
-        rendererOp.ViewportWidth = config.Width;
-        rendererOp.ViewportHeight = config.Height;
-        _renderer->Initialize(rendererOp);
+        _renderer->Initialize(renderConf);
 
         // Register Events
         eventManager.Bind<PreUpdateEvent, &Renderer::OnPreUpdate>(_renderer);

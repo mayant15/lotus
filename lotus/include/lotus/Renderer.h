@@ -5,35 +5,10 @@
 #include <lotus/resources/Shader.h>
 #include <lotus/ecs/components/CTransform.h>
 #include <lotus/filesystem.h>
+#include <lotus/Config.h>
 
 namespace Lotus
 {
-    /**
-     * Options to initialize the renderer with.
-     */
-    struct RendererOp
-    {
-        /**
-         * Should create a debug context
-         */
-        bool IsDebug;
-
-        /**
-         * Render API that is to be used
-         */
-        ERenderAPI RenderAPI;
-
-        /**
-         * Width of the created viewport
-         */
-        uint32_t ViewportWidth;
-
-        /**
-         * Height of the created viewport
-         */
-        uint32_t ViewportHeight;
-    };
-
     struct CMeshRenderer
     {
         // Render data
@@ -67,14 +42,14 @@ namespace Lotus
     class Renderer : public ILifecycle
     {
     protected:
-        RendererOp _options{};
+        RenderConfig _options {};
 
     public:
         /**
          * Initialize the renderer.
          * @param options Options to configure the renderer
          */
-        virtual void Initialize(const RendererOp& options)
+        virtual void Initialize(const RenderConfig& options)
         {}
 
         /**

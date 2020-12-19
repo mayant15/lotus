@@ -26,7 +26,7 @@ set(LOTUS_SOURCES
     src/core/platform/GLWindow.cpp
     src/core/Engine.cpp
     src/core/Input.cpp
-    src/core/IWindow.cpp
+    src/core/Config.cpp
 
     src/ecs/SystemRegistry.cpp
     src/ecs/Entity.cpp

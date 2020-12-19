@@ -1,9 +1,9 @@
 #pragma once
 
-#include "lotus/Config.h"
+#include "lotus_export.h"
 
 namespace Lotus
 {
-    LOTUS_API void Initialize(const Config& config);
+    LOTUS_API void Initialize();
     LOTUS_API void Run();
 }

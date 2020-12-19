@@ -34,7 +34,7 @@ namespace Lotus
                                          const void* userParam);
 
     public:
-        void Initialize(const RendererOp& options) override;
+        void Initialize(const RenderConfig& options) override;
 
         void SetViewport(int x, int y, int width, int height) override;
 

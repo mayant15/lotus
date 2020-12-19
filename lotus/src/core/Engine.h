@@ -3,7 +3,6 @@
 #include "lotus/lcommon.h"
 #include "lotus/ecs/EventManager.h"
 #include "lotus/ecs/Event.h"
-#include "lotus/Config.h"
 
 #include "core/IWindow.h"
 #include "ecs/SystemRegistry.h"
@@ -27,7 +26,7 @@ namespace Lotus
          * Initialize the engine and setup core subsystems.
          * @param options Options to configure the engine with
          */
-        void Initialize(const Config& config);
+        void Initialize();
 
         /**
          * Start the main gameplay loop.

@@ -1,11 +1,11 @@
-#include "lotus/entry.h"
+#include <lotus/entry.h>
 #include "core/Engine.h"
 
 namespace Lotus
 {
-    void Initialize(const Config& config)
+    void Initialize()
     {
-        GET(Engine).Initialize(config);
+        GET(Engine).Initialize();
     }
 
     void Run()

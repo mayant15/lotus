@@ -2,24 +2,17 @@
 #include "CameraSystem.hpp"
 
 // TODO: Eventually, the game classes should just describe behavior
-// Lotus should create a main function, driver facade
+//  Lotus should create a main function, driver facade
 int main()
 {
     using namespace Lotus;
 
-    // Have to initialize the engine first
-    Config config;
-    config.RenderAPI = ERenderAPI::OPEN_GL;
-    config.IsDebug = true;
-    config.Width = 1024;
-    config.Height = 800;
+    // TODO: Once we have an editor, this is the file that will be opened.
+    //  But till then let's pass it in as a macro defined by CMake.
+    LoadConfig(PROJECT_SETTINGS);
+    Lotus::Initialize();
 
-    // Tell the engine where your resources are. The default location is a `resources/` directory
-    // in the project root, and the DEFAULT_PROJECT_RESOURCE_ROOT macro expands to that.
-    SetProjectResourceRoot(DEFAULT_PROJECT_RESOURCE_ROOT);
-
-    Lotus::Initialize(config);
-
+    // Load scene
     SceneManager::LoadScene(ExpandPath("res://scenes/SampleScene.json"));
 
     // Bind event callbacks

@@ -27,7 +27,7 @@ namespace Lotus
         /**
          * @brief Starts all subsystems
         */
-        explicit SystemRegistry(const Config& config);
+        SystemRegistry();
 
         /**
          * @brief Shutdown all subsystems

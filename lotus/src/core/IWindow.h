@@ -42,9 +42,6 @@ namespace Lotus
         bool IsDebug = true;
 
         EWindowBackend Backend = EWindowBackend::GLFW;
-
-        WindowOp() = default;
-        explicit WindowOp(const Config& config);
     };
 
     /**

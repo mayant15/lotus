@@ -1,0 +1,13 @@
+{
+  "Project": {
+    "ProjectResourceRoot": "@DEFAULT_PROJECT_RESOURCE_ROOT@"
+  },
+  "Build": {
+    "IsDebug": true
+  },
+  "Render": {
+    "RenderAPI": "opengl",
+    "ViewportHeight": 800,
+    "ViewportWidth": 1024
+  }
+}

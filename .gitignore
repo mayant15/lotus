@@ -8,6 +8,7 @@ CMakeFiles/
 .idea/
 .vs/
 .vscode/
+examples/quickstart/.settings
 
 lotus/docs/doxygen/
 lotus/docs/sphinx/

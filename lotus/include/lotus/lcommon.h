@@ -16,6 +16,7 @@
 #define QUOTE(x) Q(x)
 
 #define SERIALIZE(Type, ...) NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Type, __VA_ARGS__)
+#define SERIALIZE_ENUM(Type, ...) NLOHMANN_JSON_SERIALIZE_ENUM(Type, __VA_ARGS__)
 
 #define GET(x) x::Get()
 
@@ -35,16 +36,6 @@ namespace Lotus
 
     template<typename T>
     using Handle = entt::resource_handle<T>;
-
-    /**
-     * Supported Render APIs.
-     */
-    enum class ERenderAPI
-    {
-        OPEN_GL,
-        DIRECTX,
-        VULKAN
-    };
 
     /**
      * Base class that implements singleton behavior with CRTP.

@@ -28,9 +28,15 @@ namespace Lotus
         {}
     }
 
-    void Engine::Initialize(const Config& config)
+    void Engine::Initialize()
     {
-        WindowOp winOptions { config };
+        auto renderConfig = GetRenderConfig();
+        auto buildConfig = GetBuildConfig();
+
+        WindowOp winOptions;
+        winOptions.IsDebug = buildConfig.IsDebug;
+        winOptions.Height = renderConfig.ViewportHeight;
+        winOptions.Width = renderConfig.ViewportWidth;
 
         // Create context
         // TODO: Create somewhere else
@@ -44,7 +50,7 @@ namespace Lotus
 
         eventManager.Bind<WindowCloseEvent, &Engine::OnWindowClose>(this);
 
-        _systemRegistry = std::make_unique<SystemRegistry>(config);
+        _systemRegistry = std::make_unique<SystemRegistry>();
         eventManager.Dispatch(InitEvent {});
     }
 

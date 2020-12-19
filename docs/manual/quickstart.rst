@@ -10,18 +10,20 @@ Configuration
 --------------
 
 Lotus is a library and depends on the user to supply a main function. The first step is to initialize the engine and specify
-configuration options.::
+configuration options. This is done through the ``.lproject`` file, kept alongside your ``CMakeLists.txt``. ::
 
-    Config config;
-    config.RenderAPI = ERenderAPI::OPEN_GL;
-    config.IsDebug = true;
-    config.Width = 1024;
-    config.Height = 800;
-    SetProjectResourceRoot(DEFAULT_PROJECT_RESOURCE_ROOT);
-    Lotus::Initialize(config);
+    LoadConfig(PROJECT_SETTINGS);
+    Lotus::Initialize();
 
-The ``DEFAULT_PROJECT_RESOURCE_ROOT`` macro expands to the path of the ``resources/`` directory and must be set in order to
-use relative paths. If you opt for an alternative directory structure, supply that path as the argument here.
+For now, we have to explicitly tell Lotus where this file is. A ``PROJECT_SETTINGS`` macro is defined that can be passed if
+the file is in its default location.
+
+The project file is processed by CMake before being used by the engine, and therefore variables from the build system can
+be easily used. The ``Project.ProjectResourceRoot`` field exploits this to point to the ``resources/`` directory of the project.
+This way one does not need to use absolute paths in the configuration file. To insert the value of a CMake variable ``<VAR>``,
+simply surround it with '@' like so ::
+
+    "KeyFilledByCMake": "@<VAR>@"
 
 Scenes
 ------

@@ -13,7 +13,7 @@ constexpr unsigned int SHADOW_HEIGHT = 1024;
 
 namespace Lotus
 {
-    void GLRenderer::Initialize(const RendererOp& options)
+    void GLRenderer::Initialize(const RenderConfig& options)
     {
         _options = options;
 
