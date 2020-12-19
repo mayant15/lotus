@@ -50,5 +50,5 @@ cp -r $OUTPUT_DIR/** $GH_REPO_NAME
 # Upload
 cd $GH_REPO_NAME
 git add --all
-git commit -m "Update to ${CI_COMMIT_SHORT_SHA}"
+git commit -m "Update to ${CI_COMMIT_SHORT_SHA}" --allow-empty
 git push --force "https://${GH_REPO_TOKEN}@${GH_REPO_REF}" > /dev/null 2>&1
