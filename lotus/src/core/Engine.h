@@ -1,50 +1,28 @@
 #pragma once
 
-#include "lotus/lcommon.h"
-#include "lotus/ecs/EventManager.h"
-#include "lotus/ecs/Event.h"
+#include <lotus/lcommon.h>
+#include <lotus/ecs/Event.h>
 
-#include "core/IWindow.h"
-#include "ecs/SystemRegistry.h"
+#include "IWindow.h"
 
-namespace Lotus
+namespace Lotus::Engine
 {
-    /**
-     * Core Lotus engine class that handles all subsystems and the main gameplay loop.
-     */
-    class Engine : public Singleton<Engine>
+    /** @brief Initializes the engine and various subsystems */
+    void Initialize();
+
+    /** @brief Start engine ticks */
+    void Run();
+
+    /** @brief Cleanup and shutdown */
+    void Shutdown();
+
+    /** @brief Data that maintains state for the Engine system */
+    struct State
     {
-        bool _isRunning = true;
+        /** @brief True if engine is ticking */
+        bool IsRunning = true;
 
-        // NOTE: While this is a unique pointer owned by the engine, the underlying object can be modified
-        // by the lifecycle events called on it.
-        URef<IWindow> _window;
-        URef<SystemRegistry> _systemRegistry;
-
-    public:
-        /**
-         * Initialize the engine and setup core subsystems.
-         * @param options Options to configure the engine with
-         */
-        void Initialize();
-
-        /**
-         * Start the main gameplay loop.
-         */
-        void Run();
-
-        /**
-         * Shutdown the engine.
-         */
-        void Shutdown();
-
-        void OnWindowClose(const WindowCloseEvent& event);
-
-    private:
-        friend Singleton<Engine>;
-
-        Engine() = default;
-
-        void tick(float delta);
+        /** @brief Pointer to the abstract interface for the main native window */
+        URef<IWindow> Window;
     };
 }

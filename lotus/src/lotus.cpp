@@ -5,11 +5,11 @@ namespace Lotus
 {
     void Initialize()
     {
-        GET(Engine).Initialize();
+        Engine::Initialize();
     }
 
     void Run()
     {
-        GET(Engine).Run();
+        Engine::Run();
     }
 }

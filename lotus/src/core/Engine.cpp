@@ -1,14 +1,29 @@
 #include "Engine.h"
-#include <lotus/debug.h>
-#include <core/platform/GLWindow.h>
 
-namespace Lotus
+#include <lotus/ecs/EventManager.h>
+#include <lotus/ecs/Entity.h>
+#include <lotus/Input.h>
+#include <lotus/Renderer.h>
+#include <lotus/debug.h>
+
+#include <core/platform/GLWindow.h>
+#include <physics/PhysicsSubsystem.h>
+#include <rendering/opengl/GLRenderer.h>
+
+namespace Lotus::Engine
 {
+    static Engine::State state {};
+    static Renderer* renderer = nullptr;
+
+    // TODO: Change PhysicsSubsystem to a namespace-level system
+    static URef<Physics::PhysicsSubsystem> physics = nullptr;
+
+
     /**
-     * Receives window events and dispatches them appropriately
-     * @param event Event to be dispatched
+     * @brief Event callback for propagating events triggered by the GLFW window
+     * @param event Reference to the event
      */
-    void windowEventCallback(Event& event)
+    static void windowEventCallback(Event& event)
     {
         // TODO: Cast to appropriate event type
         auto& eventManager = GET(EventManager);
@@ -22,14 +37,18 @@ namespace Lotus
         }
         else if (event.Type == EEventType::WINDOW_CLOSE_EVENT)
         {
-            eventManager.Dispatch((WindowCloseEvent&) event);
+            // Don't really need to dispatch this event through the event system
+            // because it can be dealt with here
+            state.IsRunning = false;
         }
         else
         {}
     }
 
-    void Engine::Initialize()
+    /** @brief Create the main window and platform-specific context. Also register events. */
+    void setupWindow()
     {
+        // Create window
         auto renderConfig = GetRenderConfig();
         auto buildConfig = GetBuildConfig();
 
@@ -39,32 +58,89 @@ namespace Lotus
         winOptions.Width = renderConfig.ViewportWidth;
 
         // Create context
-        // TODO: Create somewhere else
-        _window =  std::make_unique<GLWindow>(winOptions);
-        _window->SetEventCallback(windowEventCallback);
+        state.Window =  std::make_unique<GLWindow>(winOptions);
+        state.Window->SetEventCallback(windowEventCallback);
 
         auto& eventManager = GET(EventManager);
-        eventManager.Bind<PostUpdateEvent, &IWindow::OnPostUpdate>(_window.get());
-        eventManager.Bind<DestroyEvent, &IWindow::OnDestroy>(_window.get());
-        eventManager.Bind<ShutdownEvent, &IWindow::OnShutdown>(_window.get());
+        eventManager.Bind<PostUpdateEvent, &IWindow::OnPostUpdate>(state.Window.get());
+        eventManager.Bind<DestroyEvent, &IWindow::OnDestroy>(state.Window.get());
+        eventManager.Bind<ShutdownEvent, &IWindow::OnShutdown>(state.Window.get());
+    }
 
-        eventManager.Bind<WindowCloseEvent, &Engine::OnWindowClose>(this);
+    /** @brief Setup the physics subsystem and register events */
+    void setupPhysics()
+    {
+        using namespace Lotus::Physics;
+        physics = std::make_unique<PhysicsSubsystem>();
 
-        _systemRegistry = std::make_unique<SystemRegistry>();
+        auto& eventManager = GET(EventManager);
+        eventManager.Bind<InitEvent, &PhysicsSubsystem::OnInit>(physics.get());
+        eventManager.Bind<BeginEvent, &PhysicsSubsystem::OnBegin>(physics.get());
+        eventManager.Bind<UpdateEvent, &PhysicsSubsystem::OnUpdate>(physics.get());
+        eventManager.Bind<PostUpdateEvent, &PhysicsSubsystem::OnPostUpdate>(physics.get());
+        eventManager.Bind<DestroyEvent, &PhysicsSubsystem::OnDestroy>(physics.get());
+        eventManager.Bind<ComponentCreateEvent<CRigidBody>, &PhysicsSubsystem::OnRigidbodyCreate>(physics.get());
+    }
+
+    /** @brief Setup the platform-specific renderer and register events */
+    void setupRenderer()
+    {
+        auto renderConf = GetRenderConfig();
+        switch (renderConf.RenderAPI)
+        {
+            case ERenderAPI::OPEN_GL: renderer = &GLRenderer::Get(); break;
+            case ERenderAPI::DIRECTX: LOG_ERROR("DirectX is not yet supported."); break;
+            case ERenderAPI::VULKAN: LOG_ERROR("Vulkan is not yet supported."); break;
+        }
+        renderer->Initialize(renderConf);
+
+        auto& eventManager = GET(EventManager);
+        eventManager.Bind<PreUpdateEvent, &Renderer::OnPreUpdate>(renderer);
+        eventManager.Bind<UpdateEvent, &Renderer::OnUpdate>(renderer);
+    }
+
+    /** @brief Perform an engine tick and dispatch update events. */
+    void tick(double delta)
+    {
+        auto& eventManager = GET(EventManager);
+
+        eventManager.Dispatch(PreUpdateEvent {});
+
+        UpdateEvent ue;
+        ue.DeltaTime = delta;
+        eventManager.Dispatch(ue);
+
+        eventManager.Dispatch(PostUpdateEvent {});
+
+        // Dispatch remaining queued events
+        eventManager.DispatchAll();
+    }
+
+    void Initialize()
+    {
+        setupWindow();
+        ECSInitialize();
+
+        auto& eventManager = GET(EventManager);
+        eventManager.Bind<MouseEvent, Input::UpdateMouseState>();
+        eventManager.Bind<KeyboardEvent, Input::UpdateKeyState>();
+
+        setupPhysics();
+        setupRenderer();
+
         eventManager.Dispatch(InitEvent {});
     }
 
-    void Engine::Run()
+    void Run()
     {
-        auto& eventManager = GET(EventManager);
-        eventManager.Dispatch(BeginEvent {});
+        GET(EventManager).Dispatch(BeginEvent {});
 
         // TODO: Use chrono?
         double currentTime = glfwGetTime();
         double lastTime = currentTime;
-        while (_isRunning)
+        while (state.IsRunning)
         {
-            // tick()
+            // tick
             currentTime = glfwGetTime();
             double delta = currentTime - lastTime;
             lastTime = currentTime;
@@ -74,7 +150,7 @@ namespace Lotus
         Shutdown();
     }
 
-    void Engine::Shutdown()
+    void Shutdown()
     {
         LOG_INFO("Shutting down engine...");
         auto& eventManager = GET(EventManager);
@@ -82,32 +158,6 @@ namespace Lotus
         eventManager.Dispatch(DestroyEvent {});
         eventManager.Dispatch(ShutdownEvent {});
 
-        // TODO: Shutdown system registry is required?
-        _systemRegistry->Shutdown();
-    }
-
-    void Engine::tick(float delta)
-    {
-        UpdateEvent updateEvent;
-        updateEvent.DeltaTime = delta;
-        PreUpdateEvent preUpdateEvent;
-        PostUpdateEvent postUpdateEvent;
-
-        // Game logic tick
-        // TODO: process physics, AI etc here
-
-        auto& eventManager = GET(EventManager);
-
-        eventManager.Dispatch(preUpdateEvent);
-        eventManager.Dispatch(updateEvent);
-        eventManager.Dispatch(postUpdateEvent);
-
-        // Dispatch remaining queued events
-        eventManager.DispatchAll();
-    }
-
-    void Engine::OnWindowClose(const WindowCloseEvent &event)
-    {
-        _isRunning = false;
+        ECSShutdown();
     }
 }

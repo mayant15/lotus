@@ -31,7 +31,7 @@ namespace Lotus
 
     struct UpdateEvent : Event
     {
-        float DeltaTime = 0.0f;
+        double DeltaTime = 0.0f;
 
         UpdateEvent()
         {
