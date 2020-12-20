@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lotus/physics/physics.h"
+#include "lotus/physics/Vector.h"
 #include "lotus/resources/Texture.h"
 
 #include <variant>

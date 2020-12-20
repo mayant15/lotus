@@ -10,7 +10,7 @@
 #include "lcommon.h"
 #include "filesystem.h"
 
-#include "physics/physics.h"
+#include "lotus/physics/Vector.h"
 #include "physics/components.h"
 
 #include "ecs/components/CTransform.h"

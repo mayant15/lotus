@@ -1,6 +1,6 @@
 #include <lotus/resources/HDRI.h>
 
-#include <lotus/physics/physics.h>
+#include <lotus/physics/Vector.h>
 #include <lotus/resources/Shader.h>
 
 #include <lotus/debug.h>

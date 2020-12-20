@@ -1,7 +1,7 @@
 #pragma once
 
 #include <lotus/ecs/ComponentRegistry.h>
-#include <lotus/physics/physics.h>
+#include <lotus/physics/Vector.h>
 
 namespace Lotus
 {

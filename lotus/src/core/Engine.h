@@ -1,9 +1,9 @@
 #pragma once
 
+#include "IWindow.h"
+
 #include <lotus/lcommon.h>
 #include <lotus/ecs/Event.h>
-
-#include "IWindow.h"
 
 namespace Lotus::Engine
 {

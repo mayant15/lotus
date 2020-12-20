@@ -7,17 +7,13 @@
 #include <lotus/debug.h>
 
 #include <core/platform/GLWindow.h>
-#include <physics/PhysicsSubsystem.h>
+#include <physics/Physics.h>
 #include <rendering/opengl/GLRenderer.h>
 
 namespace Lotus::Engine
 {
     static Engine::State state {};
     static Renderer* renderer = nullptr;
-
-    // TODO: Change PhysicsSubsystem to a namespace-level system
-    static URef<Physics::PhysicsSubsystem> physics = nullptr;
-
 
     /**
      * @brief Event callback for propagating events triggered by the GLFW window
@@ -70,16 +66,13 @@ namespace Lotus::Engine
     /** @brief Setup the physics subsystem and register events */
     void setupPhysics()
     {
-        using namespace Lotus::Physics;
-        physics = std::make_unique<PhysicsSubsystem>();
-
         auto& eventManager = GET(EventManager);
-        eventManager.Bind<InitEvent, &PhysicsSubsystem::OnInit>(physics.get());
-        eventManager.Bind<BeginEvent, &PhysicsSubsystem::OnBegin>(physics.get());
-        eventManager.Bind<UpdateEvent, &PhysicsSubsystem::OnUpdate>(physics.get());
-        eventManager.Bind<PostUpdateEvent, &PhysicsSubsystem::OnPostUpdate>(physics.get());
-        eventManager.Bind<DestroyEvent, &PhysicsSubsystem::OnDestroy>(physics.get());
-        eventManager.Bind<ComponentCreateEvent<CRigidBody>, &PhysicsSubsystem::OnRigidbodyCreate>(physics.get());
+        eventManager.Bind<InitEvent, Physics::OnInit>();
+        eventManager.Bind<BeginEvent, Physics::OnBegin>();
+        eventManager.Bind<UpdateEvent, Physics::OnUpdate>();
+        eventManager.Bind<PostUpdateEvent, Physics::OnPostUpdate>();
+        eventManager.Bind<DestroyEvent, Physics::OnDestroy>();
+        eventManager.Bind<ComponentCreateEvent<CRigidBody>, Physics::OnRigidBodyCreate>();
     }
 
     /** @brief Setup the platform-specific renderer and register events */

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lotus/lcommon.h"
-#include "lotus/physics/physics.h"
+#include "lotus/physics/Vector.h"
 #include "lotus/ecs/components/CLight.h"
 #include "lotus/resources/Material.h"
 #include "lotus/resources/AssetRegistry.h"

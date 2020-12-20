@@ -31,7 +31,7 @@ set(LOTUS_SOURCES
     src/ecs/Entity.cpp
 
     src/physics/PxImpl.cpp
-    src/physics/PhysicsSubsystem.cpp
+    src/physics/Physics.cpp
 
     src/rendering/opengl/GLRenderer.cpp
     src/rendering/opengl/GLShader.cpp
