@@ -12,6 +12,7 @@
 
 #include "lotus/physics/Vector.h"
 #include "physics/components.h"
+#include "physics/CollisionEvent.h"
 
 #include "ecs/components/CTransform.h"
 #include "ecs/components/CCamera.h"

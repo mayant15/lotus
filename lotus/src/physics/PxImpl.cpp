@@ -1,9 +1,13 @@
 #include "PxImpl.h"
-#include "lotus/debug.h"
+
+#include <lotus/lcommon.h>
+#include <lotus/ecs/EventManager.h>
+#include <lotus/physics/CollisionEvent.h>
+#include <lotus/debug.h>
 
 namespace Lotus::Physics
 {
-    void PhysXErrorCallback::reportError(PxErrorCode::Enum code, const char* message, const char* file, int line)
+    void ErrorCallback::reportError(PxErrorCode::Enum code, const char* message, const char* file, int line)
     {
         const char* errorCode = nullptr;
 
@@ -45,5 +49,36 @@ namespace Lotus::Physics
         {
             LOG_WARN("{} ({}): {} - {}", file, line, errorCode, message);
         }
+    }
+
+    void SimulationEventCallback::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
+    {
+
+    }
+
+    void SimulationEventCallback::onWake(PxActor** actors, PxU32 count)
+    {
+
+    }
+
+    void SimulationEventCallback::onSleep(PxActor** actors, PxU32 count)
+    {
+
+    }
+
+    void SimulationEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
+    {
+        GET(EventManager).Dispatch(CollisionEvent {});
+    }
+
+    void SimulationEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
+    {
+
+    }
+
+    void
+    SimulationEventCallback::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
+    {
+
     }
 }

@@ -1,5 +1,11 @@
 #include <lotus/lotus.h>
+#include <lotus/debug.h>
 #include "CameraSystem.hpp"
+
+void OnCollision(const Lotus::CollisionEvent& event)
+{
+    LOG_INFO("Contact");
+}
 
 // TODO: Eventually, the game classes should just describe behavior
 //  Lotus should create a main function, driver facade
@@ -20,6 +26,7 @@ int main()
     EventManager& em = GET(EventManager);
     em.Bind<UpdateEvent, CameraSystem::OnUpdate>();
     em.Bind<MouseEvent, CameraSystem::OnMouseEvent>();
+    em.Bind<CollisionEvent, OnCollision>();
 
     // Run the main render loop
     Lotus::Run();

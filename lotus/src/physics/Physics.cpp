@@ -29,6 +29,7 @@ namespace Lotus::Physics
         {
             actor = PxCreateDynamic(*state.pPhysics, transform, *shape, info.Material.Density);
         }
+
         return actor;
     }
 
@@ -88,6 +89,29 @@ namespace Lotus::Physics
         }
     }
 
+    PxFilterFlags SampleFilterShader(
+            PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+            PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+            PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+    {
+//        // let triggers through
+//        if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+//        {
+//            pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+//            return PxFilterFlag::eDEFAULT;
+//        }
+//        // generate contacts for all that were not filtered above
+//        pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+//
+//        // trigger the contact callback for pairs (A,B) where
+//        // the filtermask of A contains the ID of B and vice versa.
+//        if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+//            pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+
+        pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND;
+        return PxFilterFlag::eDEFAULT;
+    }
+
     void createScene(const PhysicsSceneInfo& info)
     {
         LOG_INFO("Creating physics scene");
@@ -97,8 +121,8 @@ namespace Lotus::Physics
 
         state.pDispatcher = PxDefaultCpuDispatcherCreate(2);
         sceneDesc.cpuDispatcher = state.pDispatcher;
-        sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-
+        sceneDesc.filterShader = SampleFilterShader;
+        sceneDesc.simulationEventCallback = &state.collisionCallbacks;
         sceneDesc.flags = PxSceneFlag::eENABLE_ACTIVE_ACTORS | PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS;
 
         state.pActiveScene = state.pPhysics->createScene(sceneDesc);

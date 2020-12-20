@@ -12,7 +12,9 @@ namespace Lotus::Physics
     /*** @brief Data for the physics system */
     struct State
     {
-        PhysXErrorCallback errorCallback {};
+        ErrorCallback errorCallback {};
+        SimulationEventCallback collisionCallbacks {};
+
         physx::PxDefaultAllocator allocator {};
         physx::PxFoundation* pFoundation = nullptr;
         physx::PxPhysics* pPhysics = nullptr;
