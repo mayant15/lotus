@@ -70,11 +70,8 @@
       "Scale": [0.3, 0.3, 0.3]
     },
     "CMeshRenderer": {
-      "Shader": {
-        "Vertex": "int://shaders/pbr.vert",
-        "Fragment": "int://shaders/pbr.frag"
-      },
-      "Model": "res://mesh/sphere.json"
+      "Material": "res://materials/red.json",
+      "Model": "res://mesh/sphere.fbx"
     },
     "CSphereCollider": {
       "Position": [0.0, 0.0, 0.0],
@@ -92,11 +89,8 @@
       "Scale": [1.0, 1.0, 1.0]
     },
     "CMeshRenderer": {
-      "Shader": {
-        "Vertex": "int://shaders/pbr.vert",
-        "Fragment": "int://shaders/pbr.frag"
-      },
-      "Model": "res://mesh/plane.json"
+      "Material": "res://materials/green.json",
+      "Model": "res://mesh/plane.fbx"
     },
     "CBoxCollider": {
       "Position": [0.0, 0.0, 0.0],

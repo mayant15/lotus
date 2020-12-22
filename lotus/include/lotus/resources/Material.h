@@ -1,7 +1,9 @@
 #pragma once
 
-#include "lotus/physics/Vector.h"
-#include "lotus/resources/Texture.h"
+#include "Texture.h"
+#include "Shader.h"
+
+#include <lotus/physics/Vector.h>
 
 #include <variant>
 #include <optional>
@@ -10,6 +12,7 @@ namespace Lotus
 {
     struct Material
     {
+        Handle<Shader> MaterialShader;
         std::variant<Vector3f, Handle<Texture>> Albedo;
         std::optional<Handle<Texture>> Normal;
         float Roughness = 1.0f;

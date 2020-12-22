@@ -7,7 +7,6 @@ namespace Lotus
 {
     using json = nlohmann::json;
 
-    // TODO: Create json helpers/serialization functions
     std::optional<Handle<Texture>> getTexture(const json& data, const std::string& key, bool flipY = true)
     {
         if (data.contains(key) && data.at(key).is_string())
@@ -22,15 +21,6 @@ namespace Lotus
         }
     }
 
-    Vector3f getVector(const json& data, const std::string& key)
-    {
-        return Vector3f(
-            data.at(key).at("x").get<float>(),
-            data.at(key).at("y").get<float>(),
-            data.at(key).at("z").get<float>()
-        );
-    }
-
     SRef<Material> MaterialLoader::Load(const std::string& path) const
     {
         std::ifstream file (path);
@@ -39,19 +29,26 @@ namespace Lotus
 
         SRef<Material> material = std::make_shared<Material>();
 
-        if (auto tex = getTexture(data, "albedo"))
+        // Albedo texture or color
+        if (auto tex = getTexture(data, "Albedo"))
         {
             material->Albedo = tex.value();
         }
         else
         {
-            material->Albedo = getVector(data, "albedo");
+            material->Albedo = data["Albedo"].get<Vector3f>();
         }
+
+        auto shader = data.at("Shader");
+        material->MaterialShader = LoadAsset<Shader, ShaderLoader>(
+            ExpandPath(shader.at("Vertex").get<std::string>()),
+            ExpandPath(shader.at("Fragment").get<std::string>())
+        );
         
-        material->Roughness = data["roughness"];
-        material->AO = data["ao"];
-        material->Metallic = data["metallic"];
-        material->Normal = getTexture(data, "normal");
+        material->Roughness = data["Roughness"];
+        material->AO = data["AO"];
+        material->Metallic = data["Metallic"];
+        material->Normal = getTexture(data, "Normal");
 
         return material;
     }

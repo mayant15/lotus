@@ -115,7 +115,7 @@ namespace Lotus
 
     void GLRenderer::DrawMesh(const CMeshRenderer& data, const CTransform& transform)
     {
-        Handle<Shader> shader = data.MeshShader;
+        Handle<Shader> shader = data.MeshMaterial->MaterialShader;
         shader->Use();
 
         // Set transforms and draw actor
@@ -144,6 +144,10 @@ namespace Lotus
         shader->SetSpotlightArray("spotlight", spLightParams);
         shader->SetInt("numSpotlight", spLightParams.size());
 
+        // Set material
+        Handle<Material> material = data.MeshMaterial;
+        shader->SetMaterial("material", material);
+
         auto registry = GetRegistry();
         auto skyView = registry->view<CSkybox>();
         if (!skyView.empty())
@@ -162,10 +166,6 @@ namespace Lotus
         std::vector<SubMesh> meshes = data.MeshModel->Meshes;
         for (SubMesh& mesh : meshes)
         {
-            // Material
-            Handle<Material> material = mesh.MeshMaterial;
-            shader->SetMaterial("material", material);
-
             glBindVertexArray(mesh.VAO);
             glDrawElements(GL_TRIANGLES, mesh.Indices.size(), GL_UNSIGNED_INT, nullptr);
             glBindVertexArray(0);

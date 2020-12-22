@@ -11,9 +11,10 @@ namespace Lotus
 {
     struct CMeshRenderer
     {
-        // Render data
-        Handle<Shader> MeshShader;
+        Handle<Material> MeshMaterial;
         Handle<Model> MeshModel;
+        // NOTE: These cannot be just "Material" or "Model" because GCC complains about the name
+        // MSVC and clang will work fine though
 
         REGISTER_DECL();
     };
@@ -26,10 +27,7 @@ namespace Lotus
     inline void from_json(const nlohmann::json& data, CMeshRenderer& mr)
     {
         mr.MeshModel = LoadAsset<Model, ModelLoader>(ExpandPath(data.at("Model").get<std::string>()));
-        mr.MeshShader = LoadAsset<Shader, ShaderLoader>(
-                ExpandPath(data.at("Shader").at("Vertex").get<std::string>()),
-                ExpandPath(data.at("Shader").at("Fragment").get<std::string>())
-        );
+        mr.MeshMaterial = LoadAsset<Material, MaterialLoader>(ExpandPath(data.at("Material").get<std::string>()));
     }
 
     REGISTER_BODY(CMeshRenderer);
