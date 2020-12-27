@@ -33,10 +33,10 @@ set(LOTUS_SOURCES
     src/physics/PxImpl.cpp
     src/physics/Physics.cpp
 
-    src/rendering/opengl/GLRenderer.cpp
     src/rendering/opengl/GLShader.cpp
-    src/rendering/opengl/RHIImpl.cpp
     src/rendering/Primitives.cpp
+    src/rendering/Renderer.cpp
+    src/rendering/RHI.cpp
 
     src/resources/HDRI.cpp
     src/resources/Material.cpp

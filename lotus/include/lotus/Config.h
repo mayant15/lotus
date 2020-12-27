@@ -36,8 +36,12 @@ namespace Lotus
         ERenderAPI RenderAPI;
         unsigned int ViewportWidth;
         unsigned int ViewportHeight;
+
+        bool DepthTest;
+        bool CullFace;
+        bool MSAA;
     };
-    SERIALIZE(RenderConfig, RenderAPI, ViewportWidth, ViewportHeight);
+    SERIALIZE(RenderConfig, RenderAPI, ViewportWidth, ViewportHeight, DepthTest, CullFace, MSAA);
 
     LOTUS_API void LoadConfig(const std::string& path);
     LOTUS_API const ProjectConfig& GetProjectConfig();

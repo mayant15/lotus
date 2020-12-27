@@ -21,7 +21,7 @@ namespace Lotus
             info.Height = height;
             info.Format = RHI::FormatFromChannel(nChannels);
             info.InternalFormat = info.Format; // Use the same format
-            info.DataType = GL_UNSIGNED_BYTE;
+            info.DataType = RHI::ETextureDataType::UNSIGNED_BYTE;
             texture->ID = RHI::CreateTexture(info);
         }
         else

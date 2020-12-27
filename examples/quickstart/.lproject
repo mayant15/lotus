@@ -8,6 +8,9 @@
   "Render": {
     "RenderAPI": "opengl",
     "ViewportHeight": 800,
-    "ViewportWidth": 1024
+    "ViewportWidth": 1024,
+    "DepthTest": true,
+    "CullFace": true,
+    "MSAA": true
   }
 }

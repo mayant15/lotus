@@ -1,11 +1,8 @@
 #pragma once
 
-#include "lotus/debug.h"
-
-#include <glad/glad.h>
-
 #include <vector>
 #include <exception>
+#include <lotus/debug.h>
 
 // TODO: Delegate calls to the active platform's API
 namespace Lotus::RHI
@@ -18,13 +15,37 @@ namespace Lotus::RHI
 
     typedef unsigned int TextureID;
     typedef unsigned int CubeMap;
+
     // TODO: Formalize texture slots. Have a specification for the purpose of each slot
     typedef unsigned int TextureSlot;
+
+    constexpr unsigned int COLOR_BIT = (1 << 0);
+    constexpr unsigned int DEPTH_BIT = (1 << 1);
+
+    constexpr unsigned int ENABLE_DEPTH_TEST = (1 << 0);
+    constexpr unsigned int ENABLE_CULL_FACE = (1 << 1);
+    constexpr unsigned int ENABLE_MSAA = (1 << 2);
+
+    constexpr unsigned int DEPTH_FUNC_LEQUAL = 0;
+    constexpr unsigned int DEPTH_FUNC_LESS = 1;
+
+    constexpr unsigned int CULL_FACE_FRONT = 0;
+    constexpr unsigned int CULL_FACE_BACK = 1;
 
 
     struct FrameBufferInfo
     {
-        //
+        bool HasColorBuffer = true;
+    };
+
+    enum class EStorageFormat
+    {
+        RED,
+        RGB,
+        RGBA,
+        RGB16F,
+        DEPTH_COMPONENT,
+        DEPTH_COMPONENT24
     };
 
     enum class EAttachmentType
@@ -37,7 +58,7 @@ namespace Lotus::RHI
     struct RenderBufferAttachmentInfo
     {
         EAttachmentType Type;
-        unsigned int InternalFomat;
+        EStorageFormat InternalFomat;
         unsigned int Width;
         unsigned int Height;
     };
@@ -49,17 +70,10 @@ namespace Lotus::RHI
         unsigned int TextureTarget;
     };
 
-    /**
-     * @brief Format of the texture data
-     *
-     * This enum wraps API specific pixel data formats: RED, RGB, RGBA
-     */
-    enum class ETextureFormat
+    enum class ETextureDataType
     {
-        RED = GL_RED,
-        RGB = GL_RGB,
-        RGBA = GL_RGBA,
-        RGB16F = GL_RGB16F
+        FLOAT,
+        UNSIGNED_BYTE
     };
 
     /**
@@ -68,17 +82,16 @@ namespace Lotus::RHI
      * @return ETextureFormat Representing the channels
      * @throws std::runtime_error If the number of channels has no corresponding data format
      */
-    inline ETextureFormat FormatFromChannel(unsigned int nChannels)
+    inline EStorageFormat FormatFromChannel(unsigned int nChannels)
     {
         switch (nChannels)
         {
-            case 1: return ETextureFormat::RED;
-            case 3: return ETextureFormat::RGB;
-            case 4: return ETextureFormat::RGBA;
+            case 1: return EStorageFormat::RED;
+            case 3: return EStorageFormat::RGB;
+            case 4: return EStorageFormat::RGBA;
             default:
             {
                 LOG_ERROR("Invalid Color Format");
-                throw std::runtime_error("Invalid color format");
             }
         }
     }
@@ -99,13 +112,13 @@ namespace Lotus::RHI
         unsigned int Height = 512;
 
         /** @brief Format for the pixel data */
-        ETextureFormat Format = ETextureFormat::RGB;
+        EStorageFormat Format = EStorageFormat::RGB;
 
         /** @brief Internal format for storing the texture. Usually the same as Format */
-        ETextureFormat InternalFormat = ETextureFormat::RGB;
+        EStorageFormat InternalFormat = EStorageFormat::RGB;
 
         /** @brief Data type of the pixel data */
-        unsigned int DataType = GL_UNSIGNED_BYTE;
+        ETextureDataType DataType = ETextureDataType::UNSIGNED_BYTE;
     };
 
     /** @brief Configuration options to pass when creating a Vertex Array Object */
@@ -117,6 +130,23 @@ namespace Lotus::RHI
         /** @brief Size of the Vertices array in bytes */
         unsigned int Size;
     };
+
+    void PlatformInit();
+
+    void EnableDebugContext();
+
+    void SetClearColor(float r, float g, float b, float a);
+
+    void SetDepthFunction(unsigned int func);
+
+    void SetCullFace(unsigned int face);
+
+    unsigned int GetTexture2DTarget();
+
+    // TODO: RHI::CheckError() ?
+
+
+    void EnableFeatures(unsigned int bits);
 
     /**
      * @brief Create a texture
@@ -149,6 +179,10 @@ namespace Lotus::RHI
      * @param id Identifier for the texture to bind
      */
     void BindCubeMap(TextureID id);
+
+    unsigned int GetCubeMapPositiveX();
+
+    void Clear(unsigned int bits);
 
     /**
      * @brief Create a frame buffer
@@ -192,4 +226,6 @@ namespace Lotus::RHI
      * @param count Number of triangles to draw
      */
     void DrawTriangles(unsigned int count);
+
+    void DrawElements(unsigned int size, const void* indices);
 }

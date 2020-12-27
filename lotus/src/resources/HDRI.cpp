@@ -4,7 +4,6 @@
 #include <lotus/resources/Shader.h>
 
 #include <lotus/debug.h>
-#include <lotus/filesystem.h>
 
 #include <rendering/RHI.h>
 #include <rendering/Primitives.h>
@@ -33,8 +32,8 @@ namespace Lotus
         texInfo.Data = nullptr;
         texInfo.Width = 512;
         texInfo.Height = 512;
-        texInfo.InternalFormat = RHI::ETextureFormat::RGB16F;
-        texInfo.Format = RHI::ETextureFormat::RGB;
+        texInfo.InternalFormat = RHI::EStorageFormat::RGB16F;
+        texInfo.Format = RHI::EStorageFormat::RGB;
         auto envMap = RHI::CreateCubeMap(texInfo);
 
         texInfo.Width = 32;
@@ -48,7 +47,7 @@ namespace Lotus
 
         RHI::RenderBufferAttachmentInfo rbInfo {};
         rbInfo.Type = RHI::EAttachmentType::DEPTH;
-        rbInfo.InternalFomat = GL_DEPTH_COMPONENT24;
+        rbInfo.InternalFomat = RHI::EStorageFormat::DEPTH_COMPONENT24;
         rbInfo.Width = 512;
         rbInfo.Height = 512;
         RHI::AttachRenderBuffer(frameBuffer, rbInfo);
@@ -63,8 +62,8 @@ namespace Lotus
             info.Height = height;
             info.Width = width;
             info.Format = RHI::FormatFromChannel(nChannels);
-            info.InternalFormat = RHI::ETextureFormat::RGB16F;
-            info.DataType = GL_FLOAT;
+            info.InternalFormat = RHI::EStorageFormat::RGB16F;
+            info.DataType = RHI::ETextureDataType::FLOAT;
             auto flatmap = RHI::CreateTexture(info);
 
             // convert HDR equirectangular environment map to cubemap equivalent
@@ -90,11 +89,11 @@ namespace Lotus
                 // Attach color target and render
                 RHI::TextureAttachmentInfo txAttInfo {};
                 txAttInfo.Type = RHI::EAttachmentType::COLOR;
-                txAttInfo.TextureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+                txAttInfo.TextureTarget = RHI::GetCubeMapPositiveX() + i;
                 txAttInfo.ID = envMap;
                 RHI::AttachTexture(frameBuffer, txAttInfo);
 
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                RHI::Clear(RHI::COLOR_BIT | RHI::DEPTH_BIT);
                 RHI::BindVAO(vao);
                 RHI::DrawTriangles(36);
                 RHI::BindVAO(0);
@@ -141,11 +140,11 @@ namespace Lotus
             // Attach color target and render
             RHI::TextureAttachmentInfo txAttInfo {};
             txAttInfo.Type = RHI::EAttachmentType::COLOR;
-            txAttInfo.TextureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+            txAttInfo.TextureTarget = RHI::GetCubeMapPositiveX() + i;
             txAttInfo.ID = irradianceMap;
             RHI::AttachTexture(frameBuffer, txAttInfo);
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            RHI::Clear(RHI::COLOR_BIT | RHI::DEPTH_BIT);
             RHI::BindVAO(vao);
             RHI::DrawTriangles(36);
             RHI::BindVAO(0);

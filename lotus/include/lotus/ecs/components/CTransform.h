@@ -34,4 +34,15 @@ namespace Lotus
     {
         return LNormalize(LCross(GetRightVector(transform), GetForwardVector(transform)));
     }
+
+    inline Matrix4f GetModelMatrix(const CTransform& transform)
+    {
+        Matrix4f model(1.0f);
+        model = LTranslate(model, transform.Position);
+        model = LRotate(model, transform.Rotation.x, X_AXIS);
+        model = LRotate(model, transform.Rotation.y, Y_AXIS);
+        model = LRotate(model, transform.Rotation.z, Z_AXIS);
+        model = LScale(model, transform.Scale);
+        return model;
+    }
 }

@@ -10,7 +10,7 @@
 #include "lcommon.h"
 #include "filesystem.h"
 
-#include "lotus/physics/Vector.h"
+#include "physics/Vector.h"
 #include "physics/components.h"
 #include "physics/CollisionEvent.h"
 
@@ -38,4 +38,4 @@
 #include "entry.h"
 #include "ILifecycle.h"
 #include "Input.h"
-#include "Renderer.h"
+#include "CMeshRenderer.h"

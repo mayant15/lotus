@@ -3,17 +3,15 @@
 #include <lotus/ecs/EventManager.h>
 #include <lotus/ecs/Entity.h>
 #include <lotus/Input.h>
-#include <lotus/Renderer.h>
 #include <lotus/debug.h>
 
 #include <core/platform/GLWindow.h>
 #include <physics/Physics.h>
-#include <rendering/opengl/GLRenderer.h>
+#include <rendering/Renderer.h>
 
 namespace Lotus::Engine
 {
     static Engine::State state {};
-    static Renderer* renderer = nullptr;
 
     /**
      * @brief Event callback for propagating events triggered by the GLFW window
@@ -78,18 +76,12 @@ namespace Lotus::Engine
     /** @brief Setup the platform-specific renderer and register events */
     void setupRenderer()
     {
-        auto renderConf = GetRenderConfig();
-        switch (renderConf.RenderAPI)
-        {
-            case ERenderAPI::OPEN_GL: renderer = &GLRenderer::Get(); break;
-            case ERenderAPI::DIRECTX: LOG_ERROR("DirectX is not yet supported."); break;
-            case ERenderAPI::VULKAN: LOG_ERROR("Vulkan is not yet supported."); break;
-        }
-        renderer->Initialize(renderConf);
-
         auto& eventManager = GET(EventManager);
-        eventManager.Bind<PreUpdateEvent, &Renderer::OnPreUpdate>(renderer);
-        eventManager.Bind<UpdateEvent, &Renderer::OnUpdate>(renderer);
+        eventManager.Bind<InitEvent, Renderer::OnInit>();
+        eventManager.Bind<BeginEvent, Renderer::OnBegin>();
+        eventManager.Bind<PreUpdateEvent, Renderer::OnPreUpdate>();
+        eventManager.Bind<UpdateEvent, Renderer::OnUpdate>();
+        eventManager.Bind<DestroyEvent, Renderer::OnDestroy>();
     }
 
     /** @brief Perform an engine tick and dispatch update events. */

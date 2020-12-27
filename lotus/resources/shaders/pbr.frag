@@ -59,7 +59,7 @@ in vec3 WorldPos;
 in vec4 FragPosLightSpace;
 in mat3 TBN;
 
-uniform sampler2D shadowMap;
+// uniform sampler2D shadowMap;
 uniform samplerCube irradianceMap;
 
 uniform vec3 camPos;
@@ -170,42 +170,42 @@ vec3 calculateIrradiance(vec3 radiance, vec3 N, vec3 L, vec3 V, vec3 F0)
 
 
 // Check if the current fragment is in shadow
-float calculateShadow(vec3 N, vec3 L)
-{
-    // To [-1, 1]
-    vec3 projCoord = FragPosLightSpace.xyz / FragPosLightSpace.w;
-
-    // To [0, 1]
-    projCoord = projCoord * 0.5 + 0.5;
-
-    // For points outside the light frustum's far plane
-    if (projCoord.z > 1.0)
-    {
-        return 0.0;
-    }
-
-    float closestDepth = texture(shadowMap, projCoord.xy).r;
-    float currentDepth = projCoord.z;
-
-
-    // To treat shadow acne https://stackoverflow.com/questions/36908835/what-causes-shadow-acne
-    float bias = max(0.05 * (1.0 - dot(N, L)), 0.005);
-
-    // Percentage Closer Filtering
-    float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-    for (int x = -1; x <= 1; ++x)
-    {
-        for (int y = -1; y <= 1; ++y)
-        {
-            float pcfDepth = texture(shadowMap, projCoord.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-        }
-    }
-    shadow /= 9.0;
-
-    return shadow;
-}
+// float calculateShadow(vec3 N, vec3 L)
+// {
+//     // To [-1, 1]
+//     vec3 projCoord = FragPosLightSpace.xyz / FragPosLightSpace.w;
+//
+//     // To [0, 1]
+//     projCoord = projCoord * 0.5 + 0.5;
+//
+//     // For points outside the light frustum's far plane
+//     if (projCoord.z > 1.0)
+//     {
+//         return 0.0;
+//     }
+//
+//     float closestDepth = texture(shadowMap, projCoord.xy).r;
+//     float currentDepth = projCoord.z;
+//
+//
+//     // To treat shadow acne https://stackoverflow.com/questions/36908835/what-causes-shadow-acne
+//     float bias = max(0.05 * (1.0 - dot(N, L)), 0.005);
+//
+//     // Percentage Closer Filtering
+//     float shadow = 0.0;
+//     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+//     for (int x = -1; x <= 1; ++x)
+//     {
+//         for (int y = -1; y <= 1; ++y)
+//         {
+//             float pcfDepth = texture(shadowMap, projCoord.xy + vec2(x, y) * texelSize).r;
+//             shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+//         }
+//     }
+//     shadow /= 9.0;
+//
+//     return shadow;
+// }
 
 
 vec3 calculatePointLight(PointLight light, vec3 N, vec3 V, vec3 F0)
