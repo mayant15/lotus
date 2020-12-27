@@ -1,8 +1,6 @@
 #include "Renderer.h"
 
 #include "RHI.h"
-#include "RenderPass.h"
-#include "passes/ShadowPass.h"
 #include "passes/PBRPass.h"
 #include "passes/SkyPass.h"
 
@@ -104,5 +102,24 @@ namespace Lotus::Renderer
         {
             delete pass;
         }
+    }
+
+    void OnMeshRendererCreate(const ComponentCreateEvent<CMeshRenderer>& event)
+    {
+        auto registry = GetRegistry();
+        auto&& [mr, tf] = registry->get<CMeshRenderer, CTransform>(event.entityID);
+
+        ModelInfo info;
+        info.Transform = &tf;
+        info.MeshMaterial = mr.MeshMaterial;
+
+        for (const auto& mesh : mr.MeshModel->Meshes)
+        {
+            unsigned int vao, vbo, ebo;
+            RHI::CreateBuffersForMesh(mesh.Vertices, mesh.Indices, &vao, &vbo, &ebo);
+            info.Buffers.emplace_back(vbo, ebo, vao, mesh.Indices);
+        }
+
+        state.Queue.Insert(info);
     }
 }

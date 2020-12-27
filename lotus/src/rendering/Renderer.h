@@ -1,9 +1,13 @@
 #pragma once
 
+#include "RenderQueue.h"
+#include "RenderPass.h"
+
 #include <lotus/ILifecycle.h>
 #include <lotus/resources/Shader.h>
 #include <lotus/ecs/components/CTransform.h>
-#include <lotus/CMeshRenderer.h>
+#include <lotus/ecs/Entity.h>
+#include <lotus/rendering/CMeshRenderer.h>
 
 namespace Lotus::Renderer
 {
@@ -17,6 +21,8 @@ namespace Lotus::Renderer
         Vector3f CameraPos;
         Matrix4f View;
         Matrix4f Projection;
+
+        RenderQueue Queue;
     };
 
     /**
@@ -24,6 +30,12 @@ namespace Lotus::Renderer
      * @param event
      */
     void OnInit(const InitEvent& event);
+
+    /**
+     * @brief Populate the queue with a created MeshRenderer
+     * @param event
+     */
+    void OnMeshRendererCreate(const ComponentCreateEvent<CMeshRenderer>& event);
 
     /**
      * @brief Register render passes before the main loop starts

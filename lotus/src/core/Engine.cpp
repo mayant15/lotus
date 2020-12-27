@@ -82,6 +82,7 @@ namespace Lotus::Engine
         eventManager.Bind<PreUpdateEvent, Renderer::OnPreUpdate>();
         eventManager.Bind<UpdateEvent, Renderer::OnUpdate>();
         eventManager.Bind<DestroyEvent, Renderer::OnDestroy>();
+        eventManager.Bind<ComponentCreateEvent<CMeshRenderer>, Renderer::OnMeshRendererCreate>();
     }
 
     /** @brief Perform an engine tick and dispatch update events. */

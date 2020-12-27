@@ -1,7 +1,7 @@
-#include <glad/glad.h>
-
 #include <lotus/resources/Model.h>
 #include <lotus/debug.h>
+
+#include <rendering/RHI.h>
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -14,7 +14,7 @@ namespace Lotus
         return {vec.x, vec.y, vec.z};
     }
 
-    SubMesh processMesh(const aiMesh* mesh)
+    Geometry processMesh(const aiMesh* mesh)
     {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
@@ -49,7 +49,7 @@ namespace Lotus
             }
         }
 
-        return SubMesh(vertices, indices);
+        return { vertices, indices };
     }
 
     void processNode(const aiNode* node, const aiScene* scene, SRef<Model> model)
@@ -81,42 +81,5 @@ namespace Lotus
 
         processNode(scene->mRootNode, scene, model);
         return model;
-    }
-
-    SubMesh::SubMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
-    {
-        Indices = indices;
-        Vertices = vertices;
-
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &EBO);
-
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-
-        // Can do this because structs are laid sequentially in memory
-
-        // vertex positions
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
-
-        // vertex normals
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, Normal));
-
-        // vertex texture coords
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, TexCoords));
-
-        // vertex tangents
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, Tangent));
-
-        glBindVertexArray(0);
     }
 }

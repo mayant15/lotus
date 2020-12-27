@@ -3,6 +3,7 @@
 #include <vector>
 #include <exception>
 #include <lotus/debug.h>
+#include <lotus/rendering/common.h>
 
 // TODO: Delegate calls to the active platform's API
 namespace Lotus::RHI
@@ -228,4 +229,6 @@ namespace Lotus::RHI
     void DrawTriangles(unsigned int count);
 
     void DrawElements(unsigned int size, const void* indices);
+
+    void CreateBuffersForMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, unsigned int* vao, unsigned int* vbo, unsigned int* ebo);
 }

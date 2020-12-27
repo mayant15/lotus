@@ -1,10 +1,7 @@
-#include "lotus/ecs/Entity.h"
-
-#include "lotus/ecs/EventManager.h"
-
-#include "lotus/physics/components.h"
-
-#include <fstream>
+#include <lotus/ecs/Entity.h>
+#include <lotus/ecs/EventManager.h>
+#include <lotus/physics/components.h>
+#include <lotus/rendering/CMeshRenderer.h>
 #include <lotus/debug.h>
 
 namespace Lotus
@@ -25,6 +22,7 @@ namespace Lotus
 
         // TODO: Generalize for all components
         pRegistry->on_construct<CRigidBody>().connect<dispatchComponentCreateEvent<CRigidBody>>();
+        pRegistry->on_construct<CMeshRenderer>().connect<dispatchComponentCreateEvent<CMeshRenderer>>();
     }
 
     void ECSShutdown()

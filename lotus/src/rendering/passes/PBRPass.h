@@ -75,23 +75,21 @@ namespace Lotus::Renderer
             lightView = LLookAt(pLightTransform->Position, pLightTransform->Position + forward * 10.0f, UP);
             lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
 
-            auto registry = GetRegistry();
-            auto entityView = registry->view<CMeshRenderer, CTransform>();
-            for (auto entity : entityView)
+            for (const auto& model : pState->Queue)
             {
-                const auto&[data, transform] = entityView.get<CMeshRenderer, CTransform>(entity);
-                drawMesh(data, transform);
+                drawMesh(model);
             }
         }
 
     private:
-        void drawMesh(const CMeshRenderer& data, const CTransform& transform)
+        void drawMesh(const ModelInfo& model)
         {
-            Handle<Shader> shader = data.MeshMaterial->MaterialShader;
+            Handle<Material> material = model.MeshMaterial;
+            Handle<Shader> shader = material->MaterialShader;
             shader->Use();
 
             // Set transforms and draw actor
-            shader->SetMat4f("model", GetModelMatrix(transform));
+            shader->SetMat4f("model", GetModelMatrix(*model.Transform));
 
             // Set camera
             shader->SetMat4f("view", pState->View);
@@ -111,7 +109,6 @@ namespace Lotus::Renderer
             shader->SetInt("numSpotlight", spotlightParams.size());
 
             // Set material
-            Handle<Material> material = data.MeshMaterial;
             shader->SetMaterial("material", material);
 
             // Setup the irradiance map for specular lighting
@@ -124,11 +121,10 @@ namespace Lotus::Renderer
 //            RHI::BindTexture(shadowMap);
 //            shader->SetInt("shadowMap", 0);
 
-            std::vector<SubMesh> meshes = data.MeshModel->Meshes;
-            for (SubMesh& mesh : meshes)
+            for (const auto& buffer : model.Buffers)
             {
-                RHI::BindVAO(mesh.VAO);
-                RHI::DrawElements(mesh.Indices.size(), nullptr);
+                RHI::BindVAO(buffer.VAO);
+                RHI::DrawElements(buffer.Indices.size(), nullptr);
             }
             RHI::BindVAO(0);
         }

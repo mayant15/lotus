@@ -57,4 +57,9 @@ namespace Lotus::RHI
     void DrawTriangles(unsigned int count) { DELEGATE_TO_API(DrawTriangles, count) }
 
     void DrawElements(unsigned int size, const void* indices) { DELEGATE_TO_API(DrawElements, size, indices) }
+
+    void CreateBuffersForMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, unsigned int* vao, unsigned int* vbo, unsigned int* ebo)
+    {
+        DELEGATE_TO_API(CreateBuffersForMesh, vertices, indices, vao, vbo, ebo);
+    }
 }
