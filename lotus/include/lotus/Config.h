@@ -13,7 +13,7 @@ namespace Lotus
 
     struct BuildConfig
     {
-        bool IsDebug = true;
+        bool IsDebug;
     };
     SERIALIZE(BuildConfig, IsDebug);
 

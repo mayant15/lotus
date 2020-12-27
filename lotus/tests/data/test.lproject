@@ -1,0 +1,16 @@
+{
+  "Project": {
+    "ProjectResourceRoot": "path-prefix/"
+  },
+  "Build": {
+    "IsDebug": true
+  },
+  "Render": {
+    "RenderAPI": "opengl",
+    "ViewportHeight": 800,
+    "ViewportWidth": 1024,
+    "DepthTest": true,
+    "CullFace": true,
+    "MSAA": true
+  }
+}
