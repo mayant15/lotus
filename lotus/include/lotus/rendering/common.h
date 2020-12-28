@@ -19,4 +19,5 @@ namespace Lotus
     };
 
     using Color = glm::vec4;
+    constexpr Color COLOR_WHITE = {1.0f, 1.0f, 1.0f, 1.0f};
 }

@@ -13,7 +13,7 @@ namespace Lotus
     struct Material
     {
         Handle<Shader> MaterialShader;
-        std::variant<Vector3f, Handle<Texture>> Albedo;
+        std::variant<Color, Handle<Texture>> Albedo;
         std::optional<Handle<Texture>> Normal;
         float Roughness = 1.0f;
         float Metallic = 0.0f;

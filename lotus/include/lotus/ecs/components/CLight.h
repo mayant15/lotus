@@ -1,34 +1,36 @@
 #pragma once
 
-#include "lotus/physics/Vector.h"
-#include "lotus/ecs/ComponentRegistry.h"
+#include <lotus/physics/Vector.h>
+#include <lotus/rendering/common.h>
+#include <lotus/ecs/ComponentRegistry.h>
 
 namespace Lotus
 {
-    struct CLight
+    struct CSunLight
     {
-        Vector3f ambient = Vector3f(0.0f);
-        Vector3f diffuse = Vector3f(1.0f);
-        Vector3f specular = Vector3f(0.4f);
+        Color color = COLOR_WHITE;
+        Vector3f direction = Vector3f(1.0f);
 
         REGISTER_DECL();
     };
-    SERIALIZE(CLight, ambient, diffuse, specular);
-    REGISTER_BODY(CLight);
+    SERIALIZE(CSunLight, direction, color);
+    REGISTER_BODY(CSunLight);
 
-    struct CPointLight : CLight
+    struct CPointLight
     {
+        Color color = COLOR_WHITE;
         float constant = 1.0f;
         float linear = 0.22f;
         float quadratic = 0.20f;
 
         REGISTER_DECL();
     };
-    SERIALIZE(CPointLight, ambient, diffuse, specular, constant, linear, quadratic);
+    SERIALIZE(CPointLight, color, constant, linear, quadratic);
     REGISTER_BODY(CPointLight);
 
-    struct CSpotlight : CLight
+    struct CSpotlight
     {
+        Color color = COLOR_WHITE;
         float constant = 1.0f;
         float linear = 0.07f;
         float quadratic = 0.017f;
@@ -37,7 +39,6 @@ namespace Lotus
 
         REGISTER_DECL();
     };
-    // TODO: Better serialize nested components so that I don't have to write this huge list
-    SERIALIZE(CSpotlight, ambient, diffuse, specular, constant, linear, quadratic, innerCutOff, outerCutOff);
+    SERIALIZE(CSpotlight, color, constant, linear, quadratic, innerCutOff, outerCutOff);
     REGISTER_BODY(CSpotlight);
 }

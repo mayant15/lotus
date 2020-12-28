@@ -19,16 +19,12 @@ struct Material {
 };
 
 struct DirectionalLight {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec4 color;
     vec3 direction;
 };
 
 struct Spotlight {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec4 color;
     vec3 position;
     vec3 direction;
 
@@ -41,11 +37,7 @@ struct Spotlight {
 
 struct PointLight {
     vec3 position;
-
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-
+    vec4 color;
     float constant;
     float linear;
     float quadratic;
@@ -56,7 +48,7 @@ out vec4 fragColor;
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 WorldPos;
-in vec4 FragPosLightSpace;
+// in vec4 FragPosLightSpace;
 in mat3 TBN;
 
 // uniform sampler2D shadowMap;
@@ -214,7 +206,7 @@ vec3 calculatePointLight(PointLight light, vec3 N, vec3 V, vec3 F0)
 
     float distance = length(light.position - WorldPos);
     float attenuation = 1.0f / (distance * distance);
-    vec3 radiance = light.diffuse * attenuation;
+    vec3 radiance = (light.color * attenuation).rgb;
 
     return calculateIrradiance(radiance, N, L, V, F0);
 }
@@ -224,7 +216,7 @@ vec3 calculateDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0)
 {
     vec3 L = normalize(-light.direction);
     vec3 H = normalize(L + V);
-    vec3 radiance = light.diffuse;
+    vec3 radiance = light.color.rgb;
 
     return calculateIrradiance(radiance, N, L, V, F0);
 }
@@ -247,7 +239,7 @@ vec3 calculateSpotlight(Spotlight light, vec3 N, vec3 V, vec3 F0)
     float distance = length(light.position - WorldPos);
     float attenuation = 1.0f / (distance * distance);
 
-    vec3 radiance = light.diffuse * intensity * attenuation;
+    vec3 radiance = (light.color * intensity * attenuation).rgb;
 
     return calculateIrradiance(radiance, N, L, V, F0);
 }
@@ -300,12 +292,8 @@ void main()
         L0 += calculateSpotlight(spotlight[i], N, V, F0);
     }
 
-    // TODO: Raytraced GI?
-    vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, material.fRoughness);
-    vec3 kD = 1.0 - kS;
-    // vec3 irradiance = texture(irradianceMap, N).rgb;
-    vec3 diffuse    = albedo; // irradiance * albedo;
-    vec3 ambient    = (kD * diffuse) * material.fAO;
+
+    vec3 ambient = vec3(0.03) * material.fAO;
     vec3 color = L0 + ambient;
 
     // HDR/Gamma correction

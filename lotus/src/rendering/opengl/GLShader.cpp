@@ -101,15 +101,19 @@ namespace Lotus
         glUniform3fv(loc, 1, valuePtr(vec));
     }
 
+    void GLShader::SetColor(const std::string& name, const Color& vec) const
+    {
+        const int loc = glGetUniformLocation(ID, name.c_str());
+        glUniform4fv(loc, 1, valuePtr(vec));
+    }
+
     void GLShader::SetPointLight(const std::string& name, const PointLightInfo& options) const
     {
         SetFloat(name + ".constant", options.constant);
         SetFloat(name + ".linear", options.linear);
         SetFloat(name + ".quadratic", options.quadratic);
         SetVec3f(name + ".position", options.position);
-        SetVec3f(name + ".ambient", options.ambient);
-        SetVec3f(name + ".diffuse", options.diffuse);
-        SetVec3f(name + ".specular", options.specular);
+        SetColor(name + ".color", options.color);
     }
 
     void GLShader::SetSpotlight(const std::string& name, const SpotLightInfo& options) const
@@ -122,17 +126,13 @@ namespace Lotus
 
         SetVec3f(name + ".direction", options.direction);
         SetVec3f(name + ".position", options.position);
-        SetVec3f(name + ".ambient", options.ambient);
-        SetVec3f(name + ".diffuse", options.diffuse);
-        SetVec3f(name + ".specular", options.specular);
+        SetColor(name + ".color", options.color);
     }
 
-    void GLShader::SetDirectionalLight(const std::string& name, const LightInfo& options) const
+    void GLShader::SetDirectionalLight(const std::string& name, const SunLightInfo& options) const
     {
+        SetColor(name + ".color", options.color);
         SetVec3f(name + ".direction", options.direction);
-        SetVec3f(name + ".ambient", options.ambient);
-        SetVec3f(name + ".diffuse", options.diffuse);
-        SetVec3f(name + ".specular", options.specular);
     }
 
     void GLShader::SetPointLightArray(const std::string& name, const std::vector<PointLightInfo>& lights) const
@@ -154,10 +154,10 @@ namespace Lotus
         }
     }
 
-    void GLShader::SetDirLightArray(const std::string& name, const std::vector<LightInfo>& lights) const
+    void GLShader::SetDirLightArray(const std::string& name, const std::vector<SunLightInfo>& lights) const
     {
         unsigned int i = 0;
-        for (const LightInfo& light : lights)
+        for (const SunLightInfo& light : lights)
         {
             SetDirectionalLight(name + "[" + std::to_string(i) + "]", light);
         }
@@ -167,10 +167,10 @@ namespace Lotus
     {
         // Set albedo
         auto albedo = mat->Albedo;
-        if (std::holds_alternative<Vector3f>(albedo))
+        if (std::holds_alternative<Color>(albedo))
         {
             // invalid texture, set the color
-            SetVec3f(name + ".vAlbedo", std::get<Vector3f>(albedo));
+            SetVec3f(name + ".vAlbedo", std::get<Color>(albedo));
             SetBool(name + ".bUseAlbedoTex", false);
         }
         else

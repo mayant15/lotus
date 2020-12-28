@@ -40,6 +40,23 @@ namespace glm
         vec.y = data[1];
         vec.z = data[2];
     }
+
+    inline void to_json(nlohmann::json& data, const glm::vec4& vec)
+    {
+        data = nlohmann::json::array();
+        data[0] = vec.r;
+        data[1] = vec.g;
+        data[2] = vec.b;
+        data[3] = vec.a;
+    }
+
+    inline void from_json(const nlohmann::json& data, glm::vec4& vec)
+    {
+        vec.r = data[0];
+        vec.g = data[1];
+        vec.b = data[2];
+        vec.a = data[3];
+    }
 }
 
 typedef glm::imat2x2 Matrix2i;

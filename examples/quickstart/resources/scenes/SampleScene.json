@@ -36,26 +36,12 @@
   },
   {
     "CTransform": {
-      "Position": [0.0, 0.0, 0.0],
-      "Rotation": [-45.0, -45.0, 0.0],
-      "Scale": [1.0, 1.0, 1.0]
-    },
-    "CLight": {
-      "ambient": [0.0, 0.0, 0.0],
-      "diffuse": [1.0, 1.0, 1.0],
-      "specular": [0.4, 0.4, 0.4]
-    }
-  },
-  {
-    "CTransform": {
       "Position": [0.0, 3.0, 0.0],
       "Rotation": [-90.0, -90.0, 0.0],
       "Scale": [1.0, 1.0, 1.0]
     },
     "CSpotlight": {
-      "ambient": [0.0, 0.0, 0.0],
-      "diffuse": [1.0, 0.0, 0.0],
-      "specular": [0.4, 0.4, 0.4],
+      "color": [1.0, 1.0, 1.0, 1.0],
       "constant": 1.0,
       "linear": 0.22,
       "quadratic": 0.2,
@@ -102,6 +88,10 @@
     }
   },
   {
+    "CSunLight": {
+      "color": [1.0, 0.91, 0.68, 1.0],
+      "direction": [0.5, -0.7, -0.5]
+    },
     "CSkybox": {
       "Map": "res://skybox/sky.hdr"
     }

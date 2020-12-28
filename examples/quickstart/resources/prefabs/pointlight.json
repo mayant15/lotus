@@ -1,8 +1,6 @@
 {
   "CPointLight": {
-    "ambient": [0.0, 0.0, 0.0],
-    "diffuse": [1.0, 0.0, 0.0],
-    "specular": [0.4, 0.4, 0.4],
+    "color": [1.0, 1.0, 1.0, 1.0],
     "constant": 1.0,
     "linear": 0.22,
     "quadratic": 0.2

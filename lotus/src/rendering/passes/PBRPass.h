@@ -9,10 +9,10 @@ namespace Lotus::Renderer
     {
         std::vector<PointLightInfo> pointLightParams;
         std::vector<SpotLightInfo> spotlightParams;
-        std::vector<LightInfo> dirLightParams;
-        const CTransform* pLightTransform;
-        Matrix4f lightView;
-        Matrix4f lightProjection;
+        std::vector<SunLightInfo> dirLightParams;
+//        const CTransform* pLightTransform;
+//        Matrix4f lightView;
+//        Matrix4f lightProjection;
 
         const Renderer::State* pState;
         const CSkybox* pSky;
@@ -33,7 +33,11 @@ namespace Lotus::Renderer
             for (auto light : ptView)
             {
                 const auto& [params, transform] = ptView.get<CPointLight, CTransform>(light);
-                PointLightInfo info (params);
+                PointLightInfo info {};
+                info.color = params.color;
+                info.quadratic = params.quadratic;
+                info.constant = params.constant;
+                info.linear = params.linear;
                 info.position = transform.Position;
                 pointLightParams.push_back(info);
             }
@@ -43,22 +47,28 @@ namespace Lotus::Renderer
             for (auto light : spView)
             {
                 const auto& [params, transform] = spView.get<CSpotlight, CTransform>(light);
-                SpotLightInfo info (params);
+                SpotLightInfo info {};
+                info.linear = params.linear;
+                info.constant = params.constant;
+                info.quadratic = params.quadratic;
+                info.color = params.color;
+                info.innerCutOff = params.innerCutOff;
+                info.outerCutOff = params.outerCutOff;
                 info.position = transform.Position;
                 info.direction = GetForwardVector(transform);
                 spotlightParams.push_back(info);
             }
 
             dirLightParams.clear();
-            auto dirView = registry->view<CLight, CTransform>();
+            auto dirView = registry->view<CSunLight>();
             for (auto light : dirView)
             {
-                const auto& [params, transform] = dirView.get<CLight, CTransform>(light);
-                LightInfo info (params);
-                info.direction = GetForwardVector(transform);
+                const auto& params = dirView.get<CSunLight>(light);
+                SunLightInfo info {};
+                info.color = params.color;
+                info.direction = params.direction;
                 dirLightParams.push_back(info);
             }
-            pLightTransform = &dirView.get<CTransform>(dirView.front());
 
             auto skyView = registry->view<CSkybox>();
             if (!skyView.empty())
@@ -71,9 +81,9 @@ namespace Lotus::Renderer
         void RenderFrame() override
         {
             // Update parameters
-            Vector3f forward = GetForwardVector(*pLightTransform);
-            lightView = LLookAt(pLightTransform->Position, pLightTransform->Position + forward * 10.0f, UP);
-            lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+//            Vector3f forward = GetForwardVector(*pLightTransform);
+//            lightView = LLookAt(pLightTransform->Position, pLightTransform->Position + forward * 10.0f, UP);
+//            lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
 
             for (const auto& model : pState->Queue)
             {
@@ -94,8 +104,8 @@ namespace Lotus::Renderer
             // Set camera
             shader->SetMat4f("view", pState->View);
             shader->SetMat4f("projection", pState->Projection);
-            shader->SetMat4f("lightView", lightView);
-            shader->SetMat4f("lightProjection", lightProjection);
+//            shader->SetMat4f("lightView", lightView);
+//            shader->SetMat4f("lightProjection", lightProjection);
             shader->SetVec3f("camPos", pState->CameraPos);
 
             // Set lighting

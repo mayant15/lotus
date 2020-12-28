@@ -4,6 +4,7 @@
     "Fragment": "int://shaders/pbr.frag"
   },
   "Albedo": "res://textures/T_BrokenWall_Albedo.png",
+  "Normal": "res://textures/T_BrokenWall_Normal.png",
   "Metallic": 0.0,
   "Roughness": 1.0,
   "AO": 0.0

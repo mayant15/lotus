@@ -36,7 +36,7 @@ namespace Lotus
         }
         else
         {
-            material->Albedo = data["Albedo"].get<Vector3f>();
+            material->Albedo = data["Albedo"].get<Color>();
         }
 
         auto shader = data.at("Shader");
