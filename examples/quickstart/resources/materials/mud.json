@@ -7,5 +7,5 @@
   "Normal": "res://textures/T_Mud_Normal.png",
   "Metallic": 0.0,
   "Roughness": 1.0,
-  "AO": 0.0
+  "AO": "res://textures/T_Mud_AO.png"
 }

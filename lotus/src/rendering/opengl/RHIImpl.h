@@ -47,6 +47,8 @@ namespace Lotus::RHI::Detail
         {
             case EStorageFormat::RED:
                 return GL_RED;
+            case EStorageFormat::RG:
+                return GL_RG;
             case EStorageFormat::RGB:
                 return GL_RGB;
             case EStorageFormat::RGBA:

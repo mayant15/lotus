@@ -13,7 +13,7 @@ namespace Lotus
         {
             stbi_set_flip_vertically_on_load(flipY);
             auto handle = LoadAsset<Texture, TextureLoader>(ExpandPath(data.at(key).get<std::string>()));
-            return std::optional<Handle<Texture>>{handle};
+            return std::optional<Handle<Texture>> {handle};
         }
         else
         {
@@ -23,7 +23,7 @@ namespace Lotus
 
     SRef<Material> MaterialLoader::Load(const std::string& path) const
     {
-        std::ifstream file (path);
+        std::ifstream file(path);
         json data;
         file >> data;
 
@@ -39,14 +39,23 @@ namespace Lotus
             material->Albedo = data["Albedo"].get<Color>();
         }
 
+        // AO texture or color
+        if (auto tex = getTexture(data, "AO"))
+        {
+            material->AO = tex.value();
+        }
+        else
+        {
+            material->AO = data["AO"].get<float>();
+        }
+
         auto shader = data.at("Shader");
         material->MaterialShader = LoadAsset<Shader, ShaderLoader>(
-            ExpandPath(shader.at("Vertex").get<std::string>()),
-            ExpandPath(shader.at("Fragment").get<std::string>())
+                ExpandPath(shader.at("Vertex").get<std::string>()),
+                ExpandPath(shader.at("Fragment").get<std::string>())
         );
-        
+
         material->Roughness = data["Roughness"];
-        material->AO = data["AO"];
         material->Metallic = data["Metallic"];
         material->Normal = getTexture(data, "Normal");
 

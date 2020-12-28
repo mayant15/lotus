@@ -199,8 +199,26 @@ namespace Lotus
             SetBool(name + ".bUseNormalTex", false);
         }
 
+        // Set AO
+        auto ao = mat->AO;
+        if (std::holds_alternative<float>(ao))
+        {
+            // invalid texture, set the color
+            SetFloat(name + ".fAO", std::get<float>(ao));
+            SetBool(name + ".bUseAOTex", false);
+        }
+        else
+        {
+            // valid texture, set texture
+            SetBool(name + ".bUseAOTex", true);
+
+            Handle<Texture> texture = std::get<Handle<Texture>>(ao);
+            glActiveTexture(GL_TEXTURE3);
+            SetInt(name + ".tAO", 3);
+            glBindTexture(GL_TEXTURE_2D, texture->ID);
+        }
+
         SetFloat(name + ".fRoughness", mat->Roughness);
         SetFloat(name + ".fMetallic", mat->Metallic);
-        SetFloat(name + ".fAO", mat->AO);
     }
 }

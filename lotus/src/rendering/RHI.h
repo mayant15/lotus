@@ -42,6 +42,7 @@ namespace Lotus::RHI
     enum class EStorageFormat
     {
         RED,
+        RG,
         RGB,
         RGBA,
         RGB16F,
@@ -88,6 +89,7 @@ namespace Lotus::RHI
         switch (nChannels)
         {
             case 1: return EStorageFormat::RED;
+            case 2: return EStorageFormat::RG;
             case 3: return EStorageFormat::RGB;
             case 4: return EStorageFormat::RGBA;
             default:

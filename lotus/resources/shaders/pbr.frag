@@ -13,9 +13,13 @@ struct Material {
     sampler2D tNormal;
     bool bUseNormalTex;
 
+    float fAO;
+    sampler2D tAO;
+    bool bUseAOTex;
+
     float fRoughness;
     float fMetallic;
-    float fAO;
+
 };
 
 struct DirectionalLight {
@@ -122,6 +126,10 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+float getAO()
+{
+    return (material.bUseAOTex) ? texture(material.tAO, TexCoords).r : material.fAO;
+}
 
 vec3 getAlbedo()
 {
@@ -264,7 +272,6 @@ vec3 getNormal()
     }
 }
 
-
 void main()
 {
     vec3 N = normalize(getNormal());
@@ -292,9 +299,8 @@ void main()
         L0 += calculateSpotlight(spotlight[i], N, V, F0);
     }
 
-
-    vec3 ambient = vec3(0.03) * material.fAO;
-    vec3 color = L0 + ambient;
+    float ao = getAO();
+    vec3 color = L0 + ao * vec3(0.03);
 
     // HDR/Gamma correction
     color = color / (color + vec3(1.0));

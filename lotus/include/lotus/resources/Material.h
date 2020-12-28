@@ -14,10 +14,10 @@ namespace Lotus
     {
         Handle<Shader> MaterialShader;
         std::variant<Color, Handle<Texture>> Albedo;
+        std::variant<float, Handle<Texture>> AO;
         std::optional<Handle<Texture>> Normal;
         float Roughness = 1.0f;
         float Metallic = 0.0f;
-        float AO = 1.0f;
     };
 
     LOADER(Material)
