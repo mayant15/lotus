@@ -1,0 +1,77 @@
+[
+  {
+    "Prefab": "res://prefabs/camera.json"
+  },
+  {
+    "CTransform": {
+      "Position": [0.0, 0.0, 0.0],
+      "Rotation": [-45.0, -45.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CLight": {
+      "ambient": [0.0, 0.0, 0.0],
+      "diffuse": [1.0, 1.0, 0.93],
+      "specular": [0.4, 0.4, 0.4]
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [-1.2, 1.3, 0.0],
+      "Rotation": [0.0, -90.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CMeshRenderer": {
+      "Material": "res://materials/gold.json",
+      "Model": "res://mesh/sphere.fbx"
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [-3.4, 1.3, 0.0],
+      "Rotation": [0.0, -90.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CMeshRenderer": {
+      "Material": "res://materials/default.json",
+      "Model": "res://mesh/sphere.fbx"
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [1.2, 1.3, 0.0],
+      "Rotation": [0.0, -90.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CMeshRenderer": {
+      "Material": "res://materials/wall.json",
+      "Model": "res://mesh/sphere.fbx"
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [3.4, 1.3, 0.0],
+      "Rotation": [0.0, -90.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CMeshRenderer": {
+      "Material": "res://materials/mud.json",
+      "Model": "res://mesh/sphere.fbx"
+    }
+  },
+  {
+    "CTransform": {
+      "Position": [0.0, -1.2, 0.0],
+      "Rotation": [0.0, -90.0, 0.0],
+      "Scale": [4.0, 2.0, 4.0]
+    },
+    "CMeshRenderer": {
+      "Material": "res://materials/default.json",
+      "Model": "res://mesh/plane.fbx"
+    }
+  },
+  {
+    "CSkybox": {
+      "Map": "res://skybox/sky.hdr"
+    }
+  }
+]

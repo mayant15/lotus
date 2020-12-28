@@ -89,7 +89,7 @@
       "Scale": [1.0, 1.0, 1.0]
     },
     "CMeshRenderer": {
-      "Material": "res://materials/green.json",
+      "Material": "res://materials/default.json",
       "Model": "res://mesh/plane.fbx"
     },
     "CBoxCollider": {
@@ -103,7 +103,7 @@
   },
   {
     "CSkybox": {
-      "Map": "res://skybox/klopp.hdr"
+      "Map": "res://skybox/sky.hdr"
     }
   }
 ]

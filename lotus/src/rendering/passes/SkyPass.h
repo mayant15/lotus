@@ -12,8 +12,10 @@ namespace Lotus::Renderer
     class SkyPass final : public RenderPass
     {
         Handle<Shader> shader;
-        const CSkybox* pSky;
-        const Renderer::State* pState;
+        const CSkybox* pSky = nullptr;
+        const Renderer::State* pState = nullptr;
+
+        bool isActive = false;
 
     public:
         explicit SkyPass(const Renderer::State* state) : pState(state)
@@ -25,6 +27,7 @@ namespace Lotus::Renderer
                 // Get the first skybox
                 // NOTE: Use a pointer here so that changes to the skybox during runtime are always reflected
                 pSky = &skyView.get<CSkybox>(skyView.front());
+                isActive = true;
             }
 
             shader = LoadAsset<Shader, ShaderLoader>(
@@ -35,6 +38,11 @@ namespace Lotus::Renderer
 
         void RenderFrame() override
         {
+            if (!isActive)
+            {
+                return;
+            }
+
             // Set the depth function so that the sky is rendered at the background only
             RHI::SetDepthFunction(RHI::DEPTH_FUNC_LEQUAL);
 

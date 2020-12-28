@@ -17,3 +17,4 @@ be found here, along with key API documentation. For a complete reference of the
    manual/quickstart
    manual/ecs
    manual/importing
+   manual/thirdparty

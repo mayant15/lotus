@@ -67,7 +67,7 @@ namespace Lotus::RHI::Detail
             case ETextureDataType::FLOAT:
                 return GL_FLOAT;
             case ETextureDataType::UNSIGNED_BYTE:
-                GL_UNSIGNED_BYTE;
+                return GL_UNSIGNED_BYTE;
         }
     }
 

@@ -112,9 +112,9 @@ namespace Lotus::Renderer
             shader->SetMaterial("material", material);
 
             // Setup the irradiance map for specular lighting
-            RHI::SetActiveTextureSlot(1);
-            RHI::BindCubeMap(pSky->Map->Irradiance);
-            shader->SetInt("irradianceMap", 1);
+//            RHI::SetActiveTextureSlot(1);
+//            RHI::BindCubeMap(pSky->Map->Irradiance);
+//            shader->SetInt("irradianceMap", 1);
 
             // TODO: Shadow pass
 //            RHI::SetActiveTextureSlot(0);

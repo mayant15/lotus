@@ -19,7 +19,11 @@ int main()
     Lotus::Initialize();
 
     // Load scene
-    SceneManager::LoadScene(ExpandPath("res://scenes/SampleScene.json"));
+    // SampleScene is the main scene for the pong game
+    // MaterialDisplay showcases the renderer for a wide range of materials
+
+//    SceneManager::LoadScene(ExpandPath("res://scenes/SampleScene.json"));
+    SceneManager::LoadScene(ExpandPath("res://scenes/MaterialDisplay.json"));
 
     // Bind event callbacks
     // TODO: Bind with reflection

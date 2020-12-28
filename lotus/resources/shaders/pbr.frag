@@ -60,7 +60,7 @@ in vec4 FragPosLightSpace;
 in mat3 TBN;
 
 // uniform sampler2D shadowMap;
-uniform samplerCube irradianceMap;
+// uniform samplerCube irradianceMap;
 
 uniform vec3 camPos;
 
@@ -303,8 +303,8 @@ void main()
     // TODO: Raytraced GI?
     vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, material.fRoughness);
     vec3 kD = 1.0 - kS;
-    vec3 irradiance = texture(irradianceMap, N).rgb;
-    vec3 diffuse    = irradiance * albedo;
+    // vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse    = albedo; // irradiance * albedo;
     vec3 ambient    = (kD * diffuse) * material.fAO;
     vec3 color = L0 + ambient;
 
