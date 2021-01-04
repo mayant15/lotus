@@ -300,7 +300,7 @@ void main()
     }
 
     float ao = getAO();
-    vec3 color = L0 + ao * vec3(0.03);
+    vec3 color = L0 + ao * albedo * vec3(0.1);
 
     // HDR/Gamma correction
     color = color / (color + vec3(1.0));
@@ -309,6 +309,6 @@ void main()
     // TODO: Improve shadows
     // float shadow = calculateShadow(N, dirLight[0].direction);
 
-    // fragColor = vec4(color, 1.0f) * (1.0f - shadow);
     fragColor = vec4(color, 1.0f);
+//    fragColor = vec4(normalize(Normal), 1.0f);
 }
