@@ -300,7 +300,7 @@ void main()
     }
 
     float ao = getAO();
-    vec3 color = L0 + ao * albedo * vec3(0.1);
+    vec3 color = L0 + ao * albedo * vec3(0.5f);
 
     // HDR/Gamma correction
     color = color / (color + vec3(1.0));

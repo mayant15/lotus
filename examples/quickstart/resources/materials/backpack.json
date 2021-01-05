@@ -1,0 +1,11 @@
+{
+  "Shader": {
+    "Vertex": "int://shaders/pbr.vert",
+    "Fragment": "int://shaders/pbr.frag"
+  },
+  "Albedo": "res://textures/T_Backpack_Albedo.jpg",
+  "Normal": "res://textures/T_Backpack_Normal.png",
+  "Metallic": 0.0,
+  "Roughness": 1.0,
+  "AO": "res://textures/T_Backpack_AO.jpg"
+}

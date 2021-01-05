@@ -11,7 +11,6 @@ namespace Lotus
     {
         if (data.contains(key) && data.at(key).is_string())
         {
-            stbi_set_flip_vertically_on_load(flipY);
             auto handle = LoadAsset<Texture, TextureLoader>(ExpandPath(data.at(key).get<std::string>()));
             return std::optional<Handle<Texture>> {handle};
         }
