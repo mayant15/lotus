@@ -133,7 +133,7 @@ float getAO()
 
 vec3 getAlbedo()
 {
-    return (material.bUseAlbedoTex) ? texture(material.tAlbedo, TexCoords).rbg : material.vAlbedo;
+    return (material.bUseAlbedoTex) ? texture(material.tAlbedo, TexCoords).rgb : material.vAlbedo;
 }
 
 
@@ -300,7 +300,7 @@ void main()
     }
 
     float ao = getAO();
-    vec3 color = L0 + ao * albedo * vec3(0.5f);
+    vec3 color = L0; // + ao * albedo * vec3(0.5f);
 
     // HDR/Gamma correction
     color = color / (color + vec3(1.0));

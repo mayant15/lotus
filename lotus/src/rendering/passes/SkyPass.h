@@ -54,6 +54,7 @@ namespace Lotus::Renderer
             // Render to cube
             RHI::BindVAO(RHI::GetCubeVAO());
             RHI::SetActiveTextureSlot(0);
+            shader->SetInt("skybox", 0);
             RHI::BindCubeMap(pSky->Map->EnvironmentMap);
             RHI::DrawTriangles(36);
             RHI::BindVAO(0);
