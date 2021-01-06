@@ -56,7 +56,7 @@ in vec3 WorldPos;
 in mat3 TBN;
 
 // uniform sampler2D shadowMap;
-// uniform samplerCube irradianceMap;
+uniform samplerCube irradianceMap;
 
 uniform vec3 camPos;
 
@@ -299,8 +299,14 @@ void main()
         L0 += calculateSpotlight(spotlight[i], N, V, F0);
     }
 
-    float ao = getAO();
-    vec3 color = L0; // + ao * albedo * vec3(0.5f);
+    // Ambient component
+    vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, material.fRoughness);
+    vec3 kD = 1.0 - kS;
+    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse    = irradiance * albedo;
+    vec3 ambient    = (kD * diffuse) * getAO();
+
+    vec3 color = L0 + ambient;
 
     // HDR/Gamma correction
     color = color / (color + vec3(1.0));
@@ -310,5 +316,4 @@ void main()
     // float shadow = calculateShadow(N, dirLight[0].direction);
 
     fragColor = vec4(color, 1.0f);
-//    fragColor = vec4(normalize(Normal), 1.0f);
 }
