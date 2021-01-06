@@ -14,6 +14,7 @@ constexpr int L_KEY_A   = 4;
 constexpr int L_KEY_D   = 5;
 constexpr int L_KEY_E   = 6;
 constexpr int L_KEY_Q   = 7;
+constexpr int L_KEY_R   = 8;
 
 constexpr int L_KEY_PRESS   = 0;
 constexpr int L_KEY_REPEAT  = 1;

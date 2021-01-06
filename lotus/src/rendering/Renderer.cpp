@@ -4,6 +4,8 @@
 #include "passes/PBRPass.h"
 #include "passes/SkyPass.h"
 
+#include "debug/ShaderHotReload.h"
+
 #include <lotus/Config.h>
 #include <lotus/ecs/components/CCamera.h>
 
@@ -46,6 +48,7 @@ namespace Lotus::Renderer
         if (GetBuildConfig().IsDebug)
         {
             RHI::EnableDebugContext();
+            ShaderHotReloadInit();
         }
 
         // glClearColor(0.74f, 0.74f, 0.74f, 0.5f);

@@ -67,6 +67,10 @@ namespace Lotus
 
         virtual void SetMaterial(const std::string& name, Handle <Material> mat) const = 0;
 
+        virtual void Compile() = 0;
+
+        virtual void Reload() = 0;
+
         virtual ~Shader() = default;
     };
 

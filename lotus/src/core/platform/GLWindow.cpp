@@ -16,6 +16,7 @@ namespace Lotus
             case GLFW_KEY_D: return L_KEY_D;
             case GLFW_KEY_E: return L_KEY_E;
             case GLFW_KEY_Q: return L_KEY_Q;
+            case GLFW_KEY_R: return L_KEY_R;
             default: return L_KEY_NONE;
         }
     }

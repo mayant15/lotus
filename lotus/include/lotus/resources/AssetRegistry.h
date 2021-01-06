@@ -14,4 +14,10 @@ namespace Lotus
         auto id = entt::hashed_string::value(path.c_str());
         return AssetCache<Resource>::cache.template load<Loader>(id, path, std::forward<Args>(args)...);
     }
+
+    template <typename Resource, typename Func>
+    inline void ForEachAsset(Func func)
+    {
+        AssetCache<Resource>::cache.each(func);
+    }
 }

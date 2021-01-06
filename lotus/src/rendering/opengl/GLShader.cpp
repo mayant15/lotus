@@ -8,62 +8,73 @@
 
 namespace Lotus
 {
-    GLShader::GLShader(const std::string& vertexPath, const std::string& fragmentPath)
+    std::string readFileContents(const std::string& path)
     {
-        std::string vertexCode;
-        std::string fragmentCode;
-        try
-        {
-            std::ifstream vertexFile(vertexPath);
-            vertexCode.assign((std::istreambuf_iterator<char>(vertexFile)), (std::istreambuf_iterator<char>()));
+        std::string contents;
+        std::ifstream file (path);
+        contents.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+        return contents;
+    }
 
-            std::ifstream fragmentFile(fragmentPath);
-            fragmentCode.assign((std::istreambuf_iterator<char>(fragmentFile)), (std::istreambuf_iterator<char>()));
+    unsigned int compileShader(unsigned int kind, const char* const* source)
+    {
+        unsigned int id = glCreateShader(kind);
+        glShaderSource(id, 1, source, nullptr);
+        glCompileShader(id);
 
-            vertexFile.close();
-            fragmentFile.close();
-        }
-        catch (...)
-        {
-            LOG_ERROR("Shader Program: File not read.");
-        }
-        const char* vertexCodeStr = vertexCode.c_str();
-        const char* fragmentCodeStr = fragmentCode.c_str();
-
-        unsigned int vertex, fragment;
         int success;
         char infoLog[512];
-
-        vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vertexCodeStr, nullptr);
-        glCompileShader(vertex);
-        glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+        glGetShaderiv(id, GL_COMPILE_STATUS, &success);
         if (!success)
         {
-            glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-            LOG_ERROR("Vertex shader compilation failed.\n{}", infoLog);
+            glGetShaderInfoLog(id, 512, nullptr, infoLog);
+            throw std::exception {infoLog};
         }
 
-        fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fragmentCodeStr, nullptr);
-        glCompileShader(fragment);
-        glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+        return id;
+    }
+
+    unsigned int linkProgram(const std::vector<unsigned int>& shaders)
+    {
+        unsigned int id = glCreateProgram();
+        for (auto shader : shaders)
+        {
+            glAttachShader(id, shader);
+        }
+        glLinkProgram(id);
+
+        int success;
+        char infoLog[512];
+        glGetProgramiv(id, GL_LINK_STATUS, &success);
         if (!success)
         {
-            glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-            LOG_ERROR("Fragment shader compilation failed.\n{}", infoLog);
+            glGetProgramInfoLog(id, 512, nullptr, infoLog);
+            throw std::exception {infoLog};
         }
 
-        ID = glCreateProgram();
-        glAttachShader(ID, vertex);
-        glAttachShader(ID, fragment);
-        glLinkProgram(ID);
-        glGetProgramiv(ID, GL_LINK_STATUS, &success);
-        if (!success)
-        {
-            glGetProgramInfoLog(ID, 512, nullptr, infoLog);
-            LOG_ERROR("Shader program linking failed.\n{}", infoLog);
-        }
+        return id;
+    }
+
+    GLShader::GLShader(const std::string& vertexPath, const std::string& fragmentPath)
+    {
+        // Store paths for later
+        vpath = vertexPath;
+        fpath = fragmentPath;
+
+        Compile();
+    }
+
+    void GLShader::Compile()
+    {
+        std::string vsource = readFileContents(vpath);
+        std::string fsource = readFileContents(fpath);
+        const char* pvsource = vsource.c_str();
+        const char* pfsource = fsource.c_str();
+
+        unsigned int vertex = compileShader(GL_VERTEX_SHADER, &pvsource);
+        unsigned int fragment = compileShader(GL_FRAGMENT_SHADER, &pfsource);
+
+        ID = linkProgram({vertex, fragment});
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
@@ -220,5 +231,20 @@ namespace Lotus
 
         SetFloat(name + ".fRoughness", mat->Roughness);
         SetFloat(name + ".fMetallic", mat->Metallic);
+    }
+
+    void GLShader::Reload()
+    {
+        unsigned int prevID = ID;
+        try
+        {
+            Compile();
+            glDeleteProgram(prevID);
+        }
+        catch (const std::exception& e)
+        {
+            LOG_ERROR(e.what());
+            ID = prevID;
+        }
     }
 }

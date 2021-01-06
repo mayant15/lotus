@@ -34,6 +34,7 @@ set(LOTUS_SOURCES
     src/physics/Physics.cpp
 
     src/rendering/opengl/GLShader.cpp
+    src/rendering/debug/ShaderHotReload.cpp
     src/rendering/Primitives.cpp
     src/rendering/Renderer.cpp
     src/rendering/RHI.cpp
