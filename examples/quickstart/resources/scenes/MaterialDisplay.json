@@ -71,7 +71,7 @@
   {
     "CSunLight": {
       "color": [1.0, 1.0, 1.0, 1.0],
-      "direction": [0.5, -0.7, -0.5]
+      "direction": [0.0, -1.0, -1.0]
     },
     "CSkybox": {
       "Map": "res://skybox/sky.hdr"

@@ -110,7 +110,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     float NdotV = max(dot(N, V), 0.0);
     float ggx2 = GeometrySchlickGGX(NdotV, roughness);
 
-    return ggx1;// * ggx2;
+    return ggx1 * ggx2;
 }
 
 
@@ -133,7 +133,9 @@ float getAO()
 
 vec3 getAlbedo()
 {
-    return (material.bUseAlbedoTex) ? texture(material.tAlbedo, TexCoords).rgb : material.vAlbedo;
+    // Must tonemap this here for things to look good
+    vec3 color = (material.bUseAlbedoTex) ? texture(material.tAlbedo, TexCoords).rgb : material.vAlbedo;
+    return pow(color, vec3 (2.2));
 }
 
 
@@ -165,7 +167,6 @@ vec3 calculateIrradiance(vec3 radiance, vec3 N, vec3 L, vec3 V, vec3 F0)
     }
 
     return ((kd * albedo / M_PI) + specular) * radiance * max(dot(N, L), 0.0);
-    //    return vec3 (D);
 }
 
 
