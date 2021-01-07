@@ -146,4 +146,9 @@ namespace Lotus::Engine
 
         ECSShutdown();
     }
+
+    void* GetNativeWindow()
+    {
+        return state.Window->GetNativeWindow();
+    }
 }

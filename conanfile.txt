@@ -3,6 +3,7 @@ glfw/3.3.2
 assimp/5.0.1
 physx/4.1.1
 spdlog/1.8.2
+imgui/1.79
 
 [generators]
 cmake

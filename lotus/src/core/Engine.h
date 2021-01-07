@@ -25,4 +25,7 @@ namespace Lotus::Engine
         /** @brief Pointer to the abstract interface for the main native window */
         URef<IWindow> Window;
     };
+
+    // TODO: Find a better place to put this
+    void* GetNativeWindow();
 }
