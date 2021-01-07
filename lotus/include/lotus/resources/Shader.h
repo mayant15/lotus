@@ -78,11 +78,4 @@ namespace Lotus
     {
         [[nodiscard]] SRef <Shader> Load(const std::string& vertexPath, const std::string& fragmentPath) const;
     };
-
-    template<>
-    inline Handle <Shader> LoadAsset<Shader, ShaderLoader>(const std::string& path, const std::string& args)
-    {
-        auto id = entt::hashed_string::value((path + args).c_str());
-        return AssetCache<Shader>::cache.load<ShaderLoader>(id, path, args);
-    }
 }

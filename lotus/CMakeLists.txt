@@ -39,6 +39,7 @@ set(LOTUS_SOURCES
     src/rendering/Renderer.cpp
     src/rendering/RHI.cpp
 
+    src/resources/AssetRegistry.cpp
     src/resources/HDRI.cpp
     src/resources/Material.cpp
     src/resources/Model.cpp
