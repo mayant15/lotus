@@ -1,7 +1,7 @@
 #pragma once
 
 #include <rendering/RenderPass.h>
-#include <core/Engine.h>
+#include <core/WindowManager.h>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -25,7 +25,7 @@ namespace Lotus::Renderer
             ImGui::StyleColorsLight();
 
             // Setup Platform/Renderer backends
-            ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*) Lotus::Engine::GetNativeWindow(), true);
+            ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*) Lotus::WindowManager::GetWindowPointer(), true);
             const char* glsl_version = "#version 450 core";
             ImGui_ImplOpenGL3_Init(glsl_version);
             ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

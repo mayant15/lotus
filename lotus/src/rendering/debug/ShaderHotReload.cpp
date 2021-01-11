@@ -3,6 +3,7 @@
 #include <lotus/ecs/EventManager.h>
 #include <lotus/resources/Shader.h>
 #include <lotus/debug.h>
+#include <lotus/Input.h>
 
 namespace Lotus
 {

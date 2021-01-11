@@ -25,11 +25,10 @@ set(LOTUS_SOURCES
     src/lotus.cpp
     src/filesystem.cpp
 
-    src/core/platform/DXWindow.cpp
-    src/core/platform/GLWindow.cpp
     src/core/Engine.cpp
     src/core/Input.cpp
     src/core/Config.cpp
+    src/core/GLFW_WindowManagerImpl.cpp
 
     src/ecs/Entity.cpp
 

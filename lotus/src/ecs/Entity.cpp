@@ -6,6 +6,7 @@
 
 namespace Lotus
 {
+    // TODO: Move this into a scene object
     entt::registry* pRegistry = nullptr;
 
     template <typename T>
