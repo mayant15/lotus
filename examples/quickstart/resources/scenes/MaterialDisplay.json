@@ -61,11 +61,11 @@
     "CTransform": {
       "Position": [0.0, -1.2, 0.0],
       "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [8.0, 2.0, 8.0]
+      "Scale": [24.0, 0.5, 24.0]
     },
     "CMeshRenderer": {
       "Material": "res://materials/default.json",
-      "Model": "res://mesh/plane.fbx"
+      "Model": "res://mesh/cube.fbx"
     }
   },
   {

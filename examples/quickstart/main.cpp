@@ -22,14 +22,14 @@ int main()
     // SampleScene is the main scene for the pong game
     // MaterialDisplay showcases the renderer for a wide range of materials
 
-//    SceneManager::LoadScene(ExpandPath("res://scenes/SampleScene.json"));
-    SceneManager::LoadScene(ExpandPath("res://scenes/MaterialDisplay.json"));
+    SceneManager::LoadScene(ExpandPath("res://scenes/SampleScene.json"));
+//    SceneManager::LoadScene(ExpandPath("res://scenes/MaterialDisplay.json"));
 
     // Bind event callbacks
     // TODO: Bind with reflection
     EventManager& em = GET(EventManager);
-    em.Bind<UpdateEvent, CameraSystem::OnUpdate>();
-    em.Bind<MouseEvent, CameraSystem::OnMouseEvent>();
+//    em.Bind<UpdateEvent, CameraSystem::OnUpdate>();
+//    em.Bind<MouseEvent, CameraSystem::OnMouseEvent>();
     em.Bind<CollisionEvent, OnCollision>();
 
     // Run the main render loop

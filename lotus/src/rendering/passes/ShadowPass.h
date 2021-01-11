@@ -77,7 +77,7 @@ namespace Lotus::Renderer
             }
         }
 
-        void RenderFrame() override
+        void RenderFrame(double deltaTime) override
         {
             // Update parameters
             Vector3f forward = GetForwardVector(*transform);

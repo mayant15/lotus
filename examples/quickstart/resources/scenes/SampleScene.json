@@ -1,59 +1,36 @@
 [
   {
-    "Prefab": "res://prefabs/camera.json"
-  },
-  {
-    "Prefab": "res://prefabs/pointlight.json",
-    "CTransform": {
-      "Position": [0.7, 0.0, 0.0],
-      "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [1.0, 1.0, 1.0]
-    }
-  },
-  {
-    "Prefab": "res://prefabs/pointlight.json",
-    "CTransform": {
-      "Position": [-0.7, 0.0, 0.0],
-      "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [1.0, 1.0, 1.0]
-    }
-  },
-  {
-    "Prefab": "res://prefabs/pointlight.json",
-    "CTransform": {
-      "Position": [0.0, 0.0, 0.7],
-      "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [1.0, 1.0, 1.0]
-    }
-  },
-  {
-    "Prefab": "res://prefabs/pointlight.json",
-    "CTransform": {
-      "Position": [0.0, 0.0, -0.7],
-      "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [1.0, 1.0, 1.0]
-    }
-  },
-  {
-    "CTransform": {
-      "Position": [0.0, 3.0, 0.0],
-      "Rotation": [-90.0, -90.0, 0.0],
-      "Scale": [1.0, 1.0, 1.0]
+    "CCamera": {
+      "IsActive": true,
+      "FOV": 45
     },
-    "CSpotlight": {
-      "color": [1.0, 1.0, 1.0, 1.0],
-      "constant": 1.0,
-      "linear": 0.22,
-      "quadratic": 0.2,
-      "innerCutOff": 30,
-      "outerCutOff": 45
+    "CTransform": {
+      "Position": [0.0, 20.0, 0.0],
+      "Rotation": [-90.0, 90.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    }
+  },
+  {
+    "Prefab": "res://prefabs/paddle.json",
+    "CTransform": {
+      "Position": [0, 0.5, 2.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [2, 1, 1]
+    }
+  },
+  {
+    "Prefab": "res://prefabs/paddle.json",
+    "CTransform": {
+      "Position": [0, 0.5, -2.5],
+      "Rotation": [0, 0, 0],
+      "Scale": [2, 1, 1]
     }
   },
   {
     "CTransform": {
-      "Position": [0.0, 1.0, 0.0],
+      "Position": [0.0, 0.5, 0.0],
       "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [0.3, 0.3, 0.3]
+      "Scale": [0.5, 0.5, 0.5]
     },
     "CMeshRenderer": {
       "Material": "res://materials/red.json",
@@ -61,26 +38,26 @@
     },
     "CSphereCollider": {
       "Position": [0.0, 0.0, 0.0],
-      "Radius": 0.3
+      "Radius": 0.5
     },
     "CRigidBody": {
-      "Gravity": 1.0,
+      "Gravity": 0.0,
       "IsKinematic": false
     }
   },
   {
     "CTransform": {
-      "Position": [0.0, -1.2, 0.0],
+      "Position": [0.0, 0.0, 0.0],
       "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [1.0, 1.0, 1.0]
+      "Scale": [5.0, 0.5, 5.0]
     },
     "CMeshRenderer": {
       "Material": "res://materials/default.json",
-      "Model": "res://mesh/plane.fbx"
+      "Model": "res://mesh/cube.fbx"
     },
     "CBoxCollider": {
       "Position": [0.0, 0.0, 0.0],
-      "Dimensions": [3.0, 0.05, 3.0]
+      "Dimensions": [5.0, 0.5, 5.0]
     },
     "CRigidBody": {
       "Gravity": 1.0,

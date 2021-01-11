@@ -1,0 +1,14 @@
+{
+  "CMeshRenderer": {
+    "Material": "res://materials/default.json",
+    "Model": "res://mesh/cube.fbx"
+  },
+  "CBoxCollider": {
+    "Position": [0.0, 0.0, 0.0],
+    "Dimensions": [2.0, 1.0, 1.0]
+  },
+  "CRigidBody": {
+    "Gravity": 0.0,
+    "IsKinematic": true
+  }
+}

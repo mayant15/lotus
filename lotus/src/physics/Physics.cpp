@@ -30,6 +30,12 @@ namespace Lotus::Physics
             actor = PxCreateDynamic(*state.pPhysics, transform, *shape, info.Material.Density);
         }
 
+        // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
+        if (info.Gravity < 0.2f)
+        {
+            actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+        }
+
         return actor;
     }
 

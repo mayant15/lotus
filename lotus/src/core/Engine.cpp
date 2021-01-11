@@ -88,7 +88,6 @@ namespace Lotus::Engine
     {
         GET(EventManager).Dispatch(BeginEvent {});
 
-        // TODO: Use chrono?
         auto currentTime = std::chrono::system_clock::now();
         auto lastTime = currentTime;
         while (state.IsRunning)

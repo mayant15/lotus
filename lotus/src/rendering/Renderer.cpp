@@ -97,7 +97,7 @@ namespace Lotus::Renderer
         // Call the update method for all render passes
         for (auto pass : passes)
         {
-            pass->RenderFrame();
+            pass->RenderFrame(event.DeltaTime);
         }
     }
 

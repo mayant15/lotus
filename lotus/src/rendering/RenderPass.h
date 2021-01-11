@@ -16,6 +16,6 @@ namespace Lotus::Renderer
         virtual void SetupFrame() {};
 
         /** @brief Called on UpdateEvent */
-        virtual void RenderFrame() {};
+        virtual void RenderFrame(double deltaTime) {};
     };
 }

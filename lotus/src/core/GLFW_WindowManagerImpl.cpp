@@ -90,7 +90,7 @@ namespace Lotus::WindowManager
         glfwSetKeyCallback(pWindow, keyCallback);
         glfwSetCursorPosCallback(pWindow, cursorPositionCallback);
         
-        glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
     void StartFrame()

@@ -31,13 +31,16 @@ namespace Lotus::Renderer
             ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
         }
 
-        void RenderFrame() override
+        void RenderFrame(double deltaTime) override
         {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            ImGui::ShowDemoWindow(nullptr);
+            ImGui::Begin("FPS");
+            ImGui::Text("%d", 10 * (int) (0.1f / deltaTime));
+            ImGui::End();
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }

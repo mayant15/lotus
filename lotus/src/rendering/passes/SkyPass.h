@@ -36,7 +36,7 @@ namespace Lotus::Renderer
             );
         }
 
-        void RenderFrame() override
+        void RenderFrame(double deltaTime) override
         {
             if (!isActive)
             {
