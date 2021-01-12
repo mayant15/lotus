@@ -28,4 +28,7 @@ add_executable(${LOTUS_EDITOR_EXEC} ${LOTUS_EDITOR_SOURCES})
 #add_dependencies(${LOTUS_EDITOR_EXEC} lotus)
 target_include_directories(${LOTUS_EDITOR_EXEC} PRIVATE ${EDITOR_INCLUDE_DIRS})
 target_link_libraries(${LOTUS_EDITOR_EXEC} ${EDITOR_LINK_LIBS})
-target_compile_definitions(${LOTUS_EDITOR_EXEC} PRIVATE ENTT_API_IMPORT)
+target_compile_definitions(${LOTUS_EDITOR_EXEC} PRIVATE
+    ENTT_API_IMPORT
+    RESOURCE_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/resources/"
+)
