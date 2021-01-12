@@ -3,7 +3,6 @@
 #include "RHI.h"
 #include "passes/PBRPass.h"
 #include "passes/SkyPass.h"
-#include "passes/UIPass.h"
 
 #include "debug/ShaderHotReload.h"
 
@@ -62,7 +61,6 @@ namespace Lotus::Renderer
 //        passes.push_back(new ShadowPass(&state));
         passes.push_back(new PBRPass(&state));
         passes.push_back(new SkyPass(&state));
-        passes.push_back(new UIPass());
     }
 
     void OnPreUpdate(const PreUpdateEvent& event)

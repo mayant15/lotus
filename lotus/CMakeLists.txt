@@ -4,7 +4,6 @@ set(LOTUS_LINK_LIBS
     CONAN_PKG::assimp
     CONAN_PKG::physx
     CONAN_PKG::spdlog
-    CONAN_PKG::imgui
 )
 
 # Other include directories
@@ -19,8 +18,6 @@ set(LOTUS_INCLUDE_DIRS
 set(LOTUS_SOURCES
     external/glad.c
     external/stb_image.cpp
-    external/imgui_impl_glfw.cpp
-    external/imgui_impl_opengl3.cpp
 
     src/lotus.cpp
     src/filesystem.cpp
