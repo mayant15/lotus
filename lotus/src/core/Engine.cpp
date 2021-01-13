@@ -41,7 +41,8 @@ namespace Lotus::Engine
         eventManager.Bind<MouseEvent, Input::UpdateMouseState>();
         eventManager.Bind<KeyboardEvent, Input::UpdateKeyState>();
 
-        setupPhysics();
+        // Physics should only start once a scene is running?
+//        setupPhysics();
         setupRenderer();
 
         eventManager.Dispatch(InitEvent {});

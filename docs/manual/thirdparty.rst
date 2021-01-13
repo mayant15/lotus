@@ -19,3 +19,7 @@ Libraries
 * `assimp/assimp <https://github.com/assimp/assimp>`_
 * `NVIDIAGameWorks/PhysX <https://github.com/NVIDIAGameWorks/PhysX>`_
 * `gabime/spdlog <https://github.com/gabime/spdlog>`_
+* `mlabbe/nativefiledialog <https://github.com/mlabbe/nativefiledialog>`_
+* `ocornut/imgui <https://github.com/ocornut/imgui>`_
+* `nothings/stb <https://github.com/nothings/stb>`_
+

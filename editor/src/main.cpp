@@ -23,10 +23,8 @@ int main(int argc, const char** argv)
     Lotus::LoadConfig(std::string {argv[1]});
     Lotus::Engine::Initialize();
 
-    Lotus::SceneManager::LoadScene(Lotus::ExpandPath("res://scenes/SampleScene.json"));
-
     // Ready to start the main loop
-    GET(Lotus::EventManager).Dispatch(Lotus::BeginEvent {});
+//    GET(Lotus::EventManager).Dispatch(Lotus::BeginEvent {});
 
     // Add a UI pass after other passes have been added
     Lotus::Renderer::AddRenderPass(new UIPass(window));

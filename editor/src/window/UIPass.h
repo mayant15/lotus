@@ -44,7 +44,7 @@ namespace Editor
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-//            Editor::Panel::MainMenu();
+            Editor::Panel::MainMenu();
 //            Editor::Panel::MainDockSpace();
             Editor::Panel::DemoWindow();
 //            Editor::Panel::Log((bool*) &show);

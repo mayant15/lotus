@@ -2,27 +2,26 @@
 
 A cross-platform 3D game engine
 
-## Features
-
-- Entity Component System
-- Physically Based Rendering
-
 ## Build
 
-Clone with `git clone --recurse-submodules` to get all submodules. Then in the root of the repo,
-1. Install dependencies by running `setup.bat`
-1. Use CMake to build the project
+Requirements
+- Conan package manager
+- CMake
+- C++17 compatible compiler
+
+Clone with `git clone` and then in the root of the repo do
 ```shell script
 mkdir build && cd build
+conan install ..
 cmake ..
 cmake --build .
 ```
-More detailed documentation can be found [here](https://studiocentauri.github.io/lotus/manual/install.html).
+More detailed documentation can be found [here](https://gds.sntiitk.in/lotus/manual/install.html).
 
 ## Contact
 You can create an issue here on the repo (preferred) or talk to us on our Discord.
 
-## Roadmap to v0.1
-- [ ] PhysX integration (in progress)
-- [ ] Scene serialization
-- [ ] Python scripting
+## License
+
+Code for the Lotus Engine is MIT licensed. Exceptions are noted where appropriate, for example for bundled third-party 
+libraries or assets. For more information visit [the documentation](https://gds.sntiitk.in/lotus/manual/thirdparty.html).

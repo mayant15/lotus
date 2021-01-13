@@ -5,10 +5,12 @@ set(EDITOR_LINK_LIBS
 
 set(EDITOR_INCLUDE_DIRS
     external
+    external/nativefiledialog/include
     src
     ${PUBLIC_INCLUDE_DIR}
     ${PUBLIC_INCLUDE_DIR}/lotus/internal
 )
+
 
 set(LOTUS_EDITOR_SOURCES
     external/imgui/imgui.cpp
@@ -16,8 +18,12 @@ set(LOTUS_EDITOR_SOURCES
     external/imgui/imgui_draw.cpp
     external/imgui/imgui_widgets.cpp
     external/imgui/imgui_tables.cpp
+    external/nativefiledialog/nfd_common.c
+    external/nativefiledialog/nfd_win.cpp
 
     src/main.cpp
+    src/utils.cpp
+
     src/window/Window.cpp
     src/window/backends/imgui_impl_opengl3.cpp
     src/window/backends/imgui_impl_glfw.cpp
