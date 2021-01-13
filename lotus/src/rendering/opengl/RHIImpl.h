@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <rendering/RHI.h>
 #include <lotus/rendering/common.h>
@@ -70,14 +69,6 @@ namespace Lotus::RHI::Detail
                 return GL_FLOAT;
             case ETextureDataType::UNSIGNED_BYTE:
                 return GL_UNSIGNED_BYTE;
-        }
-    }
-
-    void GLPlatformInit()
-    {
-        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-        {
-            throw std::exception("Failed to initialize GLAD");
         }
     }
 
@@ -311,8 +302,8 @@ namespace Lotus::RHI::Detail
         LOG_INFO("Setting up a debug context...");
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(debugMessageCallback, nullptr);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+//        glDebugMessageCallback(debugMessageCallback, nullptr);
+//        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 
     void GLCreateBuffersForMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, unsigned int* vao, unsigned int* vbo, unsigned int* ebo)

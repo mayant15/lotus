@@ -20,19 +20,4 @@ namespace Lotus
         EEventType Type = EEventType::NONE;
         bool Immediate = false;
     };
-
-    struct WindowCloseEvent : public Event
-    {
-        WindowCloseEvent()
-        {
-            Type = EEventType::WINDOW_CLOSE_EVENT;
-            Immediate = true;
-        }
-    };
-
-    struct WindowResizeEvent
-    {
-        float NewWidth;
-        float NewHeight;
-    };
 }

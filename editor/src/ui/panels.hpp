@@ -1,7 +1,51 @@
 #pragma once
 
+#include <imgui/imgui.h>
+
+/**
+ * Place common ones here that don't need much logic to work
+ */
 namespace Editor::Panel
 {
+    void MainDockSpace()
+    {
+        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    }
+
+    void DemoWindow()
+    {
+        ImGui::ShowDemoWindow();
+
+    }
+
+    void MainMenu()
+    {
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+                ImGui::Separator();
+                if (ImGui::MenuItem("Cutsdfsdfsdfsdfsdfsdfsdfsdfsdf", "CTRL+X")) {}
+                if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+                if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Edit"))
+            {
+                if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+                ImGui::Separator();
+                if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+                if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+                if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
+    }
+
     struct MyLog
     {
         ImGuiTextBuffer Buf;
@@ -28,9 +72,9 @@ namespace Editor::Panel
         {
             int old_size = Buf.size();
             va_list args;
-            va_start(args, fmt);
+                    va_start(args, fmt);
             Buf.appendfv(fmt, args);
-            va_end(args);
+                    va_end(args);
             for (int new_size = Buf.size(); old_size < new_size; old_size++)
                 if (Buf[old_size] == '\n')
                     LineOffsets.push_back(old_size + 1);

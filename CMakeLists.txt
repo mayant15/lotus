@@ -25,6 +25,9 @@ set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lotus/include)
 # So I enabled this definition globally for all targets
 add_compile_definitions(ENGINE_RESOURCE_ROOT="${CMAKE_SOURCE_DIR}/lotus/resources/")
 
+# Build bundled dependencies
+add_subdirectory(common/glad)
+
 # Build the actual engine and editor
 add_subdirectory(lotus)
 add_subdirectory(editor)

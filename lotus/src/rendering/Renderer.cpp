@@ -12,7 +12,7 @@
 namespace Lotus::Renderer
 {
     static Renderer::State state {};
-    std::vector<RenderPass*> passes {};
+    static std::vector<RenderPass*> passes {};
 
     void setState(const RenderConfig& conf)
     {
@@ -34,11 +34,13 @@ namespace Lotus::Renderer
         // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
+    void AddRenderPass(RenderPass* pass)
+    {
+        passes.push_back(pass);
+    }
+
     void OnInit(const InitEvent& event)
     {
-        // Init
-        RHI::PlatformInit();
-
         // Setup options
         auto conf = GetRenderConfig();
         setState(conf);
@@ -51,8 +53,7 @@ namespace Lotus::Renderer
             ShaderHotReloadInit();
         }
 
-        // glClearColor(0.74f, 0.74f, 0.74f, 0.5f);
-        RHI::SetClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        RHI::SetClearColor(0.74f, 0.74f, 0.74f, 1.0f);
     }
 
     void OnBegin(const BeginEvent& event)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <rendering/RenderPass.h>
+#include <lotus/rendering/RenderPass.h>
 
 #include <lotus/ecs/Entity.h>
 #include <lotus/resources/HDRI.h>

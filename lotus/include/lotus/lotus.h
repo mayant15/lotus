@@ -31,12 +31,13 @@
 #include "resources/Texture.h"
 
 #include "rendering/CMeshRenderer.h"
+#include "rendering/RenderPass.h"
 
 #include "scene/Scene.h"
 #include "scene/SceneTreeNode.h"
 #include "scene/SceneManager.h"
 
 #include "Config.h"
-#include "entry.h"
+#include "Engine.h"
 #include "ILifecycle.h"
 #include "Input.h"

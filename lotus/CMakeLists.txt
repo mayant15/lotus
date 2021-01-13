@@ -1,6 +1,6 @@
 # Dependencies
 set(LOTUS_LINK_LIBS
-    CONAN_PKG::glfw
+    glad
     CONAN_PKG::assimp
     CONAN_PKG::physx
     CONAN_PKG::spdlog
@@ -16,16 +16,13 @@ set(LOTUS_INCLUDE_DIRS
 
 # Set all source files
 set(LOTUS_SOURCES
-    external/glad.c
     external/stb_image.cpp
 
-    src/lotus.cpp
     src/filesystem.cpp
 
     src/core/Engine.cpp
     src/core/Input.cpp
     src/core/Config.cpp
-    src/core/GLFW_WindowManagerImpl.cpp
 
     src/ecs/Entity.cpp
 
@@ -50,6 +47,7 @@ set(LOTUS_SOURCES
 )
 
 add_library(lotus SHARED ${LOTUS_SOURCES})
+add_dependencies(lotus glad)
 target_include_directories(lotus PRIVATE ${LOTUS_INCLUDE_DIRS})
 target_link_libraries(lotus ${LOTUS_LINK_LIBS})
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)

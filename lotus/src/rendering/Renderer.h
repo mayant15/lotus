@@ -1,8 +1,8 @@
 #pragma once
 
 #include "RenderQueue.h"
-#include "RenderPass.h"
 
+#include <lotus/rendering/RenderPass.h>
 #include <lotus/ILifecycle.h>
 #include <lotus/resources/Shader.h>
 #include <lotus/ecs/components/CTransform.h>

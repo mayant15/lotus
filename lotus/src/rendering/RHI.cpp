@@ -12,8 +12,6 @@ namespace Lotus::RHI
     case ERenderAPI::OPEN_GL: return Detail::GL##func (__VA_ARGS__); \
     default: LOG_ERROR("Only OpenGL is supported."); }
 
-    void PlatformInit() { DELEGATE_TO_API(PlatformInit) }
-
     void EnableDebugContext() { DELEGATE_TO_API(EnableDebugContext) }
 
     void EnableFeatures(unsigned int bits) { DELEGATE_TO_API(EnableFeatures, bits) }

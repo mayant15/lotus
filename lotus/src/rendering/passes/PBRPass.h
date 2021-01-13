@@ -1,6 +1,6 @@
 #pragma once
 
-#include <rendering/RenderPass.h>
+#include <lotus/rendering/RenderPass.h>
 #include <lotus/resources/HDRI.h>
 
 namespace Lotus::Renderer
@@ -15,13 +15,10 @@ namespace Lotus::Renderer
 //        Matrix4f lightProjection;
 
         const Renderer::State* pState;
-        const CSkybox* pSky;
+        const CSkybox* pSky = nullptr;
 
     public:
-        PBRPass(const Renderer::State* state) : pState(state)
-        {
-            //
-        }
+        explicit PBRPass(const Renderer::State* state) : pState(state) {}
 
         void SetupFrame() override
         {

@@ -1,0 +1,6 @@
+#pragma once
+
+#define GLSL_VERSION_STRING "#version 330 core"
+#define OPENGL_VERSION_MAJOR 3
+#define OPENGL_VERSION_MINOR 3
+#define OPENGL_PROFILE GLFW_OPENGL_CORE_PROFILE
