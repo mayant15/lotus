@@ -9,17 +9,16 @@
 #include <lotus/Config.h>
 #include <lotus/ecs/components/CCamera.h>
 
+
+// NOTE: Initialize the viewport dims in editor/src/ui/panels.hpp with these values too just to be safe
+constexpr float COLOR_BUFFER_HEIGHT = 720.0f;
+constexpr float COLOR_BUFFER_WIDTH = 1280.0f;
+constexpr float COLOR_BUFFER_ASPECT_RATIO = COLOR_BUFFER_WIDTH / COLOR_BUFFER_HEIGHT;
+
 namespace Lotus::Renderer
 {
     static Renderer::State state {};
     static std::vector<RenderPass*> passes {};
-
-    void setState(const RenderConfig& conf)
-    {
-        state.ViewportHeight = conf.ViewportHeight;
-        state.ViewportWidth = conf.ViewportWidth;
-        state.AspectRatio = (double) state.ViewportWidth / state.ViewportHeight;
-    }
 
     void setFeatures(const RenderConfig& conf)
     {
@@ -39,21 +38,10 @@ namespace Lotus::Renderer
         passes.push_back(pass);
     }
 
-    void SetViewportWidth(int val)
-    {
-        state.ViewportWidth = val;
-    }
-
-    void SetViewportHeight(int val)
-    {
-        state.ViewportHeight = val;
-    }
-
     void OnInit(const InitEvent& event)
     {
         // Setup options
         auto conf = GetRenderConfig();
-        setState(conf);
         setFeatures(conf);
 
         // Setup debug context?
@@ -63,11 +51,38 @@ namespace Lotus::Renderer
             ShaderHotReloadInit();
         }
 
-        RHI::SetClearColor(0.04f, 0.74f, 0.74f, 1.0f);
-
         // Setup a framebuffer for the viewport
         state.ViewportFBO = RHI::CreateFrameBuffer({true});
-        state.ViewportColorAttachment = RHI::DefaultColorAttachment(state.ViewportFBO, 800, 600);
+        state.ViewportColorAttachment = RHI::DefaultColorAttachment(state.ViewportFBO, COLOR_BUFFER_WIDTH, COLOR_BUFFER_HEIGHT);
+        SetViewport(COLOR_BUFFER_WIDTH, COLOR_BUFFER_HEIGHT);
+    }
+
+    void SetViewport(unsigned int width, unsigned int height)
+    {
+        float ar  = (float) width / (float) height;
+
+        if (width > COLOR_BUFFER_WIDTH || height > COLOR_BUFFER_HEIGHT)
+        {
+            if (ar >= COLOR_BUFFER_ASPECT_RATIO)
+            {
+                width = COLOR_BUFFER_WIDTH;
+                height = COLOR_BUFFER_WIDTH / ar;
+            }
+            else
+            {
+                height = COLOR_BUFFER_HEIGHT;
+                width = ar * COLOR_BUFFER_HEIGHT;
+            }
+        }
+
+        state.AspectRatio = ar;
+        state.ViewportHeight = height;
+        state.ViewportWidth = width;
+    }
+
+    std::pair<float, float> GetViewportUV()
+    {
+        return { state.ViewportWidth / COLOR_BUFFER_WIDTH, state.ViewportHeight / COLOR_BUFFER_HEIGHT };
     }
 
     void OnBegin(const BeginEvent& event)
@@ -79,6 +94,19 @@ namespace Lotus::Renderer
     }
 
     void OnPreUpdate(const PreUpdateEvent& event)
+    {
+        for (auto pass : passes)
+        {
+            pass->SetupFrame();
+        }
+    }
+
+    unsigned int GetColorBuffer()
+    {
+        return state.ViewportColorAttachment;
+    }
+
+    void OnUpdate(const UpdateEvent& event)
     {
         auto registry = GetRegistry();
         auto cameraView = registry->view<CCamera, CTransform>();
@@ -96,23 +124,9 @@ namespace Lotus::Renderer
             }
         }
 
-        for (auto pass : passes)
-        {
-            pass->SetupFrame();
-        }
-    }
-
-    unsigned int GetColorBuffer()
-    {
-        return state.ViewportColorAttachment;
-    }
-
-    void OnUpdate(const UpdateEvent& event)
-    {
         // TODO: Fix viewport updates
         RHI::BindFrameBuffer(state.ViewportFBO);
-        const auto a = state.ViewportHeight + state.ViewportWidth;
-        RHI::SetClearColor(state.ViewportWidth / (float) a, state.ViewportHeight / (float) a, 1.0f, 1.0f);
+        RHI::SetClearColor(0.54f, 0.54f, 0.54f, 1.0f);
         RHI::Clear(RHI::COLOR_BIT | RHI::DEPTH_BIT);
         RHI::SetViewport(state.ViewportWidth, state.ViewportHeight);
 

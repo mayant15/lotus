@@ -47,8 +47,7 @@ namespace Editor
 
         void SetupFrame() override
         {
-            Lotus::Renderer::SetViewportWidth(std::floor(Editor::Panel::viewportDims.x));
-            Lotus::Renderer::SetViewportHeight(std::floor(Editor::Panel::viewportDims.y));
+            Lotus::Renderer::SetViewport(std::floor(Editor::Panel::viewportDims.x), std::floor(Editor::Panel::viewportDims.y));
         }
 
         void RenderFrame(double deltaTime) override
@@ -60,7 +59,9 @@ namespace Editor
 
             Editor::Panel::MainMenu();
             Editor::Panel::MainDockSpace();
-            Editor::Panel::Viewport(colorbuffer);
+
+            auto [ux, uy] = Lotus::Renderer::GetViewportUV();
+            Editor::Panel::Viewport(colorbuffer, ux, uy);
             Editor::Panel::DemoWindow();
             Editor::Panel::Log((bool*) &show);
 

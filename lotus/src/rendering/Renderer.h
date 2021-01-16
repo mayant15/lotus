@@ -19,7 +19,7 @@ namespace Lotus::Renderer
 
         unsigned int ViewportWidth;
         unsigned int ViewportHeight;
-        double AspectRatio;
+        float AspectRatio;
 
         Vector3f CameraPos;
         Matrix4f View;
