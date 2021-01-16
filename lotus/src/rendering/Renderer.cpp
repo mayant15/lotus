@@ -39,6 +39,16 @@ namespace Lotus::Renderer
         passes.push_back(pass);
     }
 
+    void SetViewportWidth(int val)
+    {
+        state.ViewportWidth = val;
+    }
+
+    void SetViewportHeight(int val)
+    {
+        state.ViewportHeight = val;
+    }
+
     void OnInit(const InitEvent& event)
     {
         // Setup options
@@ -53,7 +63,11 @@ namespace Lotus::Renderer
             ShaderHotReloadInit();
         }
 
-        RHI::SetClearColor(0.74f, 0.74f, 0.74f, 1.0f);
+        RHI::SetClearColor(0.04f, 0.74f, 0.74f, 1.0f);
+
+        // Setup a framebuffer for the viewport
+        state.ViewportFBO = RHI::CreateFrameBuffer({true});
+        state.ViewportColorAttachment = RHI::DefaultColorAttachment(state.ViewportFBO, 800, 600);
     }
 
     void OnBegin(const BeginEvent& event)
@@ -66,9 +80,6 @@ namespace Lotus::Renderer
 
     void OnPreUpdate(const PreUpdateEvent& event)
     {
-        RHI::Clear(RHI::COLOR_BIT | RHI::DEPTH_BIT);
-        RHI::SetViewport(state.ViewportWidth, state.ViewportHeight);
-
         auto registry = GetRegistry();
         auto cameraView = registry->view<CCamera, CTransform>();
         for (auto entity : cameraView)
@@ -91,8 +102,20 @@ namespace Lotus::Renderer
         }
     }
 
+    unsigned int GetColorBuffer()
+    {
+        return state.ViewportColorAttachment;
+    }
+
     void OnUpdate(const UpdateEvent& event)
     {
+        // TODO: Fix viewport updates
+        RHI::BindFrameBuffer(state.ViewportFBO);
+        const auto a = state.ViewportHeight + state.ViewportWidth;
+        RHI::SetClearColor(state.ViewportWidth / (float) a, state.ViewportHeight / (float) a, 1.0f, 1.0f);
+        RHI::Clear(RHI::COLOR_BIT | RHI::DEPTH_BIT);
+        RHI::SetViewport(state.ViewportWidth, state.ViewportHeight);
+
         // Call the update method for all render passes
         for (auto pass : passes)
         {

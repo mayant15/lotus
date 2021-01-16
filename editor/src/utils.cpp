@@ -1,6 +1,5 @@
 #include "utils.h"
-
-#include "nfd.h"
+#include <nfd.h>
 
 namespace Editor
 {
@@ -19,5 +18,10 @@ namespace Editor
         {
             return std::nullopt;
         }
+    }
+
+    std::string ExpandPath(const std::string& path)
+    {
+        return EDITOR_RESOURCE_ROOT + path;
     }
 }

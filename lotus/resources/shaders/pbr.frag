@@ -57,6 +57,7 @@ in mat3 TBN;
 
 // uniform sampler2D shadowMap;
 uniform samplerCube irradianceMap;
+uniform bool bUseIrradianceMap;
 
 uniform vec3 camPos;
 
@@ -273,6 +274,11 @@ vec3 getNormal()
     }
 }
 
+vec3 getIrradiance(vec3 N)
+{
+    return (bUseIrradianceMap) ? texture(irradianceMap, N).rgb : vec3(0.3f);
+}
+
 void main()
 {
     vec3 N = normalize(getNormal());
@@ -303,7 +309,7 @@ void main()
     // Ambient component
     vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, material.fRoughness);
     vec3 kD = 1.0 - kS;
-    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 irradiance = getIrradiance(N);
     vec3 diffuse    = irradiance * albedo;
     vec3 ambient    = (kD * diffuse) * getAO();
 

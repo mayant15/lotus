@@ -186,11 +186,13 @@ namespace Lotus::RHI
     void Clear(unsigned int bits);
 
     /**
-     * @brief Create a frame buffer
+     * @brief Create and bind a new framebuffer
      * @param info Options
      * @return Identifier for the created frame buffer
      */
     FrameBuffer CreateFrameBuffer(const FrameBufferInfo& info);
+
+    TextureID DefaultColorAttachment(FrameBuffer fbo, unsigned int width, unsigned int height);
 
     // TODO: Attach renderbuffer then choose depth/color or vice versa?
     void AttachRenderBuffer(FrameBuffer fb, const RenderBufferAttachmentInfo& info);

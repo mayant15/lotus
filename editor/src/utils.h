@@ -6,4 +6,7 @@
 namespace Editor
 {
     std::optional<std::string> OpenFileDialog();
+
+    // TODO: Move primitives the editor, int://. Shaders?
+    std::string ExpandPath(const std::string& path);
 }

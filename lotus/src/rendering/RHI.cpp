@@ -40,6 +40,8 @@ namespace Lotus::RHI
 
     FrameBuffer CreateFrameBuffer(const FrameBufferInfo& info) { DELEGATE_TO_API(CreateFrameBuffer, info) }
 
+    TextureID DefaultColorAttachment(FrameBuffer fbo, unsigned int width, unsigned int height) { DELEGATE_TO_API(DefaultColorAttachment, fbo, width, height); }
+
     void AttachRenderBuffer(FrameBuffer fb, const RenderBufferAttachmentInfo& info) { DELEGATE_TO_API(AttachRenderBuffer, fb, info) }
 
     void AttachTexture(FrameBuffer fb, const TextureAttachmentInfo& info) { DELEGATE_TO_API(AttachTexture, fb, info) }

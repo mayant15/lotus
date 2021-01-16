@@ -24,4 +24,7 @@ namespace Lotus::Renderer
     };
 
     LOTUS_API void AddRenderPass(RenderPass* pass);
+    LOTUS_API unsigned int GetColorBuffer();
+    LOTUS_API void SetViewportWidth(int val);
+    LOTUS_API void SetViewportHeight(int val);
 }

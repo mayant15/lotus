@@ -21,6 +21,9 @@ namespace Lotus::Physics
         physx::PxDefaultCpuDispatcher* pDispatcher = nullptr;
         physx::PxPvd* pPVD = nullptr;
         physx::PxScene* pActiveScene = nullptr;
+
+        // TODO: When the editor presses the play button, flip this to true
+        bool isActive = false;
     };
 
     /** @brief Initialize physics systems and setup with project config */

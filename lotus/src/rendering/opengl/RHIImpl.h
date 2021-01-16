@@ -193,9 +193,33 @@ namespace Lotus::RHI::Detail
             glDrawBuffer(GL_NONE);
             glReadBuffer(GL_NONE);
         }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         return fb;
+    }
+
+    TextureID GLDefaultColorAttachment(FrameBuffer fbo, unsigned int width, unsigned int height)
+    {
+        // TODO: Simplify creating framebuffers
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+        // generate texture
+        unsigned int texColorBuffer;
+        glGenTextures(1, &texColorBuffer);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+
+        unsigned int rbo;
+        glGenRenderbuffers(1, &rbo);
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+        return texColorBuffer;
     }
 
     inline void GLAttachRenderBuffer(FrameBuffer fb, const RenderBufferAttachmentInfo& info)

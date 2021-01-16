@@ -167,8 +167,11 @@ namespace Lotus::Physics
 
     void OnUpdate(const UpdateEvent& event)
     {
-        state.pActiveScene->simulate(event.DeltaTime);
-        state.pActiveScene->fetchResults(true);
+        if (state.isActive)
+        {
+            state.pActiveScene->simulate(event.DeltaTime);
+            state.pActiveScene->fetchResults(true);
+        }
     }
 
     void OnPostUpdate(const PostUpdateEvent& event)

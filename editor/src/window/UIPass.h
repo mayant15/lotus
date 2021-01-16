@@ -6,6 +6,10 @@
 #include <window/backends/imgui_impl_opengl3.h>
 
 #include <lotus/rendering/RenderPass.h>
+#include <lotus/resources/Texture.h>
+#include <lotus/filesystem.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace Editor
 {
@@ -13,6 +17,8 @@ namespace Editor
     {
         GLFWwindow* window;
         ImVec4 clearColor = {0.5f, 0.5f, 0.5f, 1.0f};
+        unsigned int colorbuffer;
+
         constexpr static bool show = true;
 
     public:
@@ -35,6 +41,14 @@ namespace Editor
             // Load Fonts
             io.Fonts->AddFontFromFileTTF(fullPath("fonts/OpenSans-Regular.ttf").c_str(), 20.0f);
             io.Fonts->AddFontDefault();
+
+            colorbuffer = Lotus::Renderer::GetColorBuffer();
+        }
+
+        void SetupFrame() override
+        {
+            Lotus::Renderer::SetViewportWidth(std::floor(Editor::Panel::viewportDims.x));
+            Lotus::Renderer::SetViewportHeight(std::floor(Editor::Panel::viewportDims.y));
         }
 
         void RenderFrame(double deltaTime) override
@@ -45,15 +59,21 @@ namespace Editor
             ImGui::NewFrame();
 
             Editor::Panel::MainMenu();
-//            Editor::Panel::MainDockSpace();
+            Editor::Panel::MainDockSpace();
+            Editor::Panel::Viewport(colorbuffer);
             Editor::Panel::DemoWindow();
-//            Editor::Panel::Log((bool*) &show);
+            Editor::Panel::Log((bool*) &show);
 
             // Rendering
             ImGui::Render();
-//            int display_w, display_h;
-//            glfwGetFramebufferSize(window, &display_w, &display_h);
-//            glViewport(0, 0, display_w, display_h);
+
+            // TODO: Improve render APIs
+            int display_w, display_h;
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glfwGetFramebufferSize(window, &display_w, &display_h);
+            glViewport(0, 0, display_w, display_h);
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
 

@@ -14,6 +14,9 @@ namespace Lotus::Renderer
     /** @brief Structure that backs the render pipeline */
     struct State
     {
+        unsigned int ViewportFBO;
+        unsigned int ViewportColorAttachment;
+
         unsigned int ViewportWidth;
         unsigned int ViewportHeight;
         double AspectRatio;

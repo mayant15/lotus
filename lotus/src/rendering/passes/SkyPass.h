@@ -20,20 +20,21 @@ namespace Lotus::Renderer
     public:
         explicit SkyPass(const Renderer::State* state) : pState(state)
         {
-            auto registry = GetRegistry();
-            auto skyView = registry->view<CSkybox>();
-            if (!skyView.empty())
-            {
-                // Get the first skybox
-                // NOTE: Use a pointer here so that changes to the skybox during runtime are always reflected
-                pSky = &skyView.get<CSkybox>(skyView.front());
-                isActive = true;
-            }
-
             shader = LoadAsset<Shader, ShaderLoader>(
                     ExpandPath("int://shaders/skybox.vert"),
                     ExpandPath("int://shaders/skybox.frag")
             );
+        }
+
+        void SetupFrame() override
+        {
+            auto registry = GetRegistry();
+            auto skyView = registry->view<CSkybox>();
+            if (!skyView.empty())
+            {
+                pSky = &skyView.get<CSkybox>(skyView.front());
+                isActive = true;
+            }
         }
 
         void RenderFrame(double deltaTime) override

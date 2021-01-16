@@ -12,6 +12,8 @@
  */
 namespace Editor::Panel
 {
+    ImVec2 viewportDims {0.0f, 0.0f};
+
     void MainDockSpace()
     {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
@@ -21,6 +23,28 @@ namespace Editor::Panel
     {
         ImGui::ShowDemoWindow();
 
+    }
+
+    void Viewport(unsigned int tex)
+    {
+        static bool show = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0.0f, 0.0f});
+
+        ImGuiWindowFlags flags = 0;
+        flags |= ImGuiWindowFlags_NoScrollbar;
+        ImGui::Begin("Viewport", &show, flags);
+
+        ImVec2 start = ImVec2(ImGui::GetCursorScreenPos());
+        ImVec2 end = {start.x + viewportDims.x, start.y + viewportDims.y};
+
+        ImGui::Image((ImTextureID) tex, viewportDims);
+//        ImGui::GetWindowDrawList()->AddImage((ImTextureID) tex, start, end, {0, 1}, {1, 0});
+
+        // Update for the next frame
+        viewportDims = ImGui::GetWindowSize();
+
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
 
     void MainMenu()
@@ -36,19 +60,23 @@ namespace Editor::Panel
                     if (filepath.has_value())
                     {
                         Lotus::SceneManager::LoadScene(filepath.value());
-                        GET(Lotus::EventManager).Dispatch(Lotus::BeginEvent {});
                     }
                 }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit"))
             {
-                if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+                if (ImGui::MenuItem("Undo", "CTRL+Z"))
+                {}
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
+                {}  // Disabled item
                 ImGui::Separator();
-                if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-                if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-                if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                if (ImGui::MenuItem("Cut", "CTRL+X"))
+                {}
+                if (ImGui::MenuItem("Copy", "CTRL+C"))
+                {}
+                if (ImGui::MenuItem("Paste", "CTRL+V"))
+                {}
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();

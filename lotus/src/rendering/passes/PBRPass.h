@@ -119,9 +119,18 @@ namespace Lotus::Renderer
             shader->SetMaterial("material", material);
 
             // Setup the irradiance map for indirect diffuse lighting
-            RHI::SetActiveTextureSlot(1);
-            RHI::BindCubeMap(pSky->Map->Irradiance);
-            shader->SetInt("irradianceMap", 1);
+            if (pSky)
+            {
+                RHI::SetActiveTextureSlot(1);
+                RHI::BindCubeMap(pSky->Map->Irradiance);
+                shader->SetInt("irradianceMap", 1);
+                shader->SetBool("bUseIrradianceMap", true);
+            }
+            else
+            {
+                shader->SetInt("irradianceMap", 1);
+                shader->SetBool("bUseIrradianceMap", false);
+            }
 
             // TODO: Shadow pass
 //            RHI::SetActiveTextureSlot(0);
