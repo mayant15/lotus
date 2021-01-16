@@ -39,7 +39,7 @@ namespace Editor
             ImGui_ImplOpenGL3_Init(GLSL_VERSION_STRING);
 
             // Load Fonts
-            io.Fonts->AddFontFromFileTTF(fullPath("fonts/OpenSans-Regular.ttf").c_str(), 20.0f);
+            io.Fonts->AddFontFromFileTTF(Editor::ExpandPath("fonts/OpenSans-Regular.ttf").c_str(), 20.0f);
             io.Fonts->AddFontDefault();
 
             colorbuffer = Lotus::Renderer::GetColorBuffer();
@@ -57,7 +57,7 @@ namespace Editor
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            Editor::Panel::MainMenu();
+            Editor::Panel::MainMenu(1.0f / deltaTime);
             Editor::Panel::MainDockSpace();
 
             auto [ux, uy] = Lotus::Renderer::GetViewportUV();
@@ -83,12 +83,6 @@ namespace Editor
             ImGui_ImplOpenGL3_Shutdown();
             ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext();
-        }
-
-    private:
-        static std::string fullPath(const std::string& path)
-        {
-            return EDITOR_RESOURCE_ROOT + path;
         }
     };
 }

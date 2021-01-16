@@ -61,7 +61,7 @@ namespace Editor::Panel
         ImGui::PopStyleVar();
     }
 
-    void MainMenu()
+    void MainMenu(float fps)
     {
         if (ImGui::BeginMainMenuBar())
         {
@@ -93,6 +93,11 @@ namespace Editor::Panel
                 {}
                 ImGui::EndMenu();
             }
+
+            ImGui::Separator();
+            ImGui::Spacing();
+            ImGui::Text("FPS: %.1f", fps);
+
             ImGui::EndMainMenuBar();
         }
     }
