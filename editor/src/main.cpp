@@ -1,5 +1,5 @@
-#include "window/Window.h"
-#include "window/UIPass.h"
+#include "widgets.h"
+#include "utils.h"
 
 #include <lotus/lotus.h>
 
@@ -23,30 +23,35 @@ int main(int argc, const char** argv)
     Lotus::LoadConfig(std::string {argv[1]});
     Lotus::Engine::Initialize();
 
+    // Renderer has been set up, setup ImGui panels
+    Editor::Widgets::Initialize(window);
+
     // Keep an empty scene always loaded
     Lotus::SceneManager::LoadScene(Editor::ExpandPath("scenes/blank.json"));
 
     // Ready to start the main loop
     GET(Lotus::EventManager).Dispatch(Lotus::BeginEvent {});
 
-    // Add a UI pass after other passes have been added
-    Lotus::Renderer::AddRenderPass(new UIPass(window));
-
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;
     while (!ShouldCloseWindow(window))
     {
-        StartFrame(window);
-
         // tick
         currentTime = std::chrono::system_clock::now();
         std::chrono::duration<double> delta = currentTime - lastTime;
+        double deltaTime = delta.count();
         lastTime = currentTime;
-        Lotus::Engine::Tick(delta.count());
 
+        StartFrame(window);
+        Widgets::StartFrame(deltaTime);
+
+        Lotus::Engine::Tick(deltaTime);
+
+        Widgets::EndFrame(deltaTime);
         EndFrame(window);
     }
 
+    Editor::Widgets::Shutdown();
     Lotus::Engine::Shutdown();
     DestroyWindow(window);
 

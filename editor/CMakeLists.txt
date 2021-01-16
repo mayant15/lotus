@@ -27,6 +27,11 @@ set(LOTUS_EDITOR_SOURCES
     src/window/Window.cpp
     src/window/backends/imgui_impl_opengl3.cpp
     src/window/backends/imgui_impl_glfw.cpp
+
+    src/widgets.cpp
+    src/widgets/viewport.cpp
+    src/widgets/mainmenu.cpp
+    src/widgets/log.cpp
 )
 
 # Define the target
