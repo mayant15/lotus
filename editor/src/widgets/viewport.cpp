@@ -1,9 +1,37 @@
 #include <widgets.h>
+#include <Input.h>
+
+#include <lotus/ecs/EventManager.h>
+#include <lotus/debug.h>
 
 namespace Editor::Widgets
 {
-    ImVec2 viewportDims {1280.0f, 720.0f};
+    static ImVec2 viewportDims {1280.0f, 720.0f};
     static bool show = true;
+    static bool hovered = false;
+
+    void onMouse(const Editor::MouseEvent& e)
+    {
+        if (hovered)
+        {
+            LOG_WARN("Mouse cursor moved on viewport");
+        }
+    }
+
+    void onMouseButton(const Editor::MouseButtonEvent& e)
+    {
+        if (hovered)
+        {
+            LOG_WARN("Mouse button pressed on viewport");
+        }
+    }
+
+    void RegisterViewportEvents()
+    {
+        auto& em = GET(Lotus::EventManager);
+        em.Bind<Editor::MouseButtonEvent, onMouseButton>();
+        em.Bind<Editor::MouseEvent, onMouse>();
+    }
 
     void Viewport(unsigned int texture, float ux, float uy)
     {
@@ -29,8 +57,9 @@ namespace Editor::Widgets
                 ImVec2(ImGui::GetCursorScreenPos().x + viewportDims.x,
                        ImGui::GetCursorScreenPos().y + viewportDims.y), ImVec2(0, uy), ImVec2(ux, 0));
 
-        // Update viewport dims to render the next frame
+        // Update state
         viewportDims = ImGui::GetContentRegionAvail();
+        hovered = ImGui::IsWindowHovered();
 
         ImGui::End();
         ImGui::PopStyleVar();

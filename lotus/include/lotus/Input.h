@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lotus/lcommon.h"
-#include "lotus/ecs/Event.h"
+#include "lotus/lotus_export.h"
+#include <utility>
 
 namespace Lotus
 {
@@ -40,27 +40,10 @@ namespace Lotus
     constexpr unsigned int L_KEY_PRESS = 1;
     constexpr unsigned int L_KEY_REPEAT = 2;
 
-    struct KeyboardEvent : public Event
-    {
-        unsigned int KeyCode = L_KEY_NONE;
-        unsigned int State = L_KEY_NONE;
-
-        KeyboardEvent()
-        {
-            Type = EEventType::KEYBOARD_EVENT;
-        }
-    };
-
-    struct MouseEvent : public Event
-    {
-        double MouseX = 0.0f;
-        double MouseY = 0.0f;
-
-        MouseEvent()
-        {
-            Type = EEventType::MOUSE_EVENT;
-        }
-    };
+    constexpr unsigned int MOUSE_BUTTON_COUNT = 3;
+    constexpr unsigned int L_MOUSE_LEFT = 0;
+    constexpr unsigned int L_MOUSE_RIGHT = 1;
+    constexpr unsigned int L_MOUSE_MIDDLE = 2;
 }
 
 /**
@@ -74,13 +57,16 @@ namespace Lotus::Input
      * KeyboardEvent receiver that updates internal keyboard state.
      * @param event Keyboard input data
      */
-    LOTUS_API void UpdateKeyState(const KeyboardEvent& event);
+    LOTUS_API void UpdateKeyState(int keycode, int state);
+
+    LOTUS_API void UpdateMouseButtonState(bool left, bool right, bool middle);
 
     /**
      * MouseEvent receiver that updates internal mouse state.
      * @param event Mouse input data
      */
-    LOTUS_API void UpdateMouseState(const MouseEvent& event);
+    LOTUS_API void UpdateMouseState(double xpos, double ypos);
+
 
     /**
      * Query the keyboard state for a particular key
@@ -93,5 +79,5 @@ namespace Lotus::Input
      * Query the mouse state for mouse cursor delta since the last mouse event
      * @return Pair of floats with X and Y deltas
      */
-    LOTUS_API std::pair<float, float> GetMouseDelta();
+    LOTUS_API std::pair<double, double> GetMouseDelta();
 }

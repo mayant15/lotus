@@ -38,6 +38,8 @@ namespace Editor::Widgets
         io.Fonts->AddFontDefault();
 
         colorBuffer = Lotus::Renderer::GetColorBuffer();
+
+        RegisterViewportEvents();
     }
 
     void StartFrame(double deltaTime)

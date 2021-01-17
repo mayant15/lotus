@@ -2,50 +2,58 @@
 
 #include <unordered_map>
 
-namespace Lotus
+namespace Lotus::Input
 {
-    float lastX = 0.0f;
-    float lastY = 0.0f;
-    float xOffset = 0.0f;
-    float yOffset = 0.0f;
+    double lastX = 0.0f;
+    double lastY = 0.0f;
+    double xOffset = 0.0f;
+    double yOffset = 0.0f;
 
     bool firstMouse = true;
 
-    std::unordered_map<int, int> state = {};
+    std::unordered_map<int, int> keyStateMap = {};
+    bool mouseButtonPressed[MOUSE_BUTTON_COUNT] = {false, false, false};
 
-    void Input::UpdateKeyState(const KeyboardEvent& event)
+    void UpdateKeyState(int keycode, int state)
     {
-        if (state.find(event.KeyCode) != state.end())
+        if (keyStateMap.find(keycode) != keyStateMap.end())
         {
-            state.at(event.KeyCode) = event.State;
+            keyStateMap.at(keycode) = state;
         }
         else
         {
-            state.insert({event.KeyCode, event.State});
+            keyStateMap.insert({keycode, state});
         }
     }
 
-    void Input::UpdateMouseState(const MouseEvent& event)
+    void UpdateMouseButtonState(bool left, bool right, bool middle)
+    {
+        mouseButtonPressed[L_MOUSE_LEFT] = left;
+        mouseButtonPressed[L_MOUSE_RIGHT] = right;
+        mouseButtonPressed[L_MOUSE_MIDDLE] = middle;
+    }
+
+    void UpdateMouseState(double xpos, double ypos)
     {
         if (firstMouse)
         {
-            lastX = event.MouseX;
-            lastY = event.MouseY;
+            lastX = xpos;
+            lastY = ypos;
             firstMouse = false;
         }
 
-        xOffset = event.MouseX - lastX;
-        yOffset = lastY - event.MouseY; // reversed since y-coordinates go from bottom to top
+        xOffset = xpos - lastX;
+        yOffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
-        lastX = event.MouseX;
-        lastY = event.MouseY;
+        lastX = xpos;
+        lastY = ypos;
     }
 
-    bool Input::GetKeyPressed(int key)
+    bool GetKeyPressed(int key)
     {
-        if (state.find(key) != state.end())
+        if (keyStateMap.find(key) != keyStateMap.end())
         {
-            int status = state.at(key);
+            int status = keyStateMap.at(key);
             return (status == L_KEY_PRESS || status == L_KEY_REPEAT);
         }
         else
@@ -54,7 +62,7 @@ namespace Lotus
         }
     }
 
-    std::pair<float, float> Input::GetMouseDelta()
+    std::pair<double, double> GetMouseDelta()
     {
         return {xOffset, yOffset};
     }

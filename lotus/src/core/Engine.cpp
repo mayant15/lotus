@@ -4,7 +4,6 @@
 #include <rendering/Renderer.h>
 
 #include <lotus/ecs/EventManager.h>
-#include <lotus/Input.h>
 #include <lotus/debug.h>
 
 namespace Lotus::Engine
@@ -37,13 +36,10 @@ namespace Lotus::Engine
     {
         ECSInitialize();
 
-        auto& eventManager = GET(EventManager);
-        eventManager.Bind<MouseEvent, Input::UpdateMouseState>();
-        eventManager.Bind<KeyboardEvent, Input::UpdateKeyState>();
-
         setupPhysics();
         setupRenderer();
 
+        auto& eventManager = GET(EventManager);
         eventManager.Dispatch(InitEvent {});
     }
 

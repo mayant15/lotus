@@ -1,17 +1,54 @@
 #include "Window.h"
 
 #include <config.h>
+#include <widgets.h>
+#include <Input.h>
 
+#include <lotus/debug.h>
+#include <lotus/ecs/EventManager.h>
+#include <lotus/Input.h>
+
+#include <imgui/imgui.h>
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
+#include <GLFW/glfw3.h>
 #include <string>
 
 namespace Editor
 {
     static void glfwErrorCallback(int error, const char* description)
     {
-        fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+        LOG_ERROR("GLFW Error {}: {}", error, description);
+    }
+
+    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.WantCaptureMouse)
+        {
+            Lotus::Input::UpdateMouseButtonState(
+                    io.MouseDown[ImGuiMouseButton_Left],
+                    io.MouseDown[ImGuiMouseButton_Right],
+                    io.MouseDown[ImGuiMouseButton_Middle]
+            );
+
+            // TODO: Layers
+            auto& em = GET(Lotus::EventManager);
+            em.Dispatch(Editor::MouseButtonEvent {});
+        }
+    }
+
+    static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.WantCaptureMouse)
+        {
+            Lotus::Input::UpdateMouseState(xpos, ypos);
+
+            // TODO: Layers
+            auto& em = GET(Lotus::EventManager);
+            em.Dispatch(Editor::MouseEvent {});
+        }
     }
 
     Window* CreateNewWindow()
@@ -39,6 +76,11 @@ namespace Editor
         // Enable vsync
         glfwSwapInterval(1);
 
+        // CallbacksI
+        glfwSetCursorPosCallback(window, cursorPosCallback);
+        glfwSetMouseButtonCallback(window, mouseButtonCallback);
+
+        // Load glad
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
             throw std::exception("Failed to initalize GLAD");
         }
@@ -48,11 +90,6 @@ namespace Editor
 
     void StartFrame(Window* window)
     {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
     }
 

@@ -9,7 +9,7 @@ namespace Lotus
 {
     void onPressR(const KeyboardEvent& event)
     {
-        if (event.KeyCode == L_KEY_R && event.State == L_KEY_PRESS)
+        if (Input::GetKeyPressed(L_KEY_R))
         {
             GET(EventManager).Dispatch(ShaderModifyEvent {});
         }
