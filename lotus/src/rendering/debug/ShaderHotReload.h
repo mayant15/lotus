@@ -4,10 +4,6 @@
 
 namespace Lotus
 {
-    struct ShaderModifyEvent : public Event
-    {
-        //
-    };
-
+    struct ShaderModifyEvent {};
     void ShaderHotReloadInit();
 }

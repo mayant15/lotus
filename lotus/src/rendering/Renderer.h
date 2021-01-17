@@ -3,7 +3,7 @@
 #include "RenderQueue.h"
 
 #include <lotus/rendering/RenderPass.h>
-#include <lotus/ILifecycle.h>
+#include <lotus/ecs/Event.h>
 #include <lotus/resources/Shader.h>
 #include <lotus/ecs/components/CTransform.h>
 #include <lotus/ecs/Entity.h>

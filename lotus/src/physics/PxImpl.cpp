@@ -2,7 +2,6 @@
 
 #include <lotus/lcommon.h>
 #include <lotus/ecs/EventManager.h>
-#include <lotus/physics/CollisionEvent.h>
 #include <lotus/debug.h>
 
 namespace Lotus::Physics

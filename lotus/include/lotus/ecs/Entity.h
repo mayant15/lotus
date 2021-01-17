@@ -73,7 +73,7 @@ namespace Lotus
     };
 
     template <typename T>
-    struct ComponentCreateEvent : public Event
+    struct ComponentCreateEvent
     {
         EntityID entityID;
     };

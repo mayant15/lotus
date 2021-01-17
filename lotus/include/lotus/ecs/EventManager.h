@@ -3,9 +3,6 @@
 #include "lotus/lcommon.h"
 #include "lotus/ecs/Event.h"
 
-template<typename T>
-constexpr auto CREATE_OF_TYPE = std::remove_reference<T>();
-
 namespace Lotus
 {
     /**
@@ -30,8 +27,7 @@ namespace Lotus
         template<typename T>
         void Dispatch(T event)
         {
-            static_assert(std::is_base_of_v<Event, T>);
-            if (event.Immediate)
+            if constexpr (is_immediate<T>::value)
             {
                 _dispatcher.trigger<T>(event);
             }
@@ -51,7 +47,6 @@ namespace Lotus
         template<typename E, auto F, typename L>
         void Bind(L arg)
         {
-            static_assert(std::is_base_of_v<Event, E>);
             _dispatcher.sink<E>().template connect<F>(std::forward<L>(arg));
         }
 
@@ -63,7 +58,6 @@ namespace Lotus
         template<typename E, auto F>
         void Bind()
         {
-            static_assert(std::is_base_of_v<Event, E>);
             _dispatcher.sink<E>().template connect<F>();
         }
 

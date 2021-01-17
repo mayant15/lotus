@@ -4,7 +4,7 @@
 #include "PhysicsInfo.h"
 
 #include <lotus/physics/components.h>
-#include <lotus/ILifecycle.h>
+#include <lotus/ecs/Event.h>
 #include <lotus/ecs/Entity.h>
 
 namespace Lotus::Physics
