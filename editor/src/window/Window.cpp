@@ -16,6 +16,9 @@
 
 namespace Editor
 {
+    static constexpr unsigned int OFFSET_KEY_A = Lotus::L_KEY_A - GLFW_KEY_A;
+    static constexpr unsigned int OFFSET_KEY_RELEASE = Lotus::L_KEY_RELEASE - GLFW_RELEASE;
+
     static void glfwErrorCallback(int error, const char* description)
     {
         LOG_ERROR("GLFW Error {}: {}", error, description);
@@ -53,6 +56,12 @@ namespace Editor
         }
     }
 
+    static void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        Lotus::Input::UpdateKeyState(key + OFFSET_KEY_A, action + OFFSET_KEY_RELEASE);
+        GET(Lotus::EventManager).Dispatch(Editor::KeyboardEvent {});
+    }
+
     Window* CreateNewWindow()
     {
         // Setup window
@@ -81,6 +90,7 @@ namespace Editor
         // CallbacksI
         glfwSetCursorPosCallback(window, cursorPosCallback);
         glfwSetMouseButtonCallback(window, mouseButtonCallback);
+        glfwSetKeyCallback(window, keyboardCallback);
 
         // Load glad
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {

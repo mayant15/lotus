@@ -46,9 +46,18 @@ namespace Editor::Widgets
         }
     }
 
+    void onUpdate(const Lotus::UpdateEvent& e)
+    {
+        if (movingTheCamera)
+        {
+            MoveCamera(e.DeltaTime);
+        }
+    }
+
     void RegisterViewportEvents(Window* window_)
     {
         auto& em = GET(Lotus::EventManager);
+        em.Bind<Lotus::UpdateEvent, onUpdate>();
         em.Bind<Editor::MouseButtonEvent, onMouseButton>();
         em.Bind<Editor::MouseEvent, onMouse>();
         window = window_;

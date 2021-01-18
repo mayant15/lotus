@@ -8,7 +8,6 @@ namespace Editor
 {
     using namespace Lotus;
 
-    static constexpr float MouseSensitivity = 0.1f;
     static constexpr float MovementSpeed = 10.0f;
 
     static CCamera* camera = nullptr;
@@ -26,11 +25,11 @@ namespace Editor
         transform->Position = {0.0f, 5.0f, 12.0f};
     }
 
-    void OnUpdate(const Lotus::UpdateEvent& event)
+    void MoveCamera(double deltaTime)
     {
         Vector3f front = GetForwardVector(*transform);
         Vector3f right = GetRightVector(*transform);
-        float velocity = MovementSpeed * event.DeltaTime;
+        float velocity = MovementSpeed * deltaTime;
 
         if (Input::GetKeyPressed(L_KEY_W))
             transform->Position += front * velocity;
