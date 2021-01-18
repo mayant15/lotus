@@ -39,7 +39,7 @@ namespace Editor::Widgets
 
         colorBuffer = Lotus::Renderer::GetColorBuffer();
 
-        RegisterViewportEvents();
+        RegisterViewportEvents(window);
     }
 
     void StartFrame(double deltaTime)

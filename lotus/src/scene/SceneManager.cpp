@@ -1,6 +1,7 @@
 #include <lotus/scene/SceneManager.h>
 
 #include <lotus/ecs/ComponentRegistry.h>
+#include <lotus/ecs/components/CTransform.h>
 #include <lotus/ecs/Entity.h>
 #include <lotus/debug.h>
 
@@ -12,6 +13,20 @@ namespace Lotus::SceneManager
     {
         auto reg = GetRegistry();
         auto id = (EntityID) entity;
+
+        // TODO: Transform should be created first. Right now, component create events are non-immediate, so they're
+        //  called only after all components are attached. While that works for now, we should really have some sort of
+        //  strict order here.
+
+//        if (info.contains("CTransform"))
+//        {
+//            // Add a transform first as other components might depend on it
+//            auto entity = CreateEntity();
+//            CTransform transform;
+//            from_json(entityInfo.at("CTransform"), transform);
+//            entity.AddComponent<CTransform>(transform);
+//        }
+
         for (auto& comp : info.items())
         {
             if (comp.key() != "Prefab")

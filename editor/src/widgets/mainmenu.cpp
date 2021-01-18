@@ -1,8 +1,6 @@
 #include <widgets.h>
 #include <utils.h>
 
-#include <lotus/scene/SceneManager.h>
-
 #include <string>
 #include <optional>
 
@@ -20,7 +18,7 @@ namespace Editor::Widgets
                     std::optional<std::string> filepath = OpenFileDialog();
                     if (filepath.has_value())
                     {
-                        Lotus::SceneManager::LoadScene(filepath.value());
+                        Editor::LoadScene(filepath.value());
                     }
                 }
                 ImGui::EndMenu();

@@ -1,5 +1,6 @@
 #include "widgets.h"
 #include "utils.h"
+#include "EditorCamera.h"
 
 #include <lotus/lotus.h>
 
@@ -27,10 +28,10 @@ int main(int argc, const char** argv)
     Editor::Widgets::Initialize(window);
 
     // Keep an empty scene always loaded
-    Lotus::SceneManager::LoadScene(Editor::ExpandPath("scenes/blank.json"));
+    Editor::LoadScene(Lotus::ExpandPath("res://scenes/MaterialDisplay.json"));
 
-    // Ready to start the main loop
-    GET(Lotus::EventManager).Dispatch(Lotus::BeginEvent {});
+    // TODO: Bind somewhere else
+    GET(Lotus::EventManager).Bind<Editor::SceneLoadEvent, Editor::OnSceneLoad>();
 
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;

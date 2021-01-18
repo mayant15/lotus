@@ -12,7 +12,7 @@ namespace Editor::Widgets
 
     void Viewport(unsigned int texture, float ux, float uy);
     ImVec2 GetViewportDims();
-    void RegisterViewportEvents();
+    void RegisterViewportEvents(Window* window);
 
     void MainDockSpace();
     void DemoWindow();

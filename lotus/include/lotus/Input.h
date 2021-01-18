@@ -59,7 +59,7 @@ namespace Lotus::Input
      */
     LOTUS_API void UpdateKeyState(int keycode, int state);
 
-    LOTUS_API void UpdateMouseButtonState(bool left, bool right, bool middle);
+    LOTUS_API void UpdateMouseButtonState(int button, bool state);
 
     /**
      * MouseEvent receiver that updates internal mouse state.
@@ -74,6 +74,8 @@ namespace Lotus::Input
      * @return True if the key is pressed
      */
     LOTUS_API bool GetKeyPressed(int key);
+
+    LOTUS_API bool GetMousePressed(int mouse);
 
     /**
      * Query the mouse state for mouse cursor delta since the last mouse event

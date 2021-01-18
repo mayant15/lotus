@@ -2,7 +2,7 @@
 
 #include <config.h>
 #include <widgets.h>
-#include <Input.h>
+#include <events.h>
 
 #include <lotus/debug.h>
 #include <lotus/ecs/EventManager.h>
@@ -23,14 +23,16 @@ namespace Editor
 
     static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
+        static std::unordered_map<unsigned int, unsigned int> buttonMap = {
+                {GLFW_MOUSE_BUTTON_LEFT, Lotus::L_MOUSE_LEFT},
+                {GLFW_MOUSE_BUTTON_RIGHT, Lotus::L_MOUSE_RIGHT},
+                {GLFW_MOUSE_BUTTON_MIDDLE, Lotus::L_MOUSE_MIDDLE}
+        };
+
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
         {
-            Lotus::Input::UpdateMouseButtonState(
-                    io.MouseDown[ImGuiMouseButton_Left],
-                    io.MouseDown[ImGuiMouseButton_Right],
-                    io.MouseDown[ImGuiMouseButton_Middle]
-            );
+            Lotus::Input::UpdateMouseButtonState(buttonMap.at(button), action != GLFW_RELEASE);
 
             // TODO: Layers
             auto& em = GET(Lotus::EventManager);

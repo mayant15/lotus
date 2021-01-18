@@ -1,5 +1,11 @@
 #include "utils.h"
+#include "events.h"
+
 #include <nfd.h>
+
+#include <lotus/ecs/Entity.h>
+#include <lotus/ecs/EventManager.h>
+#include <lotus/scene/SceneManager.h>
 
 namespace Editor
 {
@@ -23,5 +29,14 @@ namespace Editor
     std::string ExpandPath(const std::string& path)
     {
         return EDITOR_RESOURCE_ROOT + path;
+    }
+
+    void LoadScene(const std::string& path)
+    {
+        using namespace Lotus;
+        SceneManager::LoadScene(path);
+        auto& em = GET(EventManager);
+        em.Dispatch(Editor::SceneLoadEvent {});
+        em.Dispatch(Lotus::BeginEvent {});
     }
 }

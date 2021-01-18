@@ -1,36 +1,57 @@
 #include <widgets.h>
-#include <Input.h>
+#include <events.h>
+#include <EditorCamera.h>
 
 #include <lotus/ecs/EventManager.h>
-#include <lotus/debug.h>
+#include <lotus/Input.h>
+
+#include <GLFW/glfw3.h>
 
 namespace Editor::Widgets
 {
     static ImVec2 viewportDims {1280.0f, 720.0f};
     static bool show = true;
     static bool hovered = false;
+    static bool movingTheCamera = false;
+    static Window* window = nullptr;
 
-    void onMouse(const Editor::MouseEvent& e)
-    {
-        if (hovered)
-        {
-            LOG_WARN("Mouse cursor moved on viewport");
-        }
-    }
+    static float CAMERA_SENSITIVITY = 0.1f;
 
     void onMouseButton(const Editor::MouseButtonEvent& e)
     {
-        if (hovered)
+        bool pressed = Lotus::Input::GetMousePressed(Lotus::L_MOUSE_RIGHT);
+        if (hovered && !movingTheCamera && pressed)
         {
-            LOG_WARN("Mouse button pressed on viewport");
+            movingTheCamera = true;
+
+            // TODO: This guy should really have a better API here. I don't want to pass the window pointer everywhere.
+            glfwSetInputMode((GLFWwindow*) window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+        else if (movingTheCamera && !pressed)
+        {
+            movingTheCamera = false;
+            glfwSetInputMode((GLFWwindow*) window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
     }
 
-    void RegisterViewportEvents()
+    void onMouse(const Editor::MouseEvent& e)
+    {
+        if (movingTheCamera)
+        {
+            // TODO: Keep the editor camera here? Not sure how to organize these
+            auto[xOffset, yOffset] = Lotus::Input::GetMouseDelta();
+            xOffset *= CAMERA_SENSITIVITY;
+            yOffset *= CAMERA_SENSITIVITY;
+            Editor::RotateCamera(xOffset, yOffset);
+        }
+    }
+
+    void RegisterViewportEvents(Window* window_)
     {
         auto& em = GET(Lotus::EventManager);
         em.Bind<Editor::MouseButtonEvent, onMouseButton>();
         em.Bind<Editor::MouseEvent, onMouse>();
+        window = window_;
     }
 
     void Viewport(unsigned int texture, float ux, float uy)

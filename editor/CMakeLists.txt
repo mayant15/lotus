@@ -23,6 +23,7 @@ set(LOTUS_EDITOR_SOURCES
 
     src/main.cpp
     src/utils.cpp
+    src/EditorCamera.cpp
 
     src/window/Window.cpp
     src/window/backends/imgui_impl_opengl3.cpp

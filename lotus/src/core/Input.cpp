@@ -26,11 +26,9 @@ namespace Lotus::Input
         }
     }
 
-    void UpdateMouseButtonState(bool left, bool right, bool middle)
+    void UpdateMouseButtonState(int button, bool state)
     {
-        mouseButtonPressed[L_MOUSE_LEFT] = left;
-        mouseButtonPressed[L_MOUSE_RIGHT] = right;
-        mouseButtonPressed[L_MOUSE_MIDDLE] = middle;
+        mouseButtonPressed[button] = state;
     }
 
     void UpdateMouseState(double xpos, double ypos)
@@ -60,6 +58,11 @@ namespace Lotus::Input
         {
             return false;
         }
+    }
+
+    bool GetMousePressed(int mouse)
+    {
+        return mouseButtonPressed[mouse];
     }
 
     std::pair<double, double> GetMouseDelta()
