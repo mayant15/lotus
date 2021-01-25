@@ -1,11 +1,13 @@
-#pragma once
+#include "GameCamera.h"
 
-#include "lotus/lotus.h"
+#include <lotus/Input.h>
+#include <lotus/ecs/Entity.h>
+#include <lotus/ecs/components/CCamera.h>
 
 constexpr float MouseSensitivity = 0.1f;
 constexpr float MovementSpeed = 10.0f;
 
-namespace CameraSystem
+namespace GameCamera
 {
     using namespace Lotus;
 

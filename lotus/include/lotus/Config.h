@@ -2,14 +2,16 @@
 
 #include <lotus/lcommon.h>
 #include <string>
+#include <filesystem>
 
 namespace Lotus
 {
     struct ProjectConfig
     {
-        std::string ProjectResourceRoot;
+        std::filesystem::path ProjectResourceRoot;
+        std::string StartScene;
     };
-    SERIALIZE(ProjectConfig, ProjectResourceRoot);
+    SERIALIZE(ProjectConfig, StartScene);
 
     struct BuildConfig
     {

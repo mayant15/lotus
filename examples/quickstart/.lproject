@@ -1,6 +1,6 @@
 {
   "Project": {
-    "ProjectResourceRoot": "@DEFAULT_PROJECT_RESOURCE_ROOT@"
+    "StartScene": "res://scenes/MaterialDisplay.json"
   },
   "Build": {
     "IsDebug": true

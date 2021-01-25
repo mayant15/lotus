@@ -7,9 +7,13 @@ set(LOTUS_LINK_LIBS
 )
 
 # Other include directories
-set(LOTUS_INCLUDE_DIRS
-    ${PUBLIC_INCLUDE_DIR}
-    ${PUBLIC_INCLUDE_DIR}/lotus/internal
+
+set(LOTUS_PUBLIC_INCLUDE_DIRS
+    include
+    include/lotus/internal
+)
+
+set(LOTUS_PRIVATE_INCLUDE_DIRS
     src
     external
 )
@@ -48,7 +52,10 @@ set(LOTUS_SOURCES
 
 add_library(lotus SHARED ${LOTUS_SOURCES})
 add_dependencies(lotus glad)
-target_include_directories(lotus PRIVATE ${LOTUS_INCLUDE_DIRS})
+target_include_directories(lotus
+    PUBLIC ${LOTUS_PUBLIC_INCLUDE_DIRS}
+    PRIVATE ${LOTUS_PRIVATE_INCLUDE_DIRS}
+)
 target_link_libraries(lotus ${LOTUS_LINK_LIBS})
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 

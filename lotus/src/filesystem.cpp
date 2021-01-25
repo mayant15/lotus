@@ -6,7 +6,19 @@
 
 namespace Lotus
 {
+    namespace fs = std::filesystem;
+
     static const std::string engineResourceRoot = ENGINE_RESOURCE_ROOT;
+
+    static std::string concatPath(fs::path p1, fs::path p2)
+    {
+        return (p1.make_preferred() / p2.make_preferred()).string();
+    }
+
+    static std::string concatPath(const std::string& s1, const std::string& s2)
+    {
+        return concatPath(fs::path { s1 }, fs::path { s2 });
+    }
 
     std::string ExpandPath(const std::string& path)
     {
@@ -20,13 +32,13 @@ namespace Lotus
         // If path starts with res://, append user resource root
         if (path.substr(0, 6) == "res://")
         {
-            return conf.ProjectResourceRoot + path.substr(6);
+            return concatPath(conf.ProjectResourceRoot, fs::path { path.substr(6) });
         }
 
         // If path starts with int://, append internal resource root
         if (path.substr(0, 6) == "int://")
         {
-            return engineResourceRoot + path.substr(6);
+            return concatPath(engineResourceRoot, path.substr(6));
         }
 
         LOG_ERROR("Unresolved path {}", path);

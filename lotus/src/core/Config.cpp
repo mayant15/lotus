@@ -2,12 +2,20 @@
 #include <lotus/debug.h>
 
 #include <fstream>
+#include <filesystem>
 
 namespace Lotus
 {
     static ProjectConfig projectConfig {};
     static BuildConfig buildConfig {};
     static RenderConfig renderConfig {};
+
+    static std::filesystem::path getResourcePath(const std::string& pathString)
+    {
+        namespace fs = std::filesystem;
+        fs::path path (pathString);
+        return path.replace_filename("resources");
+    }
 
     void LoadConfig(const std::string& path)
     {
@@ -19,6 +27,8 @@ namespace Lotus
         try
         {
             projectConfig = data.at("Project").get<ProjectConfig>();
+            projectConfig.ProjectResourceRoot = getResourcePath(path);
+
             buildConfig = data.at("Build").get<BuildConfig>();
             renderConfig = data.at("Render").get<RenderConfig>();
         }

@@ -28,7 +28,8 @@ int main(int argc, const char** argv)
     Editor::Widgets::Initialize(window);
 
     // Keep an empty scene always loaded
-    Editor::LoadScene(Lotus::ExpandPath("res://scenes/MaterialDisplay.json"));
+    std::string startScene = Lotus::GetProjectConfig().StartScene;
+    Editor::LoadScene(Lotus::ExpandPath(startScene));
 
     // TODO: Bind somewhere else
     GET(Lotus::EventManager).Bind<Editor::SceneLoadEvent, Editor::OnSceneLoad>();
