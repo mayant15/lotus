@@ -9,10 +9,10 @@ namespace Lotus
     // TODO: Move this into a scene object
     entt::registry* pRegistry = nullptr;
 
-    template <typename T>
-    void dispatchComponentCreateEvent(entt::registry& registry, entt::entity entity)
+    template<typename T>
+    void dispatchEntityEvent(entt::registry& registry, entt::entity entity)
     {
-        auto event = ComponentCreateEvent<T> {};
+        auto event = T {};
         event.entityID = entity;
         EventManager::Get().Dispatch(event);
     }
@@ -22,8 +22,10 @@ namespace Lotus
         pRegistry = new entt::registry;
 
         // TODO: Generalize for all components
-        pRegistry->on_construct<CRigidBody>().connect<dispatchComponentCreateEvent<CRigidBody>>();
-        pRegistry->on_construct<CMeshRenderer>().connect<dispatchComponentCreateEvent<CMeshRenderer>>();
+        pRegistry->on_construct<CRigidBody>().connect<dispatchEntityEvent<ComponentCreateEvent<CRigidBody>>>();
+        pRegistry->on_destroy<CRigidBody>().connect<dispatchEntityEvent<ComponentDestroyEvent<CRigidBody>>>();
+
+        pRegistry->on_construct<CMeshRenderer>().connect<dispatchEntityEvent<ComponentCreateEvent<CMeshRenderer>>>();
     }
 
     void ECSShutdown()
@@ -39,7 +41,7 @@ namespace Lotus
     Entity CreateEntity()
     {
         EntityID id = pRegistry->create();
-        return {id, pRegistry};
+        return { id, pRegistry };
     }
 
     Entity CreateEntity(const std::string& path)
@@ -48,7 +50,7 @@ namespace Lotus
         EntityID id = pRegistry->create();
 
         nlohmann::json data;
-        std::ifstream infile (path);
+        std::ifstream infile(path);
         infile >> data;
 
         for (auto& el : data.items())
@@ -64,6 +66,6 @@ namespace Lotus
             }
         }
 
-        return {id, pRegistry};
+        return { id, pRegistry };
     }
 }

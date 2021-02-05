@@ -43,4 +43,5 @@ namespace Lotus::Physics
 
     /** @brief Register a rigidbody with the physics scene when a CRigidBody is added to an entity */
     void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody>& event);
+    void OnRigidBodyDestroy(const ComponentDestroyEvent<CRigidBody>& event);
 }

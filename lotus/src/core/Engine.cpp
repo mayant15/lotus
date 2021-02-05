@@ -18,6 +18,7 @@ namespace Lotus::Engine
         eventManager.Bind<PostUpdateEvent, Physics::OnPostUpdate>();
         eventManager.Bind<DestroyEvent, Physics::OnDestroy>();
         eventManager.Bind<ComponentCreateEvent<CRigidBody>, Physics::OnRigidBodyCreate>();
+        eventManager.Bind<ComponentDestroyEvent<CRigidBody>, Physics::OnRigidBodyDestroy>();
     }
 
     /** @brief Setup the platform-specific renderer and register events */

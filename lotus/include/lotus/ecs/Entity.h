@@ -28,7 +28,9 @@ namespace Lotus
         entt::registry* _registry = nullptr;
 
     public:
-        Entity(EntityID id, entt::registry* registry) : _id(id), _registry(registry) {}
+        Entity(EntityID id, entt::registry* registry)
+                : _id(id), _registry(registry)
+        {}
 
         /**
          * @brief Overload this operator to allow casts to EntityID.
@@ -72,8 +74,14 @@ namespace Lotus
         }
     };
 
-    template <typename T>
+    template<typename T>
     struct ComponentCreateEvent
+    {
+        EntityID entityID;
+    };
+
+    template<typename T>
+    struct ComponentDestroyEvent
     {
         EntityID entityID;
     };

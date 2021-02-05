@@ -15,8 +15,9 @@ namespace Lotus::Physics
     PxRigidActor* createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry)
     {
         // TODO: Create physics materials
-        const PxMaterial* mat = state.pPhysics->createMaterial(info.Material.StaticFriction, info.Material.DynamicFriction,
-                                                          info.Material.Restitution);
+        const PxMaterial* mat = state.pPhysics->createMaterial(info.Material.StaticFriction,
+                                                               info.Material.DynamicFriction,
+                                                               info.Material.Restitution);
         PxShape* shape = state.pPhysics->createShape(geometry, *mat, true);
 
         // Position has already been set before this call
@@ -25,7 +26,8 @@ namespace Lotus::Physics
         if (info.IsKinematic)
         {
             actor = PxCreateStatic(*state.pPhysics, transform, *shape);
-        } else
+        }
+        else
         {
             actor = PxCreateDynamic(*state.pPhysics, transform, *shape, info.Material.Density);
         }
@@ -39,10 +41,29 @@ namespace Lotus::Physics
         return actor;
     }
 
+    void OnRigidBodyDestroy(const ComponentDestroyEvent<CRigidBody>& event)
+    {
+        // Sync physics changes with the transform component in the scene
+        PxU32 nbActiveActors;
+        PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
+        for (PxU32 i = 0; i < nbActiveActors; i++)
+        {
+            auto actor = (PxRigidActor*) activeActors[i];
+            auto id = (EntityID) (long long) (actor->userData);
+
+            // Find the entity and remove it from the physics simulation
+            if (event.entityID == id)
+            {
+                state.pActiveScene->removeActor(*actor);
+                break;
+            }
+        }
+    }
+
     void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody>& event)
     {
         auto* registry = GetRegistry();
-        auto&& [rb, transform] = registry->get<CRigidBody, CTransform>(event.entityID);
+        auto&&[rb, transform] = registry->get<CRigidBody, CTransform>(event.entityID);
 
         PhysicsObjectInfo info;
         info.Gravity = rb.Gravity;
@@ -91,7 +112,7 @@ namespace Lotus::Physics
         else
         {
             LOG_ERROR("Failed to add rigidbody to scene");
-            throw std::invalid_argument ("Invalid physics collider component");
+            throw std::invalid_argument("Invalid physics collider component");
         }
     }
 
@@ -185,7 +206,7 @@ namespace Lotus::Physics
         for (PxU32 i = 0; i < nbActiveActors; i++)
         {
             auto actor = (PxRigidActor*) activeActors[i];
-            auto id = (EntityID)(long long)(actor->userData);
+            auto id = (EntityID) (long long) (actor->userData);
 
             // TODO: Change CTransform to hold a 4x4 matrix
             auto& transform = registry->get<CTransform>(id);
