@@ -1,13 +1,12 @@
 #include "ModuleLoader.h"
 #include <stdexcept>
 
-#define REGISTER_EVENTS_HANDLER_NAME "SetupGameEvents"
-
 namespace Editor
 {
-    register_events_t getRegisterEventsHandler(ModuleHandle module)
+    template<typename Fn>
+    Fn getFunction(ModuleHandle module, const std::string& name)
     {
-        auto handle = (register_events_t) GetProcAddress(module, REGISTER_EVENTS_HANDLER_NAME);
+        auto handle = (Fn) GetProcAddress(module, name.c_str());
         if (!handle)
         {
             throw std::runtime_error { "Failed to register module functions" };
@@ -24,7 +23,10 @@ namespace Editor
             throw std::runtime_error { "Failed to load module" };
         }
 
-        auto registerEvents = getRegisterEventsHandler(module);
+        auto testFunction = getFunction<ModuleTestFn>(module, MODULE_TEST_FUNCTION_NAME);
+        testFunction();
+
+        auto registerEvents = getFunction<RegisterEventFn>(module, REGISTER_EVENTS_FUNCTION_NAME);
         registerEvents();
 
         return module;

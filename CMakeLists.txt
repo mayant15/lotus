@@ -32,6 +32,9 @@ add_subdirectory(common/glad)
 add_subdirectory(lotus)
 add_subdirectory(editor)
 
+# Accompanying tools
+add_subdirectory(tools/buildtool)
+
 if (LOTUS_BUILD_EXAMPLE)
     add_subdirectory(examples/quickstart)
 endif()

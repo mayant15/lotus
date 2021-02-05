@@ -38,13 +38,24 @@ namespace DestroyBall {
     }
 }
 
-void __declspec(dllexport) __cdecl SetupGameEvents()
+void OnContact(const Lotus::CollisionEvent& event)
+{
+    LOG_INFO("Collision!");
+}
+
+void ModuleTestFunction()
+{
+    LOG_INFO("Loaded quickstart.dll");
+}
+
+void RegisterEvents()
 {
     using namespace Lotus;
 
     LOG_INFO("Registering events!");
 
     EventManager& em = GET(EventManager);
-    em.Bind<UpdateEvent, DestroyBall::OnUpdate>();
-    em.Bind<BeginEvent, DestroyBall::OnBegin>();
+//    em.Bind<UpdateEvent, DestroyBall::OnUpdate>();
+//    em.Bind<BeginEvent, DestroyBall::OnBegin>();
+    em.Bind<CollisionEvent, OnContact>();
 }
