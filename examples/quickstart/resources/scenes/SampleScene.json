@@ -11,24 +11,8 @@
     }
   },
   {
-    "Prefab": "res://prefabs/paddle.json",
     "CTransform": {
-      "Position": [0, 0.5, 2.5],
-      "Rotation": [0, 0, 0],
-      "Scale": [2, 1, 1]
-    }
-  },
-  {
-    "Prefab": "res://prefabs/paddle.json",
-    "CTransform": {
-      "Position": [0, 0.5, -2.5],
-      "Rotation": [0, 0, 0],
-      "Scale": [2, 1, 1]
-    }
-  },
-  {
-    "CTransform": {
-      "Position": [0.0, 0.5, 0.0],
+      "Position": [0.0, 5, 0.0],
       "Rotation": [0.0, -90.0, 0.0],
       "Scale": [0.5, 0.5, 0.5]
     },
@@ -41,7 +25,7 @@
       "Radius": 0.5
     },
     "CRigidBody": {
-      "Gravity": 0.0,
+      "Gravity": 1.0,
       "IsKinematic": false
     }
   },
@@ -49,7 +33,7 @@
     "CTransform": {
       "Position": [0.0, 0.0, 0.0],
       "Rotation": [0.0, -90.0, 0.0],
-      "Scale": [5.0, 0.5, 5.0]
+      "Scale": [15.0, 0.3, 15.0]
     },
     "CMeshRenderer": {
       "Material": "res://materials/default.json",
@@ -57,7 +41,7 @@
     },
     "CBoxCollider": {
       "Position": [0.0, 0.0, 0.0],
-      "Dimensions": [5.0, 0.5, 5.0]
+      "Dimensions": [15.0, 0.3, 15.0]
     },
     "CRigidBody": {
       "Gravity": 1.0,

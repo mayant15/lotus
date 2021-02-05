@@ -1,6 +1,6 @@
 {
   "Project": {
-    "StartScene": "res://scenes/MaterialDisplay.json"
+    "StartScene": "res://scenes/SampleScene.json"
   },
   "Build": {
     "IsDebug": true

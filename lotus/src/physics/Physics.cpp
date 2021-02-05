@@ -163,6 +163,7 @@ namespace Lotus::Physics
         // TODO: Get from the SceneManager
         PhysicsSceneInfo info {};
         createScene(info);
+        state.isActive = true;
     }
 
     void OnUpdate(const UpdateEvent& event)
