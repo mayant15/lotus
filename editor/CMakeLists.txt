@@ -33,6 +33,8 @@ set(LOTUS_EDITOR_SOURCES
     src/widgets/viewport.cpp
     src/widgets/mainmenu.cpp
     src/widgets/log.cpp
+
+    src/ModuleLoader.cpp
 )
 
 # Define the target

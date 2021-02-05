@@ -1,8 +1,10 @@
 #include "widgets.h"
 #include "utils.h"
 #include "EditorCamera.h"
+#include "ModuleLoader.h"
 
 #include <lotus/lotus.h>
+#include <lotus/debug.h>
 
 #include <chrono>
 
@@ -33,6 +35,15 @@ int main(int argc, const char** argv)
 
     // TODO: Bind somewhere else
     GET(Lotus::EventManager).Bind<Editor::SceneLoadEvent, Editor::OnSceneLoad>();
+
+    try
+    {
+        LoadModule("quickstart.dll");
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR(e.what());
+    }
 
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;
