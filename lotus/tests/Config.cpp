@@ -8,8 +8,11 @@ TEST_CASE ("Test Config")
 
     SUBCASE("Test GetProjectConfig")
     {
+        std::filesystem::path path { PROJECT_SETTINGS };
+        path = path.replace_filename("resources").make_preferred();
+
         auto prConf = Lotus::GetProjectConfig();
-        CHECK(prConf.ProjectResourceRoot == "path-prefix/");
+        CHECK(prConf.ProjectResourceRoot == path);
     }
 
     SUBCASE("Test GetBuildConfig")

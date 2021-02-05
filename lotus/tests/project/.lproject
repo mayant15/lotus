@@ -1,6 +1,6 @@
 {
   "Project": {
-    "ProjectResourceRoot": "path-prefix/"
+    "StartScene": "res://scenes/SampleScene.json"
   },
   "Build": {
     "IsDebug": true
