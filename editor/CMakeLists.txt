@@ -7,8 +7,6 @@ set(EDITOR_INCLUDE_DIRS
     external
     external/nativefiledialog/include
     src
-    ${PUBLIC_INCLUDE_DIR}
-    ${PUBLIC_INCLUDE_DIR}/lotus/internal
 )
 
 

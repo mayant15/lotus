@@ -17,9 +17,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(LOTUS_BUILD_TESTS "Build unit tests for the library" ON)
 option(LOTUS_BUILD_EXAMPLE "Build an example demonstrating the usage of the engine" ON)
 
-# Things like examples also need public headers for lotus
-set(PUBLIC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lotus/include) 
-
 # The engine needs access to the engine resource root
 # The user project needs access to both the engine and the user resource root
 # So I enabled this definition globally for all targets
