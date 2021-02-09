@@ -16,6 +16,14 @@
  */
 int main(int argc, const char** argv)
 {
+    // Validate input
+    std::filesystem::path projectRoot { argv[1] };
+    if (!projectRoot.is_absolute() || projectRoot.has_filename())
+    {
+        LOG_ERROR("Invalid project directory provided: {}", argv[1]);
+        return EXIT_FAILURE;
+    }
+
     using namespace Editor;
 
     // NOTE: Setting up the window context and loading the graphics API is the responsibility
@@ -23,7 +31,7 @@ int main(int argc, const char** argv)
     // a stub main function
     Window* window = CreateNewWindow();
 
-    Lotus::LoadConfig(std::string {argv[1]});
+    Lotus::LoadConfig(projectRoot);
     Lotus::Engine::Initialize();
 
     // Renderer has been set up, setup ImGui panels
@@ -32,6 +40,7 @@ int main(int argc, const char** argv)
     // TODO: Bind somewhere else
     GET(Lotus::EventManager).Bind<Editor::SceneLoadEvent, Editor::OnSceneLoad>();
 
+    auto conf = Lotus::GetProjectConfig();
     try
     {
         LoadModule("quickstart.dll");
@@ -41,9 +50,8 @@ int main(int argc, const char** argv)
         LOG_ERROR(e.what());
     }
 
-    // Keep an empty scene always loaded
-    std::string startScene = Lotus::GetProjectConfig().StartScene;
-    Editor::LoadScene(Lotus::ExpandPath(startScene));
+    // TODO: Keep an empty scene always loaded
+    Editor::LoadScene(Lotus::ExpandPath(conf.StartScene));
 
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;

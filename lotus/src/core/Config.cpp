@@ -2,7 +2,10 @@
 #include <lotus/debug.h>
 
 #include <fstream>
-#include <filesystem>
+
+#define RESOURCE_DIR "resources"
+#define BUILD_DIR "build"
+#define SETTING_FILENAME ".lproject"
 
 namespace Lotus
 {
@@ -10,24 +13,19 @@ namespace Lotus
     static BuildConfig buildConfig {};
     static RenderConfig renderConfig {};
 
-    static std::filesystem::path getResourcePath(const std::string& pathString)
-    {
-        namespace fs = std::filesystem;
-        fs::path path (pathString);
-        return path.replace_filename("resources");
-    }
-
-    void LoadConfig(const std::string& path)
+    void LoadConfig(const std::filesystem::path& path)
     {
         using namespace nlohmann;
-        std::ifstream file (path);
+        std::ifstream file (path / std::filesystem::path { SETTING_FILENAME });
         json data;
         file >> data;
 
         try
         {
             projectConfig = data.at("Project").get<ProjectConfig>();
-            projectConfig.ProjectResourceRoot = getResourcePath(path);
+            projectConfig.ProjectRoot = path;
+            projectConfig.ProjectResourceRoot = path / std::filesystem::path { RESOURCE_DIR };
+            projectConfig.ProjectBuildRoot = path / std::filesystem::path { BUILD_DIR };
 
             buildConfig = data.at("Build").get<BuildConfig>();
             renderConfig = data.at("Render").get<RenderConfig>();

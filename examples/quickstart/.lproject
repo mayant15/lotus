@@ -1,6 +1,8 @@
 {
   "Project": {
-    "StartScene": "res://scenes/SampleScene.json"
+    "StartScene": "res://scenes/SampleScene.json",
+    "LibraryName": "quickstart",
+    "DisplayName": "Quickstart"
   },
   "Build": {
     "IsDebug": true

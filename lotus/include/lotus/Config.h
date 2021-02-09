@@ -8,7 +8,10 @@ namespace Lotus
 {
     struct ProjectConfig
     {
+        std::filesystem::path ProjectRoot;
         std::filesystem::path ProjectResourceRoot;
+        std::filesystem::path ProjectBuildRoot;
+
         std::string StartScene;
     };
     SERIALIZE(ProjectConfig, StartScene);
@@ -45,7 +48,7 @@ namespace Lotus
     };
     SERIALIZE(RenderConfig, RenderAPI, ViewportWidth, ViewportHeight, DepthTest, CullFace, MSAA);
 
-    LOTUS_API void LoadConfig(const std::string& path);
+    LOTUS_API void LoadConfig(const std::filesystem::path& path);
     LOTUS_API const ProjectConfig& GetProjectConfig();
     LOTUS_API const RenderConfig& GetRenderConfig();
     LOTUS_API const BuildConfig& GetBuildConfig();
