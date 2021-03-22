@@ -1,7 +1,9 @@
 #include <lotus/ecs/Entity.h>
+#include <lotus/ecs/components/CCamera.h>
 #include <lotus/ecs/EventManager.h>
 #include <lotus/physics/components.h>
 #include <lotus/rendering/CMeshRenderer.h>
+#include <lotus/resources/HDRI.h>
 #include <lotus/debug.h>
 
 namespace Lotus
@@ -21,10 +23,22 @@ namespace Lotus
     {
         pRegistry = new entt::registry;
 
+        // Register components
+        RegisterComponent<CCamera>();
+        RegisterComponent<CTransform>();
+        RegisterComponent<CSunLight>();
+        RegisterComponent<CPointLight>();
+        RegisterComponent<CSpotlight>();
+        RegisterComponent<CSphereCollider>();
+        RegisterComponent<CBoxCollider>();
+        RegisterComponent<CCapsuleCollider>();
+        RegisterComponent<CRigidBody>();
+        RegisterComponent<CMeshRenderer>();
+        RegisterComponent<CSkybox>();
+
         // TODO: Generalize for all components
         pRegistry->on_construct<CRigidBody>().connect<dispatchEntityEvent<ComponentCreateEvent<CRigidBody>>>();
         pRegistry->on_destroy<CRigidBody>().connect<dispatchEntityEvent<ComponentDestroyEvent<CRigidBody>>>();
-
         pRegistry->on_construct<CMeshRenderer>().connect<dispatchEntityEvent<ComponentCreateEvent<CMeshRenderer>>>();
     }
 
@@ -57,7 +71,7 @@ namespace Lotus
         {
             try
             {
-                auto ct = GET_COMPONENT_CTOR (el.key());
+                auto ct = GetComponentCtor(el.key());
                 ct(id, *pRegistry, el.value());
             }
             catch (const std::exception& e)

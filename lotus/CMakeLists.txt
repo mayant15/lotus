@@ -29,6 +29,7 @@ set(LOTUS_SOURCES
     src/core/Config.cpp
 
     src/ecs/Entity.cpp
+    src/ecs/ComponentRegistry.cpp
 
     src/physics/PxImpl.cpp
     src/physics/Physics.cpp

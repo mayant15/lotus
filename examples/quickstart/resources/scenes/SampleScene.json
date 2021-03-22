@@ -27,6 +27,9 @@
     "CRigidBody": {
       "Gravity": 1.0,
       "IsKinematic": false
+    },
+    "CTag": {
+      "Tag": "ball"
     }
   },
   {

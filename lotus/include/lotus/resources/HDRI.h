@@ -23,7 +23,8 @@ namespace Lotus
     {
         Handle<HDRI> Map;
 
-        REGISTER_DECL();
+        static std::string GetName()
+        { return "CSkybox"; }
     };
 
     inline void to_json(nlohmann::json& data, const CSkybox& sb)
@@ -35,6 +36,4 @@ namespace Lotus
     {
         sb.Map = LoadAsset<HDRI, HDRILoader>(ExpandPath(data.at("Map").get<std::string>()));
     }
-
-    REGISTER_BODY(CSkybox);
 }

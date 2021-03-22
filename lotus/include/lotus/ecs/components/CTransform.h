@@ -11,10 +11,8 @@ namespace Lotus
         Vector3f Rotation {0.0f, -90.0f, 0.0f};
         Vector3f Scale    {1.0f,  1.0f,  1.0f};
 
-        REGISTER_DECL();
+        GENERATED_BODY(CTransform, Position, Rotation, Scale);
     };
-    SERIALIZE(CTransform, Position, Rotation, Scale);
-    REGISTER_BODY(CTransform);
 
     inline Vector3f GetForwardVector(const CTransform& transform)
     {

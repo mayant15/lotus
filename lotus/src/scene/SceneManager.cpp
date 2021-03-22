@@ -1,7 +1,6 @@
 #include <lotus/scene/SceneManager.h>
 
 #include <lotus/ecs/ComponentRegistry.h>
-#include <lotus/ecs/components/CTransform.h>
 #include <lotus/ecs/Entity.h>
 #include <lotus/debug.h>
 
@@ -31,7 +30,7 @@ namespace Lotus::SceneManager
         {
             if (comp.key() != "Prefab")
             {
-                auto ct = GET_COMPONENT_CTOR (comp.key());
+                auto ct = GetComponentCtor(comp.key());
                 ct (id, *reg, comp.value());
             }
         }

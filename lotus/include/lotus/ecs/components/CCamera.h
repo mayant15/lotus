@@ -9,11 +9,8 @@ namespace Lotus
     {
         bool IsActive = false;
         float FOV = 45;
-
-        REGISTER_DECL();
+        GENERATED_BODY(CCamera, IsActive, FOV);
     };
-    SERIALIZE(CCamera, IsActive, FOV);
-    REGISTER_BODY(CCamera);
 
     inline Matrix4f GetViewMatrix(const CTransform& transform)
     {

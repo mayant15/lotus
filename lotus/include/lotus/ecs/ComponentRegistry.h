@@ -1,70 +1,43 @@
 #pragma once
 
+#include <lotus/lotus_export.h>
 #include <lotus/internal/nlohmann/json.hpp>
 #include <lotus/internal/entt/entt.hpp>
 
 #include <unordered_map>
 #include <functional>
 
+#define GENERATED_BODY(COMPONENT, ...) \
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(COMPONENT, __VA_ARGS__); \
+    static std::string GetName() { return QUOTE(COMPONENT); }
 
-#define GENERATE_COMPONENT_GET_NAME_DECL() \
-    static std::string GetName();
-
-#define GENERATE_COMPONENT_GET_NAME_BODY(component) \
-    inline std::string component::GetName() { \
-        return QUOTE(component); \
-    }
-
-#define GENERATE_COMPONENT_ASSIGN_DECL() \
-    static void assign(const entt::entity entity, entt::registry& registry, const data_t& data);
-
-#define GENERATE_COMPONENT_ASSIGN_BODY(component) \
-    inline void component::assign(const entt::entity entity, entt::registry& registry, const data_t& data) { \
-        component tmp; \
-        from_json(data, tmp); \
-        registry.emplace_or_replace<component>(entity, std::move(tmp)); \
-    }
-
-#define GENERATE_COMPONENT_REGISTER_DECL() \
-    static const Lotus::ComponentRegistry registry; \
-
-#define GENERATE_COMPONENT_REGISTER_BODY(component) \
-    inline const Lotus::ComponentRegistry component::registry = { entt::hashed_string::value(QUOTE(component)), &component::assign };
-
-#define REGISTER_DECL() \
-public: \
-    GENERATE_COMPONENT_GET_NAME_DECL() \
-private: \
-    GENERATE_COMPONENT_ASSIGN_DECL() \
-    GENERATE_COMPONENT_REGISTER_DECL()
-
-#define REGISTER_BODY(component) \
-    GENERATE_COMPONENT_GET_NAME_BODY(component) \
-    GENERATE_COMPONENT_ASSIGN_BODY(component) \
-    GENERATE_COMPONENT_REGISTER_BODY(component)
-
-#define GET_COMPONENT_CTOR(name) Lotus::ComponentRegistry::Get(entt::hashed_string::value(name.c_str()));
-
+using key_t = std::string;
+using data_t = nlohmann::json;
+using ctor_t = std::function<void(const entt::entity, entt::registry&, const data_t& data)>;
 
 namespace Lotus
 {
-    using key_t = entt::id_type;
-    using data_t = nlohmann::json;
-    using ctor_t = std::function<void(const entt::entity, entt::registry&, const data_t& data)>;
+    extern LOTUS_API std::unordered_map<key_t, ctor_t> ctors;
 
-    struct ComponentRegistry
+    template<class T>
+    struct ComponentAssigner
     {
-        ComponentRegistry(key_t id, ctor_t func)
+        static void Assign(const entt::entity entity, entt::registry& registry, const nlohmann::json & data)
         {
-            ctors.insert({id, func});
+            T tmp;
+            from_json(data, tmp);
+            registry.template emplace_or_replace<T>(entity, std::move(tmp));
         }
-
-        static const ctor_t& Get(key_t key)
-        {
-            return ctors.at(key);
-        }
-
-    private:
-        static inline std::unordered_map<key_t, ctor_t> ctors;
     };
+
+    template<class T>
+    inline void RegisterComponent()
+    {
+        ctors.insert({T::GetName(), &ComponentAssigner<T>::Assign});
+    }
+
+    inline const ctor_t& GetComponentCtor(const std::string& name)
+    {
+        return ctors.at(name);
+    }
 }

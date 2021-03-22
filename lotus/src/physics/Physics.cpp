@@ -205,13 +205,23 @@ namespace Lotus::Physics
 
         for (PxU32 i = 0; i < nbActiveActors; i++)
         {
-            auto actor = (PxRigidActor*) activeActors[i];
-            auto id = (EntityID) (long long) (actor->userData);
+            try
+            {
+                auto actor = (PxRigidActor*) activeActors[i];
+                auto id = (EntityID) (long long) (actor->userData);
 
-            // TODO: Change CTransform to hold a 4x4 matrix
-            auto& transform = registry->get<CTransform>(id);
-            auto position = actor->getGlobalPose().p;
-            transform.Position = Vector3f { position.x, position.y, position.z };
+                // TODO: Change CTransform to hold a 4x4 matrix
+                if (registry->valid(id))
+                {
+                    auto& transform = registry->get<CTransform>(id);
+                    auto position = actor->getGlobalPose().p;
+                    transform.Position = Vector3f { position.x, position.y, position.z };
+                }
+            }
+            catch (const std::exception& e)
+            {
+                LOG_WARN("Failed to update physics state. {}", e.what());
+            }
         }
     }
 

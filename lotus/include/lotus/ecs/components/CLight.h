@@ -11,10 +11,8 @@ namespace Lotus
         Color color = COLOR_WHITE;
         Vector3f direction = Vector3f(1.0f);
 
-        REGISTER_DECL();
+        GENERATED_BODY(CSunLight, direction, color);
     };
-    SERIALIZE(CSunLight, direction, color);
-    REGISTER_BODY(CSunLight);
 
     struct CPointLight
     {
@@ -23,10 +21,8 @@ namespace Lotus
         float linear = 0.22f;
         float quadratic = 0.20f;
 
-        REGISTER_DECL();
+        GENERATED_BODY(CPointLight, color, constant, linear, quadratic);
     };
-    SERIALIZE(CPointLight, color, constant, linear, quadratic);
-    REGISTER_BODY(CPointLight);
 
     struct CSpotlight
     {
@@ -37,8 +33,6 @@ namespace Lotus
         float innerCutOff = 12.5f;
         float outerCutOff = 17.5f;
 
-        REGISTER_DECL();
+        GENERATED_BODY(CSpotlight, color, constant, linear, quadratic, innerCutOff, outerCutOff);
     };
-    SERIALIZE(CSpotlight, color, constant, linear, quadratic, innerCutOff, outerCutOff);
-    REGISTER_BODY(CSpotlight);
 }

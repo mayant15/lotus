@@ -13,10 +13,8 @@ namespace Lotus
         /** @brief Radius of the sphere */
         float Radius = 1.0f;
 
-        REGISTER_DECL();
+        GENERATED_BODY(CSphereCollider, Position, Radius);
     };
-    SERIALIZE(CSphereCollider, Position, Radius);
-    REGISTER_BODY(CSphereCollider);
 
     struct CBoxCollider
     {
@@ -26,10 +24,8 @@ namespace Lotus
         /** @brief Dimensions of the box on local X, Y, Z */
         Vector3f Dimensions {1.0f};
 
-        REGISTER_DECL();
+        GENERATED_BODY(CBoxCollider, Position, Dimensions);
     };
-    SERIALIZE(CBoxCollider, Position, Dimensions);
-    REGISTER_BODY(CBoxCollider);
 
     struct CCapsuleCollider
     {
@@ -42,10 +38,8 @@ namespace Lotus
         /** @brief Height of the capsule */
         float Height = 1.0f;
 
-        REGISTER_DECL();
+        GENERATED_BODY(CCapsuleCollider, Position, Radius, Height);
     };
-    SERIALIZE(CCapsuleCollider, Position, Radius, Height);
-    REGISTER_BODY(CCapsuleCollider);
 
     /** @attention You must add a collider and a transform before adding a rigidbody component */
     struct CRigidBody
@@ -53,8 +47,6 @@ namespace Lotus
         float Gravity = 1.0f;
         bool IsKinematic = false;
 
-        REGISTER_DECL();
+        GENERATED_BODY(CRigidBody, Gravity, IsKinematic);
     };
-    SERIALIZE(CRigidBody, Gravity, IsKinematic);
-    REGISTER_BODY(CRigidBody);
 }

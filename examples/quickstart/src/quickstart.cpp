@@ -6,13 +6,15 @@
 
 struct CTag
 {
-    std::string name;
+    std::string Tag;
+    GENERATED_BODY(CTag, Tag);
 };
 
 namespace DestroyBall {
     using namespace Lotus;
 
     static EntityID ballID;
+    static bool destroyed = false;
 
     void OnBegin(const BeginEvent& event)
     {
@@ -21,7 +23,7 @@ namespace DestroyBall {
         for (auto id : view)
         {
             auto& tag = view.get(id);
-            if (tag.name == BALL_TAG)
+            if (tag.Tag == BALL_TAG)
             {
                 ballID = id;
                 break;
@@ -31,14 +33,39 @@ namespace DestroyBall {
 
     void OnUpdate(const UpdateEvent& event)
     {
-        auto* reg = GetRegistry();
-        auto&& [tag, transform] = reg->get<CTag, CTransform>(ballID);
-        if (tag.name == BALL_TAG && transform.Position.y <= 0)
+        if (!destroyed)
         {
-            reg->destroy(ballID, reg->current(ballID));
+            auto* reg = GetRegistry();
+            auto&& [tag, transform] = reg->get<CTag, CTransform>(ballID);
+            if (tag.Tag == BALL_TAG && transform.Position.y <= 4)
+            {
+                reg->destroy(ballID, reg->current(ballID));
+                destroyed = true;
+                LOG_INFO("Destroyed the ball");
+            }
         }
     }
 }
+
+//{
+//"CTransform": {
+//"Position": [0.0, 0.0, 0.0],
+//"Rotation": [0.0, -90.0, 0.0],
+//"Scale": [15.0, 0.3, 15.0]
+//},
+//"CMeshRenderer": {
+//"Material": "res://materials/default.json",
+//"Model": "res://mesh/cube.fbx"
+//},
+//"CBoxCollider": {
+//"Position": [0.0, 0.0, 0.0],
+//"Dimensions": [15.0, 0.3, 15.0]
+//},
+//"CRigidBody": {
+//"Gravity": 1.0,
+//"IsKinematic": true
+//}
+//},
 
 void OnContact(const Lotus::CollisionEvent& event)
 {
@@ -61,9 +88,9 @@ QUICKSTART_API void RegisterEvents()
     LOG_INFO("Registering [module:quickstart]");
 
     EventManager& em = GET(EventManager);
-//    em.Bind<UpdateEvent, DestroyBall::OnUpdate>();
-//    em.Bind<BeginEvent, DestroyBall::OnBegin>();
+    em.Bind<UpdateEvent, DestroyBall::OnUpdate>();
+    em.Bind<BeginEvent, DestroyBall::OnBegin>();
     em.Bind<CollisionEvent, OnContact>();
 
-//    RegisterComponent<CTag>("CTag");
+    RegisterComponent<CTag>();
 }
