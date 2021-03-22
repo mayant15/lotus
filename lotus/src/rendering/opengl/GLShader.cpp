@@ -5,6 +5,7 @@
 #include <lotus/debug.h>
 
 #include <fstream>
+#include <stdexcept>
 
 namespace Lotus
 {
@@ -28,7 +29,7 @@ namespace Lotus
         if (!success)
         {
             glGetShaderInfoLog(id, 512, nullptr, infoLog);
-            throw std::exception {infoLog};
+            throw std::runtime_error {infoLog};
         }
 
         return id;
@@ -49,7 +50,7 @@ namespace Lotus
         if (!success)
         {
             glGetProgramInfoLog(id, 512, nullptr, infoLog);
-            throw std::exception {infoLog};
+            throw std::runtime_error {infoLog};
         }
 
         return id;

@@ -13,6 +13,7 @@
 
 #include <GLFW/glfw3.h>
 #include <string>
+#include <stdexcept>
 
 namespace Editor
 {
@@ -68,7 +69,7 @@ namespace Editor
         glfwSetErrorCallback(glfwErrorCallback);
         if (!glfwInit())
         {
-            throw std::exception("Failed to initialize GLFW");
+            throw std::runtime_error { "Failed to initialize GLFW" };
         }
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
@@ -80,7 +81,7 @@ namespace Editor
         GLFWwindow* window = glfwCreateWindow(1280, 720, "Lotus Editor", nullptr, nullptr);
         if (window == nullptr)
         {
-            throw std::exception("Failed to create window");
+            throw std::runtime_error { "Failed to create window" };
         }
         glfwMakeContextCurrent(window);
 
@@ -94,7 +95,7 @@ namespace Editor
 
         // Load glad
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-            throw std::exception("Failed to initalize GLAD");
+            throw std::runtime_error { "Failed to initalize GLAD" };
         }
 
         return window;

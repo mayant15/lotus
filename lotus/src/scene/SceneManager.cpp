@@ -6,6 +6,8 @@
 
 #include <lotus/filesystem.h>
 
+#include <stdexcept>
+
 namespace Lotus::SceneManager
 {
     inline void attachComponents(Entity entity, const nlohmann::json& info)
@@ -44,8 +46,7 @@ namespace Lotus::SceneManager
 
         if (!data.is_array())
         {
-            LOG_ERROR("Invalid scene format");
-            throw std::exception();
+            throw std::runtime_error { "Invalid scene format" };
         }
 
         for (auto& entityInfo : data)
