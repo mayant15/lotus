@@ -2,5 +2,5 @@
 
 namespace Lotus
 {
-    std::unordered_map<key_t, ctor_t> ctors;
+    std::unordered_map<component_ctor_key_t, component_ctor_t> ctors;
 }

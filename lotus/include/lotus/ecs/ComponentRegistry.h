@@ -11,13 +11,12 @@
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(COMPONENT, __VA_ARGS__); \
     static std::string GetName() { return QUOTE(COMPONENT); }
 
-using key_t = std::string;
-using data_t = nlohmann::json;
-using ctor_t = std::function<void(const entt::entity, entt::registry&, const data_t& data)>;
+using component_ctor_key_t = std::string;
+using component_ctor_t = std::function<void(const entt::entity, entt::registry&, const nlohmann::json& data)>;
 
 namespace Lotus
 {
-    extern LOTUS_API std::unordered_map<key_t, ctor_t> ctors;
+    extern LOTUS_API std::unordered_map<component_ctor_key_t, component_ctor_t> ctors;
 
     template<class T>
     struct ComponentAssigner
@@ -36,7 +35,7 @@ namespace Lotus
         ctors.insert({T::GetName(), &ComponentAssigner<T>::Assign});
     }
 
-    inline const ctor_t& GetComponentCtor(const std::string& name)
+    inline const component_ctor_t& GetComponentCtor(const std::string& name)
     {
         return ctors.at(name);
     }
