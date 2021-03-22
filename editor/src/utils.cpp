@@ -1,7 +1,9 @@
 #include "utils.h"
 #include "events.h"
 
+#ifdef _WIN32
 #include <nfd.h>
+#endif
 
 #include <lotus/ecs/Entity.h>
 #include <lotus/ecs/EventManager.h>
@@ -11,6 +13,7 @@ namespace Editor
 {
     std::optional<std::string> OpenFileDialog()
     {
+#ifdef _WIN32
         nfdchar_t *outPath = nullptr;
         nfdresult_t result = NFD_OpenDialog( nullptr, nullptr, &outPath );
 
@@ -24,6 +27,9 @@ namespace Editor
         {
             return std::nullopt;
         }
+#else
+        return std::nullopt;
+#endif
     }
 
     std::string ExpandPath(const std::string& path)

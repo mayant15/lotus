@@ -16,8 +16,6 @@ set(LOTUS_EDITOR_SOURCES
     external/imgui/imgui_draw.cpp
     external/imgui/imgui_widgets.cpp
     external/imgui/imgui_tables.cpp
-    external/nativefiledialog/nfd_common.c
-    external/nativefiledialog/nfd_win.cpp
 
     src/main.cpp
     src/utils.cpp
@@ -34,6 +32,12 @@ set(LOTUS_EDITOR_SOURCES
 
     src/ModuleLoader.cpp
 )
+
+# TODO: Use NFD only on windows for now
+if (WIN32)
+    list(APPEND LOTUS_EDITOR_SOURCES external/nativefiledialog/nfd_common.c)
+    list(APPEND LOTUS_EDITOR_SOURCES external/nativefiledialog/nfd_win.cpp)
+endif()
 
 # Define the target
 set(LOTUS_EDITOR_EXEC editor)
