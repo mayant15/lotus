@@ -22,5 +22,6 @@ namespace Lotus
         RegisterComponent<CRigidBody>();
         RegisterComponent<CMeshRenderer>();
         RegisterComponent<CSkybox>();
+        RegisterComponent<CDisplayName>();
     }
 }

@@ -73,7 +73,8 @@ namespace Editor::Widgets
         auto[ux, uy] = Lotus::Renderer::GetViewportUV();
         Viewport(colorBuffer, ux, uy);
 
-//        DemoWindow();
+        DemoWindow();
+        SceneTree();
 //        Log();
 
         // Rendering

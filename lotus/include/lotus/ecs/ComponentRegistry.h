@@ -1,9 +1,8 @@
 #pragma once
 
-#include <lotus/lotus_export.h>
-#include <lotus/internal/nlohmann/json.hpp>
-#include <lotus/internal/entt/entt.hpp>
+#include <lotus/lcommon.h>
 
+#include <string>
 #include <unordered_map>
 #include <functional>
 
@@ -41,4 +40,10 @@ namespace Lotus
     }
 
     void RegisterEngineComponents();
+
+    struct CDisplayName
+    {
+        std::string Name;
+        GENERATED_BODY(CDisplayName, Name);
+    };
 }

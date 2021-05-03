@@ -11,6 +11,11 @@ namespace Lotus::SceneManager
 {
     SRef<Scene> currentScene;
 
+    SRef<Scene> GetCurrentScene()
+    {
+        return currentScene;
+    }
+
     inline void attachComponents(Entity entity, const nlohmann::json& info)
     {
         auto reg = currentScene->GetRegistry();
@@ -28,6 +33,11 @@ namespace Lotus::SceneManager
 //            from_json(entityInfo.at("CTransform"), transform);
 //            entity.AddComponent<CTransform>(transform);
 //        }
+
+        if (!info.contains("CDisplayName"))
+        {
+            entity.AddComponent<CDisplayName>("Entity " + std::to_string((unsigned int) id));
+        }
 
         for (auto& comp : info.items())
         {

@@ -8,6 +8,9 @@
     "CMeshRenderer": {
       "Material": "res://materials/gold.json",
       "Model": "res://mesh/sphere.fbx"
+    },
+    "CDisplayName": {
+      "Name": "Gold"
     }
   },
   {
@@ -19,6 +22,9 @@
     "CMeshRenderer": {
       "Material": "res://materials/default.json",
       "Model": "res://mesh/sphere.fbx"
+    },
+    "CDisplayName": {
+      "Name": "Default"
     }
   },
   {
@@ -30,6 +36,9 @@
     "CMeshRenderer": {
       "Material": "res://materials/wall.json",
       "Model": "res://mesh/sphere.fbx"
+    },
+    "CDisplayName": {
+      "Name": "Wall"
     }
   },
   {
@@ -41,6 +50,9 @@
     "CMeshRenderer": {
       "Material": "res://materials/mud.json",
       "Model": "res://mesh/sphere.fbx"
+    },
+    "CDisplayName": {
+      "Name": "Mud"
     }
   },
   {
@@ -52,6 +64,9 @@
     "CMeshRenderer": {
       "Material": "res://materials/backpack.json",
       "Model": "res://mesh/Backpack.fbx"
+    },
+    "CDisplayName": {
+      "Name": "Backpack"
     }
   },
   {
@@ -63,6 +78,9 @@
     "CMeshRenderer": {
       "Material": "res://materials/default.json",
       "Model": "res://mesh/cube.fbx"
+    },
+    "CDisplayName": {
+      "Name": "Ground"
     }
   },
   {
@@ -72,6 +90,9 @@
     },
     "CSkybox": {
       "Map": "res://skybox/sky.hdr"
+    },
+    "CDisplayName": {
+      "Name": "Lights"
     }
   }
 ]

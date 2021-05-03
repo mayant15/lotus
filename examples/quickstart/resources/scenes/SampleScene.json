@@ -8,6 +8,9 @@
       "Position": [0.0, 20.0, 0.0],
       "Rotation": [-90.0, 90.0, 0.0],
       "Scale": [1.0, 1.0, 1.0]
+    },
+    "CDisplayName": {
+      "Name": "Main Camera"
     }
   },
   {
@@ -28,8 +31,8 @@
       "Gravity": 1.0,
       "IsKinematic": false
     },
-    "CTag": {
-      "Tag": "ball"
+    "CDisplayName": {
+      "Name": "Ball"
     }
   },
   {
@@ -49,6 +52,9 @@
     "CRigidBody": {
       "Gravity": 1.0,
       "IsKinematic": true
+    },
+    "CDisplayName": {
+      "Name": "Ground"
     }
   },
   {
@@ -58,6 +64,9 @@
     },
     "CSkybox": {
       "Map": "res://skybox/sky.hdr"
+    },
+    "CDisplayName": {
+      "Name": "Lights"
     }
   }
 ]
