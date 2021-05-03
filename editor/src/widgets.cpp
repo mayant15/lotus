@@ -75,6 +75,7 @@ namespace Editor::Widgets
 
         DemoWindow();
         SceneTree();
+        Properties();
 //        Log();
 
         // Rendering

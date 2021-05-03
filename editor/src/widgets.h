@@ -19,4 +19,5 @@ namespace Editor::Widgets
     void MainMenu(float fps);
     void Log();
     void SceneTree();
+    void Properties();
 }
