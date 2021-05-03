@@ -1,0 +1,22 @@
+[
+  {
+    "CTransform": {
+      "Position": [0, 5, -10],
+      "Rotation": [0.0, 0.0, 0.0],
+      "Scale": [1.0, 1.0, 1.0]
+    },
+    "CMeshRenderer": {
+      "Material": "res://materials/mud.json",
+      "Model": "res://mesh/sphere.fbx"
+    }
+  },
+  {
+    "CSunLight": {
+      "color": [1.0, 1.0, 1.0, 1.0],
+      "direction": [0.0, -1.0, -1.0]
+    },
+    "CSkybox": {
+      "Map": "res://skybox/sky.hdr"
+    }
+  }
+]

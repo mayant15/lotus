@@ -28,7 +28,7 @@ namespace Lotus::Renderer
 
         void SetupFrame() override
         {
-            auto registry = GetRegistry();
+            auto registry = pState->pEngineScene->GetRegistry();
             auto skyView = registry->view<CSkybox>();
             if (!skyView.empty())
             {

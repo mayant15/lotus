@@ -36,13 +36,4 @@ namespace Editor
     {
         return EDITOR_RESOURCE_ROOT + path;
     }
-
-    void LoadScene(const std::string& path)
-    {
-        using namespace Lotus;
-        SceneManager::LoadScene(path);
-        auto& em = GET(EventManager);
-        em.Dispatch(Editor::SceneLoadEvent {});
-        em.Dispatch(Lotus::BeginEvent {});
-    }
 }

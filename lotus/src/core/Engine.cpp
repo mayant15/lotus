@@ -1,19 +1,23 @@
-#include "lotus/Engine.h"
-
+#include <lotus/Engine.h>
 #include <physics/Physics.h>
 #include <rendering/Renderer.h>
-
 #include <lotus/ecs/EventManager.h>
 #include <lotus/debug.h>
 
 namespace Lotus::Engine
 {
+    /** @brief Register components provided by the engine */
+    void setupComponents()
+    {
+        RegisterEngineComponents();
+    }
+
     /** @brief Setup the physics subsystem and register events */
     void setupPhysics()
     {
         auto& eventManager = GET(EventManager);
         eventManager.Bind<InitEvent, Physics::OnInit>();
-        eventManager.Bind<BeginEvent, Physics::OnBegin>();
+        eventManager.Bind<SceneLoadEvent, Physics::OnSceneLoad>();
         eventManager.Bind<UpdateEvent, Physics::OnUpdate>();
         eventManager.Bind<PostUpdateEvent, Physics::OnPostUpdate>();
         eventManager.Bind<DestroyEvent, Physics::OnDestroy>();
@@ -26,7 +30,7 @@ namespace Lotus::Engine
     {
         auto& eventManager = GET(EventManager);
         eventManager.Bind<InitEvent, Renderer::OnInit>();
-        eventManager.Bind<BeginEvent, Renderer::OnBegin>();
+        eventManager.Bind<SceneLoadEvent, Renderer::OnSceneLoad>();
         eventManager.Bind<PreUpdateEvent, Renderer::OnPreUpdate>();
         eventManager.Bind<UpdateEvent, Renderer::OnUpdate>();
         eventManager.Bind<DestroyEvent, Renderer::OnDestroy>();
@@ -35,8 +39,7 @@ namespace Lotus::Engine
 
     void Initialize()
     {
-        ECSInitialize();
-
+        setupComponents();
         setupPhysics();
         setupRenderer();
 
@@ -68,7 +71,5 @@ namespace Lotus::Engine
         eventManager.Dispatch(PreDestroyEvent {});
         eventManager.Dispatch(DestroyEvent {});
         eventManager.Dispatch(ShutdownEvent {});
-
-        ECSShutdown();
     }
 }

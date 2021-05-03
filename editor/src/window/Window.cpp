@@ -60,7 +60,11 @@ namespace Editor
     static void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         Lotus::Input::UpdateKeyState(key + OFFSET_KEY_A, action + OFFSET_KEY_RELEASE);
-        GET(Lotus::EventManager).Dispatch(Editor::KeyboardEvent {});
+        auto& em = Lotus::EventManager::Get();
+        em.Dispatch(Editor::KeyboardEvent {});
+
+        // TODO: Call this only if not on a widget
+        em.Dispatch(Lotus::KeyboardEvent {});
     }
 
     Window* CreateNewWindow()

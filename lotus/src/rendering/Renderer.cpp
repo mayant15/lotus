@@ -85,16 +85,20 @@ namespace Lotus::Renderer
         return { state.ViewportWidth / COLOR_BUFFER_WIDTH, state.ViewportHeight / COLOR_BUFFER_HEIGHT };
     }
 
-    void OnBegin(const BeginEvent& event)
+    void OnSceneLoad(const SceneLoadEvent& event)
     {
+        state.pEngineScene = event.pScene;
         // TODO: Shadow pass
 //        passes.push_back(new ShadowPass(&state));
         passes.push_back(new PBRPass(&state));
         passes.push_back(new SkyPass(&state));
+        state.isActive = true;
     }
 
     void OnPreUpdate(const PreUpdateEvent& event)
     {
+        if (!state.isActive) return;
+
         for (auto pass : passes)
         {
             pass->SetupFrame();
@@ -108,7 +112,9 @@ namespace Lotus::Renderer
 
     void OnUpdate(const UpdateEvent& event)
     {
-        auto registry = GetRegistry();
+        if (!state.isActive) return;
+
+        auto registry = state.pEngineScene->GetRegistry();
         auto cameraView = registry->view<CCamera, CTransform>();
         for (auto entity : cameraView)
         {
@@ -147,7 +153,7 @@ namespace Lotus::Renderer
 
     void OnMeshRendererCreate(const ComponentCreateEvent<CMeshRenderer>& event)
     {
-        auto registry = GetRegistry();
+        auto registry = state.pEngineScene->GetRegistry();
         auto&& [mr, tf] = registry->get<CMeshRenderer, CTransform>(event.entityID);
 
         ModelInfo info;

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <events.h>
+#include <lotus/scene/Scene.h>
 
 namespace Editor
 {
-    void OnSceneLoad(const SceneLoadEvent& event);
+    void SetupEditorCamera(const Lotus::SceneLoadEvent& event);
     void MoveCamera(double deltaTime);
     void RotateCamera(float xOffset, float yOffset);
 }

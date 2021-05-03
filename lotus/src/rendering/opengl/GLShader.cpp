@@ -175,6 +175,8 @@ namespace Lotus
         }
     }
 
+    // TODO: Formalize texture slots
+    //   0 is for irradiance, 1 onwards are material
     void GLShader::SetMaterial(const std::string& name, Handle<Material> mat) const
     {
         // Set albedo

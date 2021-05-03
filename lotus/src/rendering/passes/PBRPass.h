@@ -22,7 +22,7 @@ namespace Lotus::Renderer
 
         void SetupFrame() override
         {
-            auto registry = GetRegistry();
+            auto registry = pState->pEngineScene->GetRegistry();
 
             // Process lighting
             pointLightParams.clear();
@@ -121,14 +121,14 @@ namespace Lotus::Renderer
             // Setup the irradiance map for indirect diffuse lighting
             if (pSky)
             {
-                RHI::SetActiveTextureSlot(1);
+                RHI::SetActiveTextureSlot(0);
                 RHI::BindCubeMap(pSky->Map->Irradiance);
-                shader->SetInt("irradianceMap", 1);
+                shader->SetInt("irradianceMap", 0);
                 shader->SetBool("bUseIrradianceMap", true);
             }
             else
             {
-                shader->SetInt("irradianceMap", 1);
+                shader->SetInt("irradianceMap", 0);
                 shader->SetBool("bUseIrradianceMap", false);
             }
 

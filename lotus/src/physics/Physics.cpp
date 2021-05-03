@@ -62,7 +62,7 @@ namespace Lotus::Physics
 
     void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody>& event)
     {
-        auto* registry = GetRegistry();
+        auto* registry = state.pEngineScene->GetRegistry();
         auto&&[rb, transform] = registry->get<CRigidBody, CTransform>(event.entityID);
 
         PhysicsObjectInfo info;
@@ -179,12 +179,13 @@ namespace Lotus::Physics
         state.pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *state.pFoundation, PxTolerancesScale(), true, state.pPVD);
     }
 
-    void OnBegin(const BeginEvent& event)
+    void OnSceneLoad(const SceneLoadEvent& event)
     {
         // TODO: Get from the SceneManager
         PhysicsSceneInfo info {};
         createScene(info);
         state.isActive = true;
+        state.pEngineScene = event.pScene;
     }
 
     void OnUpdate(const UpdateEvent& event)
@@ -201,7 +202,7 @@ namespace Lotus::Physics
         // Sync physics changes with the transform component in the scene
         PxU32 nbActiveActors;
         PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
-        auto* registry = GetRegistry();
+        auto* registry = state.pEngineScene->GetRegistry();
 
         for (PxU32 i = 0; i < nbActiveActors; i++)
         {

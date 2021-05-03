@@ -1,18 +1,19 @@
 #include <lotus/scene/SceneManager.h>
-
 #include <lotus/ecs/ComponentRegistry.h>
-#include <lotus/ecs/Entity.h>
 #include <lotus/debug.h>
 
 #include <lotus/filesystem.h>
 
 #include <stdexcept>
+#include <lotus/ecs/EventManager.h>
 
 namespace Lotus::SceneManager
 {
+    SRef<Scene> currentScene;
+
     inline void attachComponents(Entity entity, const nlohmann::json& info)
     {
-        auto reg = GetRegistry();
+        auto reg = currentScene->GetRegistry();
         auto id = (EntityID) entity;
 
         // TODO: Transform should be created first. Right now, component create events are non-immediate, so they're
@@ -40,6 +41,8 @@ namespace Lotus::SceneManager
 
     void LoadScene(const std::string& path)
     {
+        currentScene = std::make_shared<Scene>();
+
         std::ifstream infile (path);
         nlohmann::json data;
         infile >> data;
@@ -53,16 +56,18 @@ namespace Lotus::SceneManager
         {
             if (entityInfo.contains("Prefab"))
             {
-                auto entity = CreateEntity(ExpandPath(entityInfo.at("Prefab").get<std::string>()));
+                auto entity = currentScene->CreateEntity(ExpandPath(entityInfo.at("Prefab").get<std::string>()));
                 attachComponents(entity, entityInfo);
             }
             else
             {
-                auto entity = CreateEntity();
+                auto entity = currentScene->CreateEntity();
                 attachComponents(entity, entityInfo);
             }
         }
 
         // TODO: Generate the scene tree
+
+        EventManager::Get().Dispatch(SceneLoadEvent { currentScene.get() });
     }
 }

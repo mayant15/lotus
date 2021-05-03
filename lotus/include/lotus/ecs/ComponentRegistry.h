@@ -39,4 +39,6 @@ namespace Lotus
     {
         return ctors.at(name);
     }
+
+    void RegisterEngineComponents();
 }

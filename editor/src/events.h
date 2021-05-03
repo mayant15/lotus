@@ -7,6 +7,4 @@ namespace Editor
     struct KeyboardEvent {};
     struct MouseEvent {};
     struct MouseButtonEvent {};
-
-    struct SceneLoadEvent {};
 }

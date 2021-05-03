@@ -27,9 +27,7 @@ set(LOTUS_SOURCES
     src/core/Engine.cpp
     src/core/Input.cpp
     src/core/Config.cpp
-
-    src/ecs/Entity.cpp
-    src/ecs/ComponentRegistry.cpp
+    src/core/ComponentRegistry.cpp
 
     src/physics/PxImpl.cpp
     src/physics/Physics.cpp
@@ -47,6 +45,7 @@ set(LOTUS_SOURCES
     src/resources/Shader.cpp
     src/resources/Texture.cpp
 
+    src/scene/Scene.cpp
     src/scene/SceneManager.cpp
     src/scene/SceneTreeNode.cpp
 )

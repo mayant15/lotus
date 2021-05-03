@@ -8,6 +8,7 @@
 #include <lotus/ecs/components/CTransform.h>
 #include <lotus/ecs/Entity.h>
 #include <lotus/rendering/CMeshRenderer.h>
+#include <lotus/scene/Scene.h>
 
 namespace Lotus::Renderer
 {
@@ -26,6 +27,8 @@ namespace Lotus::Renderer
         Matrix4f Projection;
 
         RenderQueue Queue;
+        Scene* pEngineScene;
+        bool isActive;
     };
 
     /**
@@ -43,12 +46,12 @@ namespace Lotus::Renderer
     /**
      * @brief Register render passes before the main loop starts
      *
-     * This is done in OnBegin and not in OnInit because render passes need the scene to be populated in
+     * This is done in OnSceneLoad and not in OnInit because render passes need the scene to be populated in
      * their constructors, and they then store a few references
      *
      * @param event
      */
-    void OnBegin(const BeginEvent& event);
+    void OnSceneLoad(const SceneLoadEvent& event);
 
     /**
      * @brief Find the camera and setup some options that all render passes will need

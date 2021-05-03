@@ -37,9 +37,6 @@ int main(int argc, const char** argv)
     // Renderer has been set up, setup ImGui panels
     Editor::Widgets::Initialize(window);
 
-    // TODO: Bind somewhere else
-    GET(Lotus::EventManager).Bind<Editor::SceneLoadEvent, Editor::OnSceneLoad>();
-
     auto conf = Lotus::GetProjectConfig();
     try
     {
@@ -51,7 +48,12 @@ int main(int argc, const char** argv)
     }
 
     // TODO: Keep an empty scene always loaded
-    Editor::LoadScene(Lotus::ExpandPath(conf.StartScene));
+    auto& em = Lotus::EventManager::Get();
+    em.Bind<Lotus::SceneLoadEvent, Editor::SetupEditorCamera>();
+
+    Lotus::SceneManager::LoadScene(Lotus::ExpandPath(conf.StartScene));
+
+    em.Dispatch(Lotus::BeginEvent {});
 
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;

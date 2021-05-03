@@ -85,11 +85,4 @@ namespace Lotus
     {
         EntityID entityID;
     };
-
-    void ECSInitialize();
-    void ECSShutdown();
-
-    LOTUS_API entt::registry* GetRegistry();
-    LOTUS_API Entity CreateEntity();
-    LOTUS_API Entity CreateEntity(const std::string& path);
 }

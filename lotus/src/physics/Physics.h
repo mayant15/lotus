@@ -6,6 +6,7 @@
 #include <lotus/physics/components.h>
 #include <lotus/ecs/Event.h>
 #include <lotus/ecs/Entity.h>
+#include <lotus/scene/Scene.h>
 
 namespace Lotus::Physics
 {
@@ -24,13 +25,14 @@ namespace Lotus::Physics
 
         // TODO: When the editor presses the play button, flip this to true
         bool isActive = false;
+        Scene* pEngineScene = nullptr;
     };
 
     /** @brief Initialize physics systems and setup with project config */
     void OnInit(const InitEvent& event);
 
     /** @brief Create a physics scene and setup simulation */
-    void OnBegin(const BeginEvent& event);
+    void OnSceneLoad(const SceneLoadEvent& event);
 
     /** @brief Physics simulation tick and result collection */
     void OnUpdate(const UpdateEvent& event);

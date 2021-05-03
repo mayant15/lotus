@@ -1,7 +1,6 @@
 #include "EditorCamera.h"
 
 #include <lotus/ecs/components/CCamera.h>
-#include <lotus/ecs/Entity.h>
 #include <lotus/Input.h>
 
 namespace Editor
@@ -13,9 +12,9 @@ namespace Editor
     static CCamera* camera = nullptr;
     static CTransform* transform = nullptr;
 
-    void OnSceneLoad(const SceneLoadEvent& event)
+    void SetupEditorCamera(const Lotus::SceneLoadEvent& event)
     {
-        Entity e = CreateEntity();
+        Entity e = event.pScene->CreateEntity();
         camera = &e.AddComponent<CCamera>();
         transform = &e.AddComponent<CTransform>();
 
