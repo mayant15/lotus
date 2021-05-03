@@ -7,5 +7,6 @@
 namespace Lotus::SceneManager
 {
     LOTUS_API void LoadScene(const std::string& path);
+    LOTUS_API void SaveScene();
     LOTUS_API SRef<Scene> GetCurrentScene();
 }

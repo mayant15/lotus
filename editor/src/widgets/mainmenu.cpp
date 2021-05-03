@@ -23,6 +23,12 @@ namespace Editor::Widgets
                         Lotus::SceneManager::LoadScene(filepath.value());
                     }
                 }
+
+                if (ImGui::MenuItem("Save Scene"))
+                {
+                    Lotus::SceneManager::SaveScene();
+                }
+
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit"))

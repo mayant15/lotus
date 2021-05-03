@@ -52,6 +52,7 @@ namespace Lotus::SceneManager
     void LoadScene(const std::string& path)
     {
         currentScene = std::make_shared<Scene>();
+        currentScene->Path = path;
 
         std::ifstream infile (path);
         nlohmann::json data;
@@ -79,5 +80,21 @@ namespace Lotus::SceneManager
         // TODO: Generate the scene tree
 
         EventManager::Get().Dispatch(SceneLoadEvent { currentScene.get() });
+    }
+
+    void SaveScene()
+    {
+        // TODO: Save changes to disk. I'll probably need to fix the serialization thing once and for all
+        LOG_INFO("Saving scene...");
+//        std::ofstream outfile (currentScene->Path);
+//
+//        using namespace nlohmann;
+//        json data;
+//        data = json::array();
+//
+//
+//
+//        outfile << data;
+        LOG_INFO("Saved!");
     }
 }
