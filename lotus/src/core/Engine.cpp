@@ -2,6 +2,7 @@
 #include <physics/Physics.h>
 #include <rendering/Renderer.h>
 #include <lotus/ecs/EventManager.h>
+#include <lotus/scene/SceneManager.h>
 #include <lotus/debug.h>
 
 namespace Lotus::Engine
@@ -9,7 +10,10 @@ namespace Lotus::Engine
     /** @brief Register components provided by the engine */
     void setupComponents()
     {
+        auto& em = GET(EventManager);
         RegisterEngineComponents();
+        em.Bind<SimulationBeginEvent, SceneManager::OnSimulationBegin>();
+        em.Bind<SimulationEndEvent, SceneManager::OnSimulationEnd>();
     }
 
     /** @brief Setup the physics subsystem and register events */
@@ -18,6 +22,10 @@ namespace Lotus::Engine
         auto& eventManager = GET(EventManager);
         eventManager.Bind<InitEvent, Physics::OnInit>();
         eventManager.Bind<SceneLoadEvent, Physics::OnSceneLoad>();
+        eventManager.Bind<SimulationBeginEvent, Physics::OnSimulationBegin>();
+        eventManager.Bind<SimulationPauseEvent, Physics::OnSimulationPause>();
+        eventManager.Bind<SimulationEndEvent, Physics::OnSimulationEnd>();
+        eventManager.Bind<PreUpdateEvent, Physics::OnPreUpdate>();
         eventManager.Bind<UpdateEvent, Physics::OnUpdate>();
         eventManager.Bind<PostUpdateEvent, Physics::OnPostUpdate>();
         eventManager.Bind<DestroyEvent, Physics::OnDestroy>();

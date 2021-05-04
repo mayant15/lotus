@@ -52,7 +52,11 @@ namespace Lotus
     struct MouseButtonEvent {};
 
     struct InitEvent { IMMEDIATE_EVENT() };
-    struct BeginEvent { IMMEDIATE_EVENT() };
+
+    struct SimulationBeginEvent { IMMEDIATE_EVENT() };
+    struct SimulationPauseEvent { IMMEDIATE_EVENT() };
+    struct SimulationEndEvent { IMMEDIATE_EVENT() };
+
     struct PreUpdateEvent { IMMEDIATE_EVENT() };
 
     struct UpdateEvent

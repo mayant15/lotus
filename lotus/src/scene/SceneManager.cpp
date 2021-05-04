@@ -82,6 +82,16 @@ namespace Lotus::SceneManager
         EventManager::Get().Dispatch(SceneLoadEvent { currentScene.get() });
     }
 
+    void OnSimulationBegin(const SimulationBeginEvent& event)
+    {
+        // Save a snapshot of the scene
+    }
+
+    void OnSimulationEnd(const SimulationEndEvent& event)
+    {
+        // Restore the scene with snapshot
+    }
+
     void SaveScene()
     {
         // TODO: Save changes to disk. I'll probably need to fix the serialization thing once and for all

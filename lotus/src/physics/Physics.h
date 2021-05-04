@@ -34,6 +34,18 @@ namespace Lotus::Physics
     /** @brief Create a physics scene and setup simulation */
     void OnSceneLoad(const SceneLoadEvent& event);
 
+    /** @brief Start simulation when play pressed */
+    void OnSimulationBegin(const SimulationBeginEvent& event);
+
+    /** @brief Pause simulation when pause pressed */
+    void OnSimulationPause(const SimulationPauseEvent& event);
+
+    /** @brief Stop the simulation and restore physics state when stop pressed */
+    void OnSimulationEnd(const SimulationEndEvent& event);
+
+    /** @brief Sync changes from the entity registry to the physics world */
+    void OnPreUpdate(const PreUpdateEvent& event);
+
     /** @brief Physics simulation tick and result collection */
     void OnUpdate(const UpdateEvent& event);
 

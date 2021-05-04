@@ -184,8 +184,54 @@ namespace Lotus::Physics
         // TODO: Get from the SceneManager
         PhysicsSceneInfo info {};
         createScene(info);
-        state.isActive = true;
         state.pEngineScene = event.pScene;
+    }
+
+    void OnSimulationBegin(const SimulationBeginEvent& event)
+    {
+        state.isActive = true;
+    }
+
+    void OnSimulationPause(const SimulationPauseEvent& event)
+    {
+        state.isActive = false;
+    }
+
+    void OnSimulationEnd(const SimulationEndEvent& event)
+    {
+        state.isActive = false;
+        // TODO: Restore state here or in pre-update?
+    }
+
+    void OnPreUpdate(const PreUpdateEvent& event)
+    {
+        if (!state.isActive) return;
+
+        // Sync physics changes with the transform component in the scene
+//        PxU32 nbActiveActors;
+//        PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
+//        auto* registry = state.pEngineScene->GetRegistry();
+//
+//        for (PxU32 i = 0; i < nbActiveActors; i++)
+//        {
+//            try
+//            {
+//                auto actor = (PxRigidActor*) activeActors[i];
+//                auto id = (EntityID) (long long) (actor->userData);
+//
+//                // TODO: Change CTransform to hold a 4x4 matrix
+//                if (registry->valid(id))
+//                {
+//                    auto& transform = registry->get<CTransform>(id);
+//                    auto position = actor->getGlobalPose().p;
+//                    transform.Position = Vector3f { position.x, position.y, position.z };
+//                }
+//            }
+//            catch (const std::exception& e)
+//            {
+//                LOG_WARN("Failed to update physics state. {}", e.what());
+//            }
+//        }
     }
 
     void OnUpdate(const UpdateEvent& event)
@@ -199,6 +245,8 @@ namespace Lotus::Physics
 
     void OnPostUpdate(const PostUpdateEvent& event)
     {
+        if (!state.isActive) return;
+
         // Sync physics changes with the transform component in the scene
         PxU32 nbActiveActors;
         PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));

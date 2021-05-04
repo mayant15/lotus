@@ -53,8 +53,6 @@ int main(int argc, const char** argv)
 
     Lotus::SceneManager::LoadScene(Lotus::ExpandPath(conf.StartScene));
 
-    em.Dispatch(Lotus::BeginEvent {});
-
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;
     while (!ShouldCloseWindow(window))
