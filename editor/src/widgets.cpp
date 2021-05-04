@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "window/backends/imgui_impl_opengl3.h"
 #include "window/backends/imgui_impl_glfw.h"
+#include "IconsForkAwesome.h"
 
 #include <lotus/rendering/RenderPass.h>
 
@@ -33,8 +34,14 @@ namespace Editor::Widgets
         ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*) window, true);
         ImGui_ImplOpenGL3_Init(GLSL_VERSION_STRING);
 
-        // Load Fonts
+        // Text fonts
         io.Fonts->AddFontFromFileTTF(Editor::ExpandPath("fonts/OpenSans-Regular.ttf").c_str(), 20.0f);
+
+        // Icon fonts
+        static const ImWchar icons_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
+        ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
+        io.Fonts->AddFontFromFileTTF( Editor::ExpandPath("fonts/forkawesome-webfont.ttf").c_str(), 16.0f, &icons_config, icons_ranges );
+
         io.Fonts->AddFontDefault();
 
         colorBuffer = Lotus::Renderer::GetColorBuffer();
@@ -73,9 +80,10 @@ namespace Editor::Widgets
         auto[ux, uy] = Lotus::Renderer::GetViewportUV();
         Viewport(colorBuffer, ux, uy);
 
-        DemoWindow();
+//        DemoWindow();
         SceneTree();
         Properties();
+        Control();
 //        Log();
 
         // Rendering

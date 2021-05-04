@@ -90,7 +90,7 @@ namespace Editor
         glfwMakeContextCurrent(window);
 
         // Enable vsync
-        glfwSwapInterval(1);
+//        glfwSwapInterval(1);
 
         // CallbacksI
         glfwSetCursorPosCallback(window, cursorPosCallback);

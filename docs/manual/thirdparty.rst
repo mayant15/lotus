@@ -8,6 +8,8 @@ Assets
 * `dirt_aerial_02 <https://texturehaven.com/tex/?c=terrain&t=dirt_aerial_02>`_ by `Rob Tuytel <https://texturehaven.com/textures/?a=Rob%20Tuytel>`_
 * `broken_wall <https://texturehaven.com/tex/?t=broken_wall>`_ by `Rob Tuytel <https://texturehaven.com/textures/?a=Rob%20Tuytel>`_
 * `Survival Guitar Backpack (Low Poly) <https://skfb.ly/6RnCB>`_ by `Berk Gedik <https://sketchfab.com/berkgedik>`_
+* `Open Sans <https://fonts.google.com/specimen/Open+Sans#about>`_ by `Steve Matteson <https://fonts.google.com/?query=Steve+Matteson>`_
+* `Fork Awesome Webfont <https://github.com/ForkAwesome/Fork-Awesome>`_ by `Fork Awesome <https://forkaweso.me/Fork-Awesome/>`_
 
 Libraries
 +++++++++
@@ -22,4 +24,5 @@ Libraries
 * `mlabbe/nativefiledialog <https://github.com/mlabbe/nativefiledialog>`_
 * `ocornut/imgui <https://github.com/ocornut/imgui>`_
 * `nothings/stb <https://github.com/nothings/stb>`_
+* `juliettef/IconFontCppHeaders  <https://github.com/juliettef/IconFontCppHeaders/>`_
 

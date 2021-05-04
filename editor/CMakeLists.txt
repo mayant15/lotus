@@ -30,6 +30,7 @@ set(LOTUS_EDITOR_SOURCES
     src/widgets/mainmenu.cpp
     src/widgets/log.cpp
     src/widgets/scenetree.cpp
+    src/widgets/control.cpp
 
     src/ModuleLoader.cpp
 )

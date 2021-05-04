@@ -1,4 +1,0 @@
-Open Sans by Steve Matteson
-Used under the terms of the Apache License, Version 2.0
-Font: https://fonts.google.com/specimen/Open+Sans
-Full text: https://www.apache.org/licenses/LICENSE-2.0

@@ -20,4 +20,5 @@ namespace Editor::Widgets
     void Log();
     void SceneTree();
     void Properties();
+    void Control();
 }
