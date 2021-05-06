@@ -22,23 +22,14 @@ namespace Lotus::Physics
 
         // Position has already been set before this call
         const PxTransform transform(info.Collider->Position.x, info.Collider->Position.y, info.Collider->Position.z);
-        PxRigidActor* actor;
         if (info.IsKinematic)
         {
-            actor = PxCreateStatic(*state.pPhysics, transform, *shape);
+            return (PxRigidActor*) PxCreateStatic(*state.pPhysics, transform, *shape);
         }
         else
         {
-            actor = PxCreateDynamic(*state.pPhysics, transform, *shape, info.Material.Density);
+            return (PxRigidActor*) PxCreateDynamic(*state.pPhysics, transform, *shape, info.Material.Density);
         }
-
-        // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
-        if (info.Gravity < 0.2f)
-        {
-            actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
-        }
-
-        return actor;
     }
 
     void OnRigidBodyDestroy(const ComponentDestroyEvent<CRigidBody>& event)
@@ -74,7 +65,6 @@ namespace Lotus::Physics
 
         // Setup the collider
         PhysicsColliderInfo colliderInfo;
-        PxRigidActor* actor;
 
         info.Collider = &colliderInfo;
         if (registry->has<CSphereCollider>(event.entityID))
@@ -83,11 +73,17 @@ namespace Lotus::Physics
             colliderInfo.Position = collider.Position + transform.Position;
 
             const PxSphereGeometry geom(collider.Radius);
-            actor = createRigidBody(info, geom);
+            rb.detail.actor = createRigidBody(info, geom);
+
+            // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
+            if (info.Gravity < 0.2f)
+            {
+                rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+            }
 
             // NOTE: Entity IDs are just uint16_t's, so I cast that as a void* and store it with the object
-            actor->userData = (void*) event.entityID;
-            state.pActiveScene->addActor(*actor);
+            rb.detail.actor->userData = (void*) event.entityID;
+            state.pActiveScene->addActor(*rb.detail.actor);
         }
         else if (registry->has<CBoxCollider>(event.entityID))
         {
@@ -95,9 +91,16 @@ namespace Lotus::Physics
             colliderInfo.Position = collider.Position + transform.Position;
 
             const PxBoxGeometry geom(collider.Dimensions.x, collider.Dimensions.y, collider.Dimensions.z);
-            actor = createRigidBody(info, geom);
-            actor->userData = (void*) event.entityID;
-            state.pActiveScene->addActor(*actor);
+            rb.detail.actor = createRigidBody(info, geom);
+
+            // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
+            if (info.Gravity < 0.2f)
+            {
+                rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+            }
+
+            rb.detail.actor->userData = (void*) event.entityID;
+            state.pActiveScene->addActor(*rb.detail.actor);
         }
         else if (registry->has<CCapsuleCollider>(event.entityID))
         {
@@ -105,9 +108,16 @@ namespace Lotus::Physics
             colliderInfo.Position = collider.Position + transform.Position;
 
             const PxCapsuleGeometry geom(collider.Radius, collider.Height);
-            actor = createRigidBody(info, geom);
-            actor->userData = (void*) event.entityID;
-            state.pActiveScene->addActor(*actor);
+            rb.detail.actor = createRigidBody(info, geom);
+
+            // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
+            if (info.Gravity < 0.2f)
+            {
+                rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+            }
+
+            rb.detail.actor->userData = (void*) event.entityID;
+            state.pActiveScene->addActor(*rb.detail.actor);
         }
         else
         {
@@ -207,31 +217,22 @@ namespace Lotus::Physics
     {
         if (!state.isActive) return;
 
+        // TODO: Copy only the changed information
         // Sync physics changes with the transform component in the scene
-//        PxU32 nbActiveActors;
-//        PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
-//        auto* registry = state.pEngineScene->GetRegistry();
-//
-//        for (PxU32 i = 0; i < nbActiveActors; i++)
-//        {
-//            try
-//            {
-//                auto actor = (PxRigidActor*) activeActors[i];
-//                auto id = (EntityID) (long long) (actor->userData);
-//
-//                // TODO: Change CTransform to hold a 4x4 matrix
-//                if (registry->valid(id))
-//                {
-//                    auto& transform = registry->get<CTransform>(id);
-//                    auto position = actor->getGlobalPose().p;
-//                    transform.Position = Vector3f { position.x, position.y, position.z };
-//                }
-//            }
-//            catch (const std::exception& e)
-//            {
-//                LOG_WARN("Failed to update physics state. {}", e.what());
-//            }
-//        }
+        auto* registry = state.pEngineScene->GetRegistry();
+        auto view = registry->view<CRigidBody>();
+        for (const auto& e : view)
+        {
+            auto& rb = view.get(e);
+            auto& tf = registry->get<CTransform>(e);
+
+            // TODO: Set rotation and scale too
+            // TODO: If statements for each collider shape, add those offsets to the transform
+            PxTransform pt {};
+            pt.p = PxVec3 { tf.Position.x, tf.Position.y, tf.Position.z };
+            pt.q = rb.detail.actor->getGlobalPose().q;
+            rb.detail.actor->setGlobalPose(pt);
+        }
     }
 
     void OnUpdate(const UpdateEvent& event)

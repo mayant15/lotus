@@ -3,6 +3,11 @@
 #include <lotus/ecs/ComponentRegistry.h>
 #include <lotus/physics/Vector.h>
 
+namespace physx
+{
+    class PxRigidActor;
+}
+
 namespace Lotus
 {
     struct CSphereCollider
@@ -48,5 +53,10 @@ namespace Lotus
         bool IsKinematic = false;
 
         GENERATED_BODY(CRigidBody, Gravity, IsKinematic);
+
+        struct
+        {
+            physx::PxRigidActor* actor = nullptr;
+        } detail;
     };
 }
