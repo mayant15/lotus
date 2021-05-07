@@ -14,7 +14,7 @@ namespace Editor
 
     void SetupEditorCamera(const Lotus::SceneLoadEvent& event)
     {
-        Entity e = event.pScene->CreateEntity();
+        Entity e = event.pScene->CreateEntity(false);
         camera = &e.AddComponent<CCamera>();
         transform = &e.AddComponent<CTransform>();
 

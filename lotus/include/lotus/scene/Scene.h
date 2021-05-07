@@ -20,8 +20,8 @@ namespace Lotus
 
 //        Entity GetParent(Entity entity);
 
-        Entity CreateEntity();
-        Entity CreateEntity(const std::string& path);
+        Entity CreateEntity(bool serialize = true);
+        Entity CreateEntity(const std::string& path, bool serialize = true);
 
     private:
         entt::registry _registry;

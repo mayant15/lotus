@@ -23,16 +23,25 @@ namespace Lotus
         _registry.on_construct<CMeshRenderer>().connect<dispatchEntityEvent<ComponentCreateEvent<CMeshRenderer>>>();
     }
 
-    Entity Scene::CreateEntity()
+    Entity Scene::CreateEntity(bool serialize)
     {
         EntityID id = _registry.create();
+        if (serialize)
+        {
+            _registry.emplace<CSerialize>(id);
+        }
+
         return { id, &_registry };
     }
 
-    Entity Scene::CreateEntity(const std::string& path)
+    Entity Scene::CreateEntity(const std::string& path, bool serialize)
     {
         // Create empty
         EntityID id = _registry.create();
+        if (serialize)
+        {
+            _registry.emplace<CSerialize>(id);
+        }
 
         nlohmann::json data;
         std::ifstream infile(path);

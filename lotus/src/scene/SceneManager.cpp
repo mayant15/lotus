@@ -59,11 +59,13 @@ namespace Lotus::SceneManager
         infile >> data;
 
         if (!data.is_array())
+//        if (!data.contains("components"))
         {
             throw std::runtime_error { "Invalid scene format" };
         }
 
         for (auto& entityInfo : data)
+//        for (auto& entityInfo : data["components"])
         {
             if (entityInfo.contains("Prefab"))
             {
@@ -96,15 +98,15 @@ namespace Lotus::SceneManager
     {
         // TODO: Save changes to disk. I'll probably need to fix the serialization thing once and for all
         LOG_INFO("Saving scene...");
-//        std::ofstream outfile (currentScene->Path);
-//
-//        using namespace nlohmann;
-//        json data;
-//        data = json::array();
-//
-//
-//
-//        outfile << data;
+
+        auto* reg = currentScene->GetRegistry();
+        OutputArchive archive { reg };
+
+        // Save all components
+        SerializeComponents(archive);
+
+        // Dump to file
+        archive.DumpToFile(Lotus::ExpandPath("res://scenes/out.scene"));
         LOG_INFO("Saved!");
     }
 }
