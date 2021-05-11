@@ -1,0 +1,18 @@
+{
+  "Project": {
+    "StartScene": "res://scenes/Main.scene",
+    "LibraryName": "pong.dll",
+    "DisplayName": "Pong"
+  },
+  "Build": {
+    "IsDebug": true
+  },
+  "Render": {
+    "RenderAPI": "opengl",
+    "ViewportHeight": 800,
+    "ViewportWidth": 1024,
+    "DepthTest": true,
+    "CullFace": true,
+    "MSAA": true
+  }
+}

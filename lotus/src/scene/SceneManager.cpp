@@ -52,7 +52,7 @@ namespace Lotus::SceneManager
     void LoadScene(const std::string& relpath)
     {
         currentScene = std::make_shared<Scene>();
-        currentScene->Path = relpath;
+        currentScene->detail.path = relpath;
         auto fullpath = ExpandPath(relpath);
 
         std::ifstream infile (fullpath);
@@ -98,6 +98,7 @@ namespace Lotus::SceneManager
     void SaveScene()
     {
         // TODO: Save changes to disk. I'll probably need to fix the serialization thing once and for all
+        // TODO: The above is done, sort of. Save prefab information too.
         LOG_INFO("Saving scene...");
 
         auto* reg = currentScene->GetRegistry();
@@ -107,7 +108,7 @@ namespace Lotus::SceneManager
         SerializeComponents(archive);
 
         // Dump to file
-        archive.DumpToFile(Lotus::ExpandPath("res://scenes/out.scene"));
+        archive.DumpToFile(Lotus::ExpandPath(currentScene->detail.path));
         LOG_INFO("Saved!");
     }
 }

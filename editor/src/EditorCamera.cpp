@@ -21,7 +21,8 @@ namespace Editor
         camera->IsActive = true;
         camera->FOV = 45;
 
-        transform->Position = {0.0f, 5.0f, 12.0f};
+        transform->Position = {-5.0, 5.0, 5.0 };
+        transform->Rotation = { -35.0, -45.0, 0.0 };
     }
 
     void MoveCamera(double deltaTime)

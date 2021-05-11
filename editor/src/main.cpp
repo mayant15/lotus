@@ -40,7 +40,7 @@ int main(int argc, const char** argv)
     auto conf = Lotus::GetProjectConfig();
     try
     {
-        LoadModule("quickstart.dll");
+        LoadModule("pong.dll");
     }
     catch (const std::exception& e)
     {

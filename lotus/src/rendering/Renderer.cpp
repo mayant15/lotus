@@ -132,7 +132,7 @@ namespace Lotus::Renderer
 
         // TODO: Fix viewport updates
         RHI::BindFrameBuffer(state.ViewportFBO);
-        RHI::SetClearColor(0.54f, 0.54f, 0.54f, 1.0f);
+        RHI::SetClearColor(0.24f, 0.24f, 0.24f, 1.0f);
         RHI::Clear(RHI::COLOR_BIT | RHI::DEPTH_BIT);
         RHI::SetViewport(state.ViewportWidth, state.ViewportHeight);
 

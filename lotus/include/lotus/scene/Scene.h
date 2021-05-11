@@ -11,8 +11,11 @@ namespace Lotus
     // TODO: Make this just the scene hierarchy
     struct LOTUS_API Scene
     {
-        std::string Path;
         SceneTreeNode* Root = nullptr;
+
+        struct {
+            std::string path;
+        } detail;
 
         Scene();
 

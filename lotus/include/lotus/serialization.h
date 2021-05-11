@@ -55,12 +55,12 @@ namespace Lotus
 
             void operator()(entt::entity e)
             {
-                data["entities"].push_back(e);
+//                data["entities"].push_back(e);
             }
 
             void operator()(std::underlying_type<entt::entity>::type size)
             {
-                data["sizes"].push_back(size);
+//                data["sizes"].push_back(size);
             }
 
             template<class Component>

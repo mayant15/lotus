@@ -34,4 +34,5 @@ add_subdirectory(tools/buildtool)
 
 if (LOTUS_BUILD_EXAMPLE)
     add_subdirectory(examples/quickstart)
+    add_subdirectory(examples/pong)
 endif()

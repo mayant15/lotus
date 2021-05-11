@@ -1,0 +1,48 @@
+{
+  "components": {
+    "0": {
+      "CDisplayName": {
+        "Name": "Sun"
+      },
+      "CSunLight": {
+        "color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "direction": [
+          0.0,
+          -1.0,
+          -1.0
+        ]
+      }
+    },
+    "1": {
+      "CDisplayName": {
+        "Name": "Cube"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/default.json",
+        "Model": "res://mesh/cube.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "Scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "Shader": {
+    "Vertex": "int://shaders/pbr.vert",
+    "Fragment": "int://shaders/pbr.frag"
+  },
+  "Albedo": [0.78, 0.52, 0.13, 1.0],
+  "Metallic": 1.0,
+  "Roughness": 0.5,
+  "AO": 0.5
+}
