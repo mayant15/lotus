@@ -21,8 +21,8 @@ namespace Lotus::Renderer
         explicit SkyPass(const Renderer::State* state) : pState(state)
         {
             shader = LoadAsset<Shader, ShaderLoader>(
-                    ExpandPath("int://shaders/skybox.vert"),
-                    ExpandPath("int://shaders/skybox.frag")
+                    "int://shaders/skybox.vert",
+                    "int://shaders/skybox.frag"
             );
         }
 

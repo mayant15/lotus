@@ -1,0 +1,195 @@
+{
+  "components": {
+    "0": {
+      "CDisplayName": {
+        "Name": "Gold"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/gold.json",
+        "Model": "res://mesh/sphere.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          -1.2000000476837158,
+          1.2999999523162842,
+          2.0
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "Scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "1": {
+      "CDisplayName": {
+        "Name": "Default"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/default.json",
+        "Model": "res://mesh/sphere.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          -3.4000000953674316,
+          1.2999999523162842,
+          2.0
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "Scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "2": {
+      "CDisplayName": {
+        "Name": "Wall"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/wall.json",
+        "Model": "res://mesh/sphere.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          1.2000000476837158,
+          1.2999999523162842,
+          2.0
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "Scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "3": {
+      "CDisplayName": {
+        "Name": "Mud"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/mud.json",
+        "Model": "res://mesh/sphere.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          3.4000000953674316,
+          1.2999999523162842,
+          2.0
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "Scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "4": {
+      "CDisplayName": {
+        "Name": "Backpack"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/backpack.json",
+        "Model": "res://mesh/Backpack.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          0.0,
+          3.0,
+          -3.0
+        ],
+        "Rotation": [
+          -90.0,
+          12.0,
+          -45.0
+        ],
+        "Scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "5": {
+      "CDisplayName": {
+        "Name": "Ground"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/default.json",
+        "Model": "res://mesh/cube.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          0.0,
+          -1.2000000476837158,
+          0.0
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          28.5
+        ],
+        "Scale": [
+          15.0,
+          0.5,
+          20.0
+        ]
+      }
+    },
+    "6": {
+      "CDisplayName": {
+        "Name": "Lights"
+      },
+      "CSkybox": {
+        "Map": "res://skybox/sky.hdr"
+      },
+      "CSunLight": {
+        "color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "direction": [
+          0.0,
+          -1.0,
+          -1.0
+        ]
+      }
+    }
+  },
+  "sizes": [
+    0,
+    1,
+    0,
+    7,
+    1,
+    7,
+    0,
+    0,
+    0,
+    0,
+    6,
+    1
+  ]
+}

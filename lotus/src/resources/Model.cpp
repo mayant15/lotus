@@ -1,5 +1,6 @@
 #include <lotus/resources/Model.h>
 #include <lotus/debug.h>
+#include <lotus/filesystem.h>
 
 #include <rendering/RHI.h>
 
@@ -66,12 +67,13 @@ namespace Lotus
         }
     }
 
-    SRef<Model> ModelLoader::Load(const std::string& path) const
+    SRef<Model> ModelLoader::Load(const std::string& relpath) const
     {
         SRef<Model> model = std::make_shared<Model>();
+        model->detail.path = relpath;
 
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(ExpandPath(relpath), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {

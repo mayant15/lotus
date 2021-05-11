@@ -8,10 +8,14 @@ namespace Lotus
     struct Texture
     {
         unsigned int ID = 0;
+
+        struct {
+            std::string path;
+        } detail;
     };
 
     LOADER(Texture)
     {
-        [[nodiscard]] SRef<Texture> Load(const std::string& path) const;
+        [[nodiscard]] SRef<Texture> Load(const std::string& relpath) const;
     };
 }

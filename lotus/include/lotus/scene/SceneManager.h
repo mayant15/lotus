@@ -7,7 +7,7 @@
 
 namespace Lotus::SceneManager
 {
-    LOTUS_API void LoadScene(const std::string& path);
+    LOTUS_API void LoadScene(const std::string& relpath);
     LOTUS_API void SaveScene();
     LOTUS_API SRef<Scene> GetCurrentScene();
     LOTUS_API void OnSimulationBegin(const SimulationBeginEvent& event);

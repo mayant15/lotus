@@ -24,9 +24,11 @@ namespace Lotus
     };
 
     // Reference: https://learnopengl.com/PBR/IBL/Diffuse-irradiance
-    SRef<HDRI> HDRILoader::Load(const std::string& path) const
+    SRef<HDRI> HDRILoader::Load(const std::string& relpath) const
     {
         SRef<HDRI> hdri = std::make_shared<HDRI>();
+        hdri->detail.path = relpath;
+        std::string fullpath = ExpandPath(relpath);
 
         RHI::TextureInfo texInfo {};
         texInfo.Data = nullptr;
@@ -54,7 +56,7 @@ namespace Lotus
 
         stbi_set_flip_vertically_on_load(true);
         int width, height, nChannels;
-        float* data = stbi_loadf(path.c_str(), &width, &height, &nChannels, 0);
+        float* data = stbi_loadf(fullpath.c_str(), &width, &height, &nChannels, 0);
         if (data)
         {
             RHI::TextureInfo info {};
@@ -68,8 +70,8 @@ namespace Lotus
 
             // convert HDR equirectangular environment map to cubemap equivalent
             auto shader = LoadAsset<Shader, ShaderLoader>(
-                    ExpandPath("int://shaders/loadHDRI.vert"),
-                    ExpandPath("int://shaders/loadHDRI.frag")
+                    "int://shaders/loadHDRI.vert",
+                    "int://shaders/loadHDRI.frag"
             );
 
             shader->Use();
@@ -105,7 +107,7 @@ namespace Lotus
         }
         else
         {
-            LOG_ERROR("HDRI failed to load at path: {}", path);
+            LOG_ERROR("HDRI failed to load at path: {}", relpath);
             stbi_image_free(data);
             throw std::invalid_argument("Cubemap load failed.");
         }
@@ -119,8 +121,8 @@ namespace Lotus
 
         // convert HDR equirectangular environment map to cubemap equivalent
         auto convShader = LoadAsset<Shader, ShaderLoader>(
-                ExpandPath("int://shaders/convolution.vert"),
-                ExpandPath("int://shaders/convolution.frag")
+                "int://shaders/convolution.vert",
+                "int://shaders/convolution.frag"
         );
 
         convShader->Use();

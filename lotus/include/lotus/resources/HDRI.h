@@ -12,11 +12,15 @@ namespace Lotus
     {
         unsigned int EnvironmentMap;
         unsigned int Irradiance;
+
+        struct {
+            std::string path;
+        } detail;
     };
 
     LOADER(HDRI)
     {
-        [[nodiscard]] SRef<HDRI> Load(const std::string& path) const;
+        [[nodiscard]] SRef<HDRI> Load(const std::string& relpath) const;
     };
 
     struct CSkybox
@@ -29,11 +33,11 @@ namespace Lotus
 
     inline void to_json(nlohmann::json& data, const CSkybox& sb)
     {
-        // TODO: Handle to path
+        data["Map"] = sb.Map->detail.path;
     }
 
     inline void from_json(const nlohmann::json& data, CSkybox& sb)
     {
-        sb.Map = LoadAsset<HDRI, HDRILoader>(ExpandPath(data.at("Map").get<std::string>()));
+        sb.Map = LoadAsset<HDRI, HDRILoader>(data.at("Map").get<std::string>());
     }
 }

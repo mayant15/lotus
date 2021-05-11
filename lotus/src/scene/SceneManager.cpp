@@ -49,23 +49,24 @@ namespace Lotus::SceneManager
         }
     }
 
-    void LoadScene(const std::string& path)
+    void LoadScene(const std::string& relpath)
     {
         currentScene = std::make_shared<Scene>();
-        currentScene->Path = path;
+        currentScene->Path = relpath;
+        auto fullpath = ExpandPath(relpath);
 
-        std::ifstream infile (path);
+        std::ifstream infile (fullpath);
         nlohmann::json data;
         infile >> data;
 
-        if (!data.is_array())
-//        if (!data.contains("components"))
+//        if (!data.is_array())
+        if (!data.contains("components"))
         {
             throw std::runtime_error { "Invalid scene format" };
         }
 
-        for (auto& entityInfo : data)
-//        for (auto& entityInfo : data["components"])
+//        for (auto& entityInfo : data)
+        for (auto& entityInfo : data["components"])
         {
             if (entityInfo.contains("Prefab"))
             {

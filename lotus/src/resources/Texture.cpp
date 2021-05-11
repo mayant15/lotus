@@ -1,18 +1,21 @@
-#include "lotus/resources/Texture.h"
-#include "lotus/debug.h"
+#include <lotus/resources/Texture.h>
+#include <lotus/debug.h>
+#include <lotus/filesystem.h>
 
-#include "rendering/RHI.h"
+#include <rendering/RHI.h>
 
 #include <stb_image.h>
 
 namespace Lotus
 {
-    SRef<Texture> TextureLoader::Load(const std::string& path) const
+    SRef<Texture> TextureLoader::Load(const std::string& relpath) const
     {
         SRef<Texture> texture = std::make_shared<Texture>();
+        texture->detail.path = relpath;
 
         int width, height, nChannels;
-        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nChannels, 0);
+        std::string fullpath = ExpandPath(relpath);
+        unsigned char* data = stbi_load(fullpath.c_str(), &width, &height, &nChannels, 0);
         if (data)
         {
             RHI::TextureInfo info {};
@@ -26,7 +29,7 @@ namespace Lotus
         }
         else
         {
-            LOG_ERROR("Texture failed to load at path: {}", path);
+            LOG_ERROR("Texture failed to load at path: {}", relpath);
             stbi_image_free(data);
             throw std::invalid_argument("image data invalid");
         }

@@ -18,10 +18,14 @@ namespace Lotus
         std::optional<Handle<Texture>> Normal;
         float Roughness = 1.0f;
         float Metallic = 0.0f;
+
+        struct {
+            std::string path;
+        } detail;
     };
 
     LOADER(Material)
     {
-        [[nodiscard]] SRef<Material> Load(const std::string& path) const;
+        [[nodiscard]] SRef<Material> Load(const std::string& relpath) const;
     };
 }

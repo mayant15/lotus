@@ -1,6 +1,6 @@
 {
   "Project": {
-    "StartScene": "res://scenes/SampleScene.json",
+    "StartScene": "res://scenes/out.scene",
     "LibraryName": "quickstart",
     "DisplayName": "Quickstart"
   },

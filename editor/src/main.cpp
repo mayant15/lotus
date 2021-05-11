@@ -51,7 +51,7 @@ int main(int argc, const char** argv)
     auto& em = Lotus::EventManager::Get();
     em.Bind<Lotus::SceneLoadEvent, Editor::SetupEditorCamera>();
 
-    Lotus::SceneManager::LoadScene(Lotus::ExpandPath(conf.StartScene));
+    Lotus::SceneManager::LoadScene(conf.StartScene);
 
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;

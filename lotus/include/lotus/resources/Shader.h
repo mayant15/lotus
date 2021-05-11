@@ -76,6 +76,6 @@ namespace Lotus
 
     LOADER(Shader)
     {
-        [[nodiscard]] SRef <Shader> Load(const std::string& vertexPath, const std::string& fragmentPath) const;
+        [[nodiscard]] SRef <Shader> Load(const std::string& relVertexPath, const std::string& relFragmentPath) const;
     };
 }

@@ -11,7 +11,7 @@ namespace Lotus
     {
         if (data.contains(key) && data.at(key).is_string())
         {
-            auto handle = LoadAsset<Texture, TextureLoader>(ExpandPath(data.at(key).get<std::string>()));
+            auto handle = LoadAsset<Texture, TextureLoader>(data.at(key).get<std::string>());
             return std::optional<Handle<Texture>> {handle};
         }
         else
@@ -20,13 +20,14 @@ namespace Lotus
         }
     }
 
-    SRef<Material> MaterialLoader::Load(const std::string& path) const
+    SRef<Material> MaterialLoader::Load(const std::string& relpath) const
     {
-        std::ifstream file(path);
+        std::ifstream file(ExpandPath(relpath));
         json data;
         file >> data;
 
         SRef<Material> material = std::make_shared<Material>();
+        material->detail.path = relpath;
 
         // Albedo texture or color
         if (auto tex = getTexture(data, "Albedo"))
@@ -50,8 +51,8 @@ namespace Lotus
 
         auto shader = data.at("Shader");
         material->MaterialShader = LoadAsset<Shader, ShaderLoader>(
-                ExpandPath(shader.at("Vertex").get<std::string>()),
-                ExpandPath(shader.at("Fragment").get<std::string>())
+                shader.at("Vertex").get<std::string>(),
+                shader.at("Fragment").get<std::string>()
         );
 
         material->Roughness = data["Roughness"];

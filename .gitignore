@@ -9,6 +9,7 @@ CMakeFiles/
 .vs/
 .vscode/
 .vtune/
+.prof/
 examples/quickstart/.settings
 
 lotus/docs/doxygen/

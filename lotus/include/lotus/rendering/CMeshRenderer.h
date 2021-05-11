@@ -20,12 +20,13 @@ namespace Lotus
 
     inline void to_json(nlohmann::json& data, const CMeshRenderer& mr)
     {
-        // TODO: Handle to path
+        data["Model"] = mr.MeshModel->detail.path;
+        data["Material"] = mr.MeshMaterial->detail.path;
     }
 
     inline void from_json(const nlohmann::json& data, CMeshRenderer& mr)
     {
-        mr.MeshModel = LoadAsset<Model, ModelLoader>(ExpandPath(data.at("Model").get<std::string>()));
-        mr.MeshMaterial = LoadAsset<Material, MaterialLoader>(ExpandPath(data.at("Material").get<std::string>()));
+        mr.MeshModel = LoadAsset<Model, ModelLoader>(data.at("Model").get<std::string>());
+        mr.MeshMaterial = LoadAsset<Material, MaterialLoader>(data.at("Material").get<std::string>());
     }
 }
