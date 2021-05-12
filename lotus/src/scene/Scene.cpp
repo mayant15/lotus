@@ -29,6 +29,7 @@ namespace Lotus
         if (serialize)
         {
             _registry.emplace<CSerialize>(id);
+            _registry.emplace<CDisplayName>(id, "New Entity");
         }
 
         return { id, &_registry };
@@ -41,6 +42,7 @@ namespace Lotus
         if (serialize)
         {
             _registry.emplace<CSerialize>(id);
+            _registry.emplace<CDisplayName>(id, "New Entity");
         }
 
         nlohmann::json data;

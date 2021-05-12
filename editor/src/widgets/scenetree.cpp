@@ -20,6 +20,20 @@ namespace Editor::Widgets
         ImGui::SetNextItemOpen(true, ImGuiCond_Once);
         if (ImGui::TreeNode("Root"))
         {
+            // Create a new entity
+            if (ImGui::BeginPopupContextItem("entity-create-menu"))
+            {
+                if (ImGui::Selectable("Empty"))
+                {
+                    selected = (entt::entity) scene->CreateEntity();
+                }
+
+                // Create more entity types here
+
+                ImGui::EndPopup();
+            }
+
+            // List existing entities
             auto view = reg->view<Lotus::CDisplayName>();
             for (const auto e : view)
             {
