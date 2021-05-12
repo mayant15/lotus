@@ -52,6 +52,17 @@ namespace Lotus
         return ctors.at(name);
     }
 
+    inline std::vector<std::string> GetRegisteredComponents()
+    {
+        std::vector<std::string> result;
+        result.reserve(ctors.size());
+        for (const auto& kv : ctors)
+        {
+            result.push_back(kv.first);
+        }
+        return result;
+    }
+
     void RegisterEngineComponents();
 
     inline void SerializeComponentByID(const entt::id_type id, OutputArchive& archive)

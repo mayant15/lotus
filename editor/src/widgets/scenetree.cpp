@@ -160,6 +160,32 @@ namespace Editor::Widgets
             properties<Lotus::CTransform>(reg);
             properties<Lotus::CSunLight>(reg);
             properties<Lotus::CMeshRenderer>(reg);
+
+            // Add a new component
+            static std::string selected_component;
+
+            if (ImGui::Button("Add Component"))
+            {
+                ImGui::OpenPopup("add_component_popup");
+            }
+
+            ImGui::Text("%s", selected_component.c_str());
+
+            if (ImGui::BeginPopup("add_component_popup"))
+            {
+                auto components = Lotus::GetRegisteredComponents();
+                for (const auto& comp : components)
+                {
+                    if (ImGui::Selectable(comp.c_str()))
+                    {
+                        selected_component = comp;
+
+                        // TODO: Create component with default values
+                    }
+                }
+
+                ImGui::EndPopup();
+            }
         }
 
         ImGui::End();
