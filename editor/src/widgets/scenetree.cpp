@@ -3,6 +3,7 @@
 #include <lotus/ecs/ComponentRegistry.h>
 #include <lotus/ecs/components/CTransform.h>
 #include <lotus/ecs/components/CLight.h>
+#include <lotus/rendering/CMeshRenderer.h>
 
 namespace Editor::Widgets
 {
@@ -88,6 +89,36 @@ namespace Editor::Widgets
         }
     }
 
+    template<> void properties<Lotus::CMeshRenderer>(entt::registry* reg)
+    {
+        using namespace Lotus;
+        if (reg->has<CMeshRenderer>(selected))
+        {
+            auto& mr = reg->get<CMeshRenderer>(selected);
+
+            // Setup buffers
+            constexpr size_t MAX_PATH_LENGTH = 100;
+
+            auto model = mr.MeshModel->detail.path;
+            char modelbuf[MAX_PATH_LENGTH];
+            std::memcpy(modelbuf, model.c_str(), model.length() + 1); // NOTE: Plus 1 to get the terminating \0
+
+            auto mat = mr.MeshMaterial->detail.path;
+            char matbuf[MAX_PATH_LENGTH];
+            std::memcpy(matbuf, mat.c_str(), mat.length() + 1);
+
+            // Start UI
+            ImGui::Text("MESH RENDERER:");
+
+            ImGui::InputText("Model", modelbuf, MAX_PATH_LENGTH, ImGuiInputTextFlags_ReadOnly);
+            ImGui::InputText("Material", matbuf, MAX_PATH_LENGTH, ImGuiInputTextFlags_ReadOnly);
+
+            ImGui::Separator();
+
+            // TODO: Load the new model/material when value is changed here
+        }
+    }
+
     void Properties()
     {
         static bool show = true;
@@ -101,8 +132,15 @@ namespace Editor::Widgets
         {
             auto scene = Lotus::SceneManager::GetCurrentScene();
             auto* reg = scene->GetRegistry();
+
+            // TODO: Eventually this should something like this
+//            reg->visit(selected, [reg](const entt::id_type id){
+//                RenderPropertyUI(reg, selected, id);
+//            });
+
             properties<Lotus::CTransform>(reg);
             properties<Lotus::CSunLight>(reg);
+            properties<Lotus::CMeshRenderer>(reg);
         }
 
         ImGui::End();
