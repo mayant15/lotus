@@ -119,6 +119,24 @@ namespace Editor::Widgets
         }
     }
 
+    template<> void properties<Lotus::CDisplayName>(entt::registry* reg)
+    {
+        using namespace Lotus;
+        if (reg->has<CDisplayName>(selected))
+        {
+            auto& dn = reg->get<CDisplayName>(selected);
+            constexpr size_t MAX_DISPLAY_NAME_SIZE = 100;
+            char namebuf[100];
+            std::memcpy(namebuf, dn.Name.c_str(), dn.Name.length() + 1);
+
+            ImGui::Text("DISPLAY NAME:");
+            ImGui::InputText("Name", namebuf, MAX_DISPLAY_NAME_SIZE);
+            ImGui::Separator();
+
+            dn.Name = namebuf;
+        }
+    }
+
     void Properties()
     {
         static bool show = true;
@@ -138,6 +156,7 @@ namespace Editor::Widgets
 //                RenderPropertyUI(reg, selected, id);
 //            });
 
+            properties<Lotus::CDisplayName>(reg);
             properties<Lotus::CTransform>(reg);
             properties<Lotus::CSunLight>(reg);
             properties<Lotus::CMeshRenderer>(reg);
