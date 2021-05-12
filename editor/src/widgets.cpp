@@ -80,7 +80,6 @@ namespace Editor::Widgets
         auto[ux, uy] = Lotus::Renderer::GetViewportUV();
         Viewport(colorBuffer, ux, uy);
 
-//        DemoWindow();
         SceneTree();
         Properties();
         Control();
@@ -103,10 +102,5 @@ namespace Editor::Widgets
     void MainDockSpace()
     {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-    }
-
-    void DemoWindow()
-    {
-        ImGui::ShowDemoWindow();
     }
 }

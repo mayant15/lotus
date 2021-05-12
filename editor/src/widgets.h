@@ -15,7 +15,6 @@ namespace Editor::Widgets
     void RegisterViewportEvents(Window* window);
 
     void MainDockSpace();
-    void DemoWindow();
     void MainMenu(float fps);
     void Log();
     void SceneTree();

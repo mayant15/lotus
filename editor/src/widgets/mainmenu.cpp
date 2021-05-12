@@ -31,6 +31,7 @@ namespace Editor::Widgets
 
                 ImGui::EndMenu();
             }
+
             if (ImGui::BeginMenu("Edit"))
             {
                 if (ImGui::MenuItem("Undo", "CTRL+Z"))
@@ -47,11 +48,21 @@ namespace Editor::Widgets
                 ImGui::EndMenu();
             }
 
+            static bool viewDemo = false;
+            if (ImGui::BeginMenu("View"))
+            {
+                if (ImGui::MenuItem("Demo Window", "")) viewDemo = true;
+                ImGui::EndMenu();
+            }
+
             ImGui::Separator();
             ImGui::Spacing();
             ImGui::Text("FPS: %.1f", fps);
 
             ImGui::EndMainMenuBar();
+
+            // Windows
+            if (viewDemo) ImGui::ShowDemoWindow(&viewDemo);
         }
     }
 }
