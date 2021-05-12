@@ -14,6 +14,12 @@ namespace Lotus
         // NOTE: These cannot be just "Material" or "Model" because GCC complains about the name
         // MSVC and clang will work fine though
 
+        CMeshRenderer()
+        {
+            MeshMaterial = LoadAsset<Material, MaterialLoader>("int://materials/default.json");
+            MeshModel = LoadAsset<Model, ModelLoader>("int://mesh/cube.fbx");
+        }
+
         static std::string GetName()
         { return "CMeshRenderer"; }
     };
