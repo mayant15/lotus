@@ -7,8 +7,8 @@
 
 namespace Lotus
 {
-    std::unordered_map<component_ctor_key_t, component_ctor_t> ctors;
-    std::unordered_map<entt::id_type, component_serializer_t> serializers;
+    std::unordered_map<entt::id_type, ComponentInfo> component_info;
+    std::unordered_map<std::string, entt::id_type> str_to_id;
 
     void RegisterEngineComponents()
     {

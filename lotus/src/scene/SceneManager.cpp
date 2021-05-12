@@ -43,8 +43,8 @@ namespace Lotus::SceneManager
         {
             if (comp.key() != "Prefab")
             {
-                auto ct = GetComponentCtor(comp.key());
-                ct (id, *reg, comp.value());
+                auto info = GetComponentInfo(comp.key());
+                info.assignFn(id, *reg, comp.value());
             }
         }
     }

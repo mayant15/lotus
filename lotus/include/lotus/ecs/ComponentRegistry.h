@@ -11,52 +11,71 @@
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(COMPONENT, __VA_ARGS__); \
     static std::string GetName() { return QUOTE(COMPONENT); }
 
-using component_ctor_key_t = std::string;
-using component_ctor_t = std::function<void(const entt::entity, entt::registry&, const nlohmann::json& data)>;
-using component_serializer_t = std::function<void(Lotus::OutputArchive&)>;
-
 namespace Lotus
 {
-    extern LOTUS_API std::unordered_map<component_ctor_key_t, component_ctor_t> ctors;
-    extern LOTUS_API std::unordered_map<entt::id_type, component_serializer_t> serializers;
+    struct ComponentInfo;
+    extern LOTUS_API std::unordered_map<entt::id_type, ComponentInfo> component_info;
+    extern LOTUS_API std::unordered_map<std::string, entt::id_type> str_to_id;
 
-    template<class T>
-    struct ComponentAssigner
+    struct ComponentInfo
+    {
+        using AssignFn = std::function<void(const entt::entity, entt::registry&, const nlohmann::json& data)>;
+        using DefaultAssignFn = std::function<void(const entt::entity, entt::registry&)>;
+        using SerializeFn = std::function<void(Lotus::OutputArchive&)>;
+
+        entt::id_type id;
+        std::string name;
+        AssignFn assignFn;
+        DefaultAssignFn defaultAssignFn;
+        SerializeFn serializeFn;
+    };
+
+    template<class Component>
+    struct ComponentTraits
     {
         static void Assign(const entt::entity entity, entt::registry& registry, const nlohmann::json & data)
         {
-            T tmp;
+            Component tmp;
             from_json(data, tmp);
-            registry.template emplace_or_replace<T>(entity, std::move(tmp));
+            registry.template emplace_or_replace<Component>(entity, std::move(tmp));
         }
-    };
 
-    template<class T>
-    struct ComponentSerializer
-    {
+        static void DefaultAssign(const entt::entity entity, entt::registry& registry)
+        {
+            Component tmp;
+            registry.template emplace_or_replace<Component>(entity, std::move(tmp));
+        }
+
         static void Serialize(OutputArchive& archive)
         {
-            archive.template components<T>();
+            archive.template components<Component>();
         }
     };
 
     template<class T>
     inline void RegisterComponent()
     {
-        ctors.insert({T::GetName(), &ComponentAssigner<T>::Assign});
-        serializers.insert({entt::type_info<T>::id(), &ComponentSerializer<T>::Serialize});
+        ComponentInfo meta {};
+        meta.id = entt::type_info<T>::id();
+        meta.name = T::GetName();
+        meta.assignFn = &ComponentTraits<T>::Assign;
+        meta.defaultAssignFn = &ComponentTraits<T>::DefaultAssign;
+        meta.serializeFn = &ComponentTraits<T>::Serialize;
+
+        component_info.insert({ meta.id, meta });
+        str_to_id.insert({ meta.name, meta.id });
     }
 
-    inline const component_ctor_t& GetComponentCtor(const std::string& name)
+    inline const ComponentInfo& GetComponentInfo(const std::string& name)
     {
-        return ctors.at(name);
+        return component_info.at(str_to_id.at(name));
     }
 
     inline std::vector<std::string> GetRegisteredComponents()
     {
         std::vector<std::string> result;
-        result.reserve(ctors.size());
-        for (const auto& kv : ctors)
+        result.reserve(str_to_id.size());
+        for (const auto& kv : str_to_id)
         {
             result.push_back(kv.first);
         }
@@ -67,17 +86,17 @@ namespace Lotus
 
     inline void SerializeComponentByID(const entt::id_type id, OutputArchive& archive)
     {
-        if (serializers.find(id) != serializers.end())
+        if (component_info.find(id) != component_info.end())
         {
-            serializers.at(id)(archive);
+            component_info.at(id).serializeFn(archive);
         }
     }
 
     inline void SerializeComponents(OutputArchive& archive)
     {
-        for (const auto& entry : serializers)
+        for (const auto& info : component_info)
         {
-            entry.second(archive);
+            info.second.serializeFn(archive);
         }
     }
 

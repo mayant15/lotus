@@ -51,8 +51,8 @@ namespace Lotus
         {
             try
             {
-                auto ct = GetComponentCtor(el.key());
-                ct(id, _registry, el.value());
+                auto info = GetComponentInfo(el.key());
+                info.assignFn(id, _registry, el.value());
             }
             catch (const std::exception& e)
             {
