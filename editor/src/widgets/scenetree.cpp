@@ -162,14 +162,10 @@ namespace Editor::Widgets
             properties<Lotus::CMeshRenderer>(reg);
 
             // Add a new component
-            static std::string selected_component;
-
             if (ImGui::Button("Add Component"))
             {
                 ImGui::OpenPopup("add_component_popup");
             }
-
-            ImGui::Text("%s", selected_component.c_str());
 
             if (ImGui::BeginPopup("add_component_popup"))
             {
@@ -178,9 +174,8 @@ namespace Editor::Widgets
                 {
                     if (ImGui::Selectable(comp.c_str()))
                     {
-                        selected_component = comp;
-
-                        // TODO: Create component with default values
+                        auto info = Lotus::GetComponentInfo(comp);
+                        info.defaultAssignFn(selected, *reg);
                     }
                 }
 
