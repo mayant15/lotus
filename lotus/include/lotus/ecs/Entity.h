@@ -28,6 +28,9 @@ namespace Lotus
         entt::registry* _registry = nullptr;
 
     public:
+        Entity()
+        {}
+
         Entity(EntityID id, entt::registry* registry)
                 : _id(id), _registry(registry)
         {}

@@ -157,7 +157,7 @@ namespace Lotus::Renderer
         auto&& [mr, tf] = registry->get<CMeshRenderer, CTransform>(event.entityID);
 
         ModelInfo info;
-        info.Transform = &tf;
+        info.id = event.entityID;
         info.MeshMaterial = mr.MeshMaterial;
 
         for (const auto& mesh : mr.MeshModel->Meshes)

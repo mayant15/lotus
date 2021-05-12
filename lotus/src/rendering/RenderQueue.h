@@ -1,7 +1,7 @@
 #pragma once
 
 #include <lotus/rendering/CMeshRenderer.h>
-#include <lotus/ecs/components/CTransform.h>
+#include <lotus/ecs/Entity.h>
 
 namespace Lotus::Renderer
 {
@@ -21,7 +21,7 @@ namespace Lotus::Renderer
     {
         std::vector<MeshBufferSet> Buffers;
         Handle<Material> MeshMaterial;
-        CTransform* Transform;
+        EntityID id;
     };
 
     /**

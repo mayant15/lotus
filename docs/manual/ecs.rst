@@ -1,6 +1,9 @@
 The Entity Component System
 ===========================
 
+.. WARNING::
+   Do not use component pointers. Keep the entity instead and get the component wherever required.
+
 Events and Systems
 ------------------
 

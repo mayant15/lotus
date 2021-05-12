@@ -39,8 +39,86 @@
         ],
         "Scale": [
           6.0,
-          0.1,
+          0.10000000149011612,
           4.5
+        ]
+      }
+    },
+    "2": {
+      "CDisplayName": {
+        "Name": "PaddleL"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/gold.json",
+        "Model": "int://mesh/cube.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          -2.924999952316284,
+          0.5450000166893005,
+          0.0
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Scale": [
+          0.30000001192092896,
+          0.30000001192092896,
+          1.0
+        ]
+      }
+    },
+    "3": {
+      "CDisplayName": {
+        "Name": "PaddleR"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/gold.json",
+        "Model": "int://mesh/cube.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          2.924999952316284,
+          0.5450000166893005,
+          0.0
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Scale": [
+          0.30000001192092896,
+          0.30000001192092896,
+          1.0
+        ]
+      }
+    },
+    "4": {
+      "CDisplayName": {
+        "Name": "Ball"
+      },
+      "CMeshRenderer": {
+        "Material": "res://materials/gold.json",
+        "Model": "int://mesh/sphere.fbx"
+      },
+      "CTransform": {
+        "Position": [
+          0.0,
+          0.5450000166893005,
+          0.0
+        ],
+        "Rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Scale": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
         ]
       }
     }

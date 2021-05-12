@@ -93,10 +93,11 @@ namespace Lotus::Renderer
         {
             Handle<Material> material = model.MeshMaterial;
             Handle<Shader> shader = material->MaterialShader;
+            const CTransform& tf = pState->pEngineScene->GetRegistry()->get<CTransform>(model.id);
             shader->Use();
 
             // Set transforms and draw actor
-            shader->SetMat4f("model", GetModelMatrix(*model.Transform));
+            shader->SetMat4f("model", GetModelMatrix(tf));
 
             // Set camera
             shader->SetMat4f("view", pState->View);
