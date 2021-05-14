@@ -8,6 +8,15 @@
 
 namespace Editor::Widgets
 {
+    static void showMetricsWindow(float fps, bool* show)
+    {
+        if (ImGui::Begin("Performance Metrics", show))
+        {
+            ImGui::Text("FPS: %.1f", fps);
+        }
+        ImGui::End();
+    }
+
     void MainMenu(float fps)
     {
         if (ImGui::BeginMainMenuBar())
@@ -49,20 +58,19 @@ namespace Editor::Widgets
             }
 
             static bool viewDemo = false;
+            static bool viewMetrics = false;
             if (ImGui::BeginMenu("View"))
             {
                 if (ImGui::MenuItem("Demo Window", "")) viewDemo = true;
+                if (ImGui::MenuItem("Metrics", "")) viewMetrics = true;
                 ImGui::EndMenu();
             }
-
-            ImGui::Separator();
-            ImGui::Spacing();
-            ImGui::Text("FPS: %.1f", fps);
 
             ImGui::EndMainMenuBar();
 
             // Windows
             if (viewDemo) ImGui::ShowDemoWindow(&viewDemo);
+            if (viewMetrics) showMetricsWindow(fps, &viewMetrics);
         }
     }
 }
