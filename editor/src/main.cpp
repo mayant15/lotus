@@ -1,4 +1,5 @@
 #include "widgets.h"
+#include "gizmos.h"
 #include "utils.h"
 #include "EditorCamera.h"
 #include "ModuleLoader.h"
@@ -36,6 +37,7 @@ int main(int argc, const char** argv)
 
     // Renderer has been set up, setup ImGui panels
     Editor::Widgets::Initialize(window);
+    Editor::Gizmos::Initialize(window);
 
     auto conf = Lotus::GetProjectConfig();
     try
@@ -72,6 +74,7 @@ int main(int argc, const char** argv)
         EndFrame(window);
     }
 
+    Editor::Gizmos::Shutdown();
     Editor::Widgets::Shutdown();
     Lotus::Engine::Shutdown();
     DestroyWindow(window);
