@@ -105,6 +105,53 @@ namespace Editor::Widgets
         dn.Name = namebuf;
     }
 
+    void displayComponentImpl(Lotus::CRigidBody& rb)
+    {
+        LOTUS_DISPLAY_PROPERTY_START("Rigidbody")
+        {
+            ImGui::InputFloat("Gravity", &rb.Gravity, 0.5f);
+            ImGui::Checkbox("Is Kinematic", &rb.IsKinematic);
+        }
+    }
+
+    void displayComponentImpl(Lotus::CBoxCollider& bc)
+    {
+        float pos[3] = { bc.Position.x, bc.Position.y, bc.Position.z };
+        float dim[3] = { bc.Dimensions.x, bc.Dimensions.y, bc.Dimensions.z };
+
+        LOTUS_DISPLAY_PROPERTY_START("Box Collider")
+        {
+            ImGui::InputFloat3("Position", pos);
+            ImGui::InputFloat3("Dimensions", dim);
+        }
+
+        bc.Position = { pos[0], pos[1], pos[2] };
+        bc.Dimensions = { dim[0], dim[1], dim[2] };
+    }
+
+    void displayComponentImpl(Lotus::CCapsuleCollider& cc)
+    {
+        float pos[3] = { cc.Position.x, cc.Position.y, cc.Position.z };
+        LOTUS_DISPLAY_PROPERTY_START("Capsule Collider")
+        {
+            ImGui::InputFloat3("Position", pos);
+            ImGui::InputFloat("Height", &cc.Height);
+            ImGui::InputFloat("Radius", &cc.Radius);
+        }
+        cc.Position = { pos[0], pos[1], pos[2] };
+    }
+
+    void displayComponentImpl(Lotus::CSphereCollider& sc)
+    {
+        float pos[3] = { sc.Position.x, sc.Position.y, sc.Position.z };
+        LOTUS_DISPLAY_PROPERTY_START("Sphere Collider")
+        {
+            ImGui::InputFloat3("Position", pos);
+            ImGui::InputFloat("Radius", &sc.Radius);
+        }
+        sc.Position = { pos[0], pos[1], pos[2] };
+    }
+
     template<class Component>
     void displayComponent(entt::registry* reg)
     {

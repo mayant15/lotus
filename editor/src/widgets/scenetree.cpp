@@ -77,6 +77,12 @@ namespace Editor::Widgets
             displayComponent<Lotus::CSunLight>(reg);
             displayComponent<Lotus::CMeshRenderer>(reg);
 
+            // Physics
+            displayComponent<Lotus::CRigidBody>(reg);
+            displayComponent<Lotus::CBoxCollider>(reg);
+            displayComponent<Lotus::CSphereCollider>(reg);
+            displayComponent<Lotus::CCapsuleCollider>(reg);
+
             ImGui::Spacing();
             ImGui::Separator();
             ImGui::Spacing();

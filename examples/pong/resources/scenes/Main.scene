@@ -19,12 +19,28 @@
       }
     },
     "1": {
+      "CBoxCollider": {
+        "Dimensions": [
+          6.0,
+          0.10000000149011612,
+          4.5
+        ],
+        "Position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
       "CDisplayName": {
         "Name": "Ground"
       },
       "CMeshRenderer": {
         "Material": "int://materials/default.json",
         "Model": "int://mesh/cube.fbx"
+      },
+      "CRigidBody": {
+        "Gravity": 1.0,
+        "IsKinematic": true
       },
       "CTransform": {
         "Position": [
@@ -45,12 +61,28 @@
       }
     },
     "2": {
+      "CBoxCollider": {
+        "Dimensions": [
+          0.30000001192092896,
+          0.30000001192092896,
+          1.0
+        ],
+        "Position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
       "CDisplayName": {
         "Name": "PaddleL"
       },
       "CMeshRenderer": {
         "Material": "res://materials/gold.json",
         "Model": "int://mesh/cube.fbx"
+      },
+      "CRigidBody": {
+        "Gravity": 1.0,
+        "IsKinematic": true
       },
       "CTransform": {
         "Position": [
@@ -71,12 +103,28 @@
       }
     },
     "3": {
+      "CBoxCollider": {
+        "Dimensions": [
+          0.30000001192092896,
+          0.30000001192092896,
+          1.0
+        ],
+        "Position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
       "CDisplayName": {
         "Name": "PaddleR"
       },
       "CMeshRenderer": {
         "Material": "res://materials/gold.json",
         "Model": "int://mesh/cube.fbx"
+      },
+      "CRigidBody": {
+        "Gravity": 1.0,
+        "IsKinematic": true
       },
       "CTransform": {
         "Position": [
@@ -103,6 +151,18 @@
       "CMeshRenderer": {
         "Material": "res://materials/gold.json",
         "Model": "int://mesh/sphere.fbx"
+      },
+      "CRigidBody": {
+        "Gravity": 1.0,
+        "IsKinematic": false
+      },
+      "CSphereCollider": {
+        "Position": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Radius": 0.10000000149011612
       },
       "CTransform": {
         "Position": [
