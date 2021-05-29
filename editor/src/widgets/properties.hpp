@@ -43,9 +43,11 @@ namespace Editor::Widgets
 
         LOTUS_DISPLAY_PROPERTY_START("Transform")
         {
-            ImGui::DragFloat3("Position", pos, 0.5f);
-            ImGui::DragFloat3("Rotation", rot, 0.5f);
-            ImGui::DragFloat3("Scale", scale, 0.5f);
+            // NOTE: The position entry on colliders conflicts with this entry
+            //  https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-can-i-have-multiple-widgets-with-the-same-label
+            ImGui::DragFloat3("Position##transform", pos, 0.5f);
+            ImGui::DragFloat3("Rotation##transform", rot, 0.5f);
+            ImGui::DragFloat3("Scale##transform", scale, 0.5f);
         }
 
         transform.Position = { pos[0], pos[1], pos[2] };
@@ -121,8 +123,8 @@ namespace Editor::Widgets
 
         LOTUS_DISPLAY_PROPERTY_START("Box Collider")
         {
-            ImGui::InputFloat3("Position", pos);
-            ImGui::InputFloat3("Dimensions", dim);
+            ImGui::InputFloat3("Position##collider", pos);
+            ImGui::InputFloat3("Dimensions##collider", dim);
         }
 
         bc.Position = { pos[0], pos[1], pos[2] };
@@ -134,9 +136,9 @@ namespace Editor::Widgets
         float pos[3] = { cc.Position.x, cc.Position.y, cc.Position.z };
         LOTUS_DISPLAY_PROPERTY_START("Capsule Collider")
         {
-            ImGui::InputFloat3("Position", pos);
-            ImGui::InputFloat("Height", &cc.Height);
-            ImGui::InputFloat("Radius", &cc.Radius);
+            ImGui::InputFloat3("Position##collider", pos);
+            ImGui::InputFloat("Height##collider", &cc.Height);
+            ImGui::InputFloat("Radius##collider", &cc.Radius);
         }
         cc.Position = { pos[0], pos[1], pos[2] };
     }
@@ -146,8 +148,8 @@ namespace Editor::Widgets
         float pos[3] = { sc.Position.x, sc.Position.y, sc.Position.z };
         LOTUS_DISPLAY_PROPERTY_START("Sphere Collider")
         {
-            ImGui::InputFloat3("Position", pos);
-            ImGui::InputFloat("Radius", &sc.Radius);
+            ImGui::InputFloat3("Position##collider", pos);
+            ImGui::InputFloat("Radius##collider", &sc.Radius);
         }
         sc.Position = { pos[0], pos[1], pos[2] };
     }

@@ -181,6 +181,90 @@
           0.10000000149011612
         ]
       }
+    },
+    "5": {
+      "CBoxCollider": {
+        "Dimensions": [
+          0.05000000074505806,
+          1.2000000476837158,
+          6.0
+        ],
+        "Position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "CDisplayName": {
+        "Name": "Wall 1"
+      },
+      "CMeshRenderer": {
+        "Material": "int://materials/default.json",
+        "Model": "int://mesh/cube.fbx"
+      },
+      "CRigidBody": {
+        "Gravity": 0.0,
+        "IsKinematic": true
+      },
+      "CTransform": {
+        "Position": [
+          0.0,
+          0.6650000214576721,
+          -2.25
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "Scale": [
+          0.05000000074505806,
+          1.2000000476837158,
+          6.0
+        ]
+      }
+    },
+    "6": {
+      "CBoxCollider": {
+        "Dimensions": [
+          0.05000000074505806,
+          1.2000000476837158,
+          6.0
+        ],
+        "Position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "CDisplayName": {
+        "Name": "Wall 2"
+      },
+      "CMeshRenderer": {
+        "Material": "int://materials/default.json",
+        "Model": "int://mesh/cube.fbx"
+      },
+      "CRigidBody": {
+        "Gravity": 0.0,
+        "IsKinematic": true
+      },
+      "CTransform": {
+        "Position": [
+          0.0,
+          0.6650000214576721,
+          2.25
+        ],
+        "Rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "Scale": [
+          0.05000000074505806,
+          1.2000000476837158,
+          6.0
+        ]
+      }
     }
   }
 }
