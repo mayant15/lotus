@@ -51,6 +51,7 @@ namespace Lotus::Physics
         }
     }
 
+    // TODO: This should also happen on rigidbody or collider *changes*
     void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody>& event)
     {
         auto* registry = state.pEngineScene->GetRegistry();

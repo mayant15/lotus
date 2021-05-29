@@ -74,7 +74,7 @@
         ]
       },
       "CDisplayName": {
-        "Name": "PaddleL"
+        "Name": "Player"
       },
       "CMeshRenderer": {
         "Material": "res://materials/gold.json",

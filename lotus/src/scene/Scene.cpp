@@ -69,4 +69,27 @@ namespace Lotus
     {
         return &_registry;
     }
+
+    Entity Scene::GetEntity(EntityID entity)
+    {
+        if (_registry.valid(entity))
+        {
+            return Entity { entity, &_registry };
+        }
+        throw std::runtime_error { "Invalid entity ID" };
+    }
+
+    Entity Scene::GetEntity(const std::string& name)
+    {
+        auto view = _registry.view<CDisplayName>();
+        for (const auto& e : view)
+        {
+            const auto& cd = view.get(e);
+            if (cd.Name == name)
+            {
+                return Entity { e, &_registry };
+            }
+        }
+        throw std::runtime_error { "No entity named " + name };
+    }
 }
