@@ -5,10 +5,21 @@
 // TODO: Attaching scripts to entities
 //   call events as void OnSceneLoad(Entity entity, const SceneLoadEvent& event)
 
-static constexpr double PADDLE_SPEED = 5.0;
+void MoveBallOnStart(const Lotus::SimulationBeginEvent& e)
+{
+    static constexpr float BALL_SPEED = 0.01;
+
+    using namespace Lotus;
+    auto scene = SceneManager::GetCurrentScene();
+    auto ball = scene->GetEntity("Ball");
+    auto& rb = ball.GetComponent<CRigidBody>();
+    Physics::ApplyForce(rb, Vector3f {1.0, 0.0, -0.2} * BALL_SPEED, Physics::EForceType::IMPULSE);
+}
 
 void MovePaddleOnUpdate(const Lotus::UpdateEvent& e)
 {
+    static constexpr float PADDLE_SPEED = 5.0;
+
     using namespace Lotus;
     if (Input::GetKeyPressed(L_KEY_A) || Input::GetKeyPressed(L_KEY_D))
     {
@@ -38,5 +49,6 @@ PONG_API void RegisterEvents()
     LOG_INFO("Registering [module:pong]");
 
     auto& em = EventManager::Get();
+    em.Bind<SimulationBeginEvent, MoveBallOnStart>();
     em.Bind<UpdateEvent, MovePaddleOnUpdate>();
 }

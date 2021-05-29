@@ -291,4 +291,20 @@ namespace Lotus::Physics
         }
         PX_RELEASE(state.pFoundation)
     }
+
+    void ApplyForce(const CRigidBody& rb, Vector3f force, EForceType type)
+    {
+        using namespace physx;
+        auto* body = reinterpret_cast<PxRigidBody*>(rb.detail.actor);
+        auto pxforce = PxVec3 { force.x, force.y, force.z };
+        switch (type)
+        {
+            case EForceType::IMPULSE:
+                body->addForce(pxforce, PxForceMode::eIMPULSE);
+                break;
+            case EForceType::FORCE:
+                body->addForce(pxforce, PxForceMode::eFORCE);
+                break;
+        }
+    }
 }

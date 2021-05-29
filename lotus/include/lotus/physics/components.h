@@ -60,3 +60,9 @@ namespace Lotus
         } detail;
     };
 }
+
+namespace Lotus::Physics
+{
+    enum class EForceType { IMPULSE, FORCE };
+    LOTUS_API void ApplyForce(const CRigidBody& rb, Vector3f force, EForceType type = EForceType::FORCE);
+}

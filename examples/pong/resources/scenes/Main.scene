@@ -153,7 +153,7 @@
         "Model": "int://mesh/sphere.fbx"
       },
       "CRigidBody": {
-        "Gravity": 1.0,
+        "Gravity": 0.0,
         "IsKinematic": false
       },
       "CSphereCollider": {

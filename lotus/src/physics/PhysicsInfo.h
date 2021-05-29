@@ -31,7 +31,7 @@ namespace Lotus::Physics
          * @brief Coefficient of restitution. Must be between 0 and 1.
          * This represents the energy retained after a collision.
         */
-        float Restitution = 0.8f;
+        float Restitution = 1.0f;
 
         /** @brief The density of the material. */
         float Density = 1.0f;
