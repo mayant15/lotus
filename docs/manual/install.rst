@@ -40,3 +40,8 @@ Basically, we want to run ``conan install`` in your ``CMAKE_BINARY_DIR``, which 
 .. NOTE::
    Support for multiple build configurations is currently lacking, which is why Visual Studio needs this workaround and also why we passed
    the ``-s build_type=Debug`` flag to conan. The Debug build configuration is the only one that we're working with for now.
+
+Editor Layout
++++++++++++++
+
+You can copy the ``editor/imgui.ini`` file to the directory where the editor executable is to get the default layout. You can skip this if you want to set up your own layout.
