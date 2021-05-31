@@ -9,6 +9,7 @@
 #include "lotus/internal/glm/gtc/matrix_transform.hpp"
 #include "lotus/internal/glm/gtx/matrix_decompose.hpp"
 #include "lotus/internal/glm/gtc/type_ptr.hpp"
+#include "lotus/internal/glm/gtc/quaternion.hpp"
 
 #include "lotus/lcommon.h"
 
@@ -22,6 +23,8 @@ typedef glm::ivec4 Vector4i;
 typedef glm::vec2 Vector2f;
 typedef glm::vec3 Vector3f;
 typedef glm::vec4 Vector4f;
+
+typedef glm::quat Quaternion;
 
 namespace glm
 {
@@ -56,6 +59,23 @@ namespace glm
         vec.g = data[1];
         vec.b = data[2];
         vec.a = data[3];
+    }
+
+    inline void to_json(nlohmann::json& data, const glm::quat& q)
+    {
+        data = nlohmann::json::array();
+        data[0] = q.w;
+        data[1] = q.x;
+        data[2] = q.y;
+        data[3] = q.z;
+    }
+
+    inline void from_json(const nlohmann::json& data, glm::quat& q)
+    {
+        q.w = data[0];
+        q.x = data[1];
+        q.y = data[2];
+        q.z = data[3];
     }
 }
 

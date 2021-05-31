@@ -9,8 +9,43 @@
 
 namespace Lotus::Physics
 {
-
     static Physics::State state {};
+
+    static Vector3f toVector3f(const physx::PxVec3& vec)
+    {
+        return { vec.x, vec.y, vec.z };
+    }
+
+    static physx::PxVec3 toPxVec3(const Vector3f& vec)
+    {
+        return { vec.x, vec.y, vec.z };
+    }
+
+    static PxQuat toPxQuat(const Vector3f& vec)
+    {
+        // Copy pasting this for now. Please work, will improve later.
+        // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
+        // yaw (Z), pitch (Y), roll (X)
+        // Abbreviations for the various angular functions
+        const double yaw = glm::radians(vec.y);
+        const double pitch = glm::radians(vec.x);
+        const double roll = glm::radians(vec.z);
+
+        const double cy = glm::cos(yaw * 0.5);
+        const double sy = glm::sin(yaw * 0.5);
+        const double cp = glm::cos(pitch * 0.5);
+        const double sp = glm::sin(pitch * 0.5);
+        const double cr = glm::cos(roll * 0.5);
+        const double sr = glm::sin(roll * 0.5);
+
+        PxQuat q;
+        q.w = cr * cp * cy + sr * sp * sy;
+        q.x = sr * cp * cy - cr * sp * sy;
+        q.y = cr * sp * cy + sr * cp * sy;
+        q.z = cr * cp * sy - sr * sp * cy;
+
+        return q;
+    }
 
     PxRigidActor* createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry)
     {
@@ -20,8 +55,11 @@ namespace Lotus::Physics
                                                                info.Material.Restitution);
         PxShape* shape = state.pPhysics->createShape(geometry, *mat, true);
 
-        // Position has already been set before this call
-        const PxTransform transform(info.Collider->Position.x, info.Collider->Position.y, info.Collider->Position.z);
+        // Position and rotation has already been set before this call
+        const PxTransform transform {
+            toPxVec3(info.Collider->Position),
+            toPxQuat(info.Collider->Rotation)
+        };
         if (info.IsKinematic)
         {
             return (PxRigidActor*) PxCreateStatic(*state.pPhysics, transform, *shape);
@@ -72,6 +110,7 @@ namespace Lotus::Physics
         {
             auto collider = registry->get<CSphereCollider>(event.entityID);
             colliderInfo.Position = collider.Position + transform.Position;
+            colliderInfo.Rotation = transform.Rotation;
 
             const PxSphereGeometry geom(collider.Radius);
             rb.detail.actor = createRigidBody(info, geom);
@@ -90,6 +129,7 @@ namespace Lotus::Physics
         {
             auto collider = registry->get<CBoxCollider>(event.entityID);
             colliderInfo.Position = collider.Position + transform.Position;
+            colliderInfo.Rotation = transform.Rotation;
 
             const PxBoxGeometry geom(collider.Dimensions.x, collider.Dimensions.y, collider.Dimensions.z);
             rb.detail.actor = createRigidBody(info, geom);
@@ -107,6 +147,7 @@ namespace Lotus::Physics
         {
             auto collider = registry->get<CCapsuleCollider>(event.entityID);
             colliderInfo.Position = collider.Position + transform.Position;
+            colliderInfo.Rotation = transform.Rotation;
 
             const PxCapsuleGeometry geom(collider.Radius, collider.Height);
             rb.detail.actor = createRigidBody(info, geom);
@@ -230,7 +271,7 @@ namespace Lotus::Physics
             // TODO: Set rotation and scale too
             // TODO: If statements for each collider shape, add those offsets to the transform
             PxTransform pt {};
-            pt.p = PxVec3 { tf.Position.x, tf.Position.y, tf.Position.z };
+            pt.p = toPxVec3(tf.Position);
             pt.q = rb.detail.actor->getGlobalPose().q;
             rb.detail.actor->setGlobalPose(pt);
         }
@@ -266,7 +307,7 @@ namespace Lotus::Physics
                 {
                     auto& transform = registry->get<CTransform>(id);
                     auto position = actor->getGlobalPose().p;
-                    transform.Position = Vector3f { position.x, position.y, position.z };
+                    transform.Position = toVector3f(position);
                 }
             }
             catch (const std::exception& e)
@@ -296,7 +337,7 @@ namespace Lotus::Physics
     {
         using namespace physx;
         auto* body = reinterpret_cast<PxRigidBody*>(rb.detail.actor);
-        auto pxforce = PxVec3 { force.x, force.y, force.z };
+        auto pxforce = toPxVec3(force);
         switch (type)
         {
             case EForceType::IMPULSE:

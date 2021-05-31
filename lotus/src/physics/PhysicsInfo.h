@@ -40,6 +40,7 @@ namespace Lotus::Physics
     struct PhysicsColliderInfo
     {
         Vector3f Position = Vector3f(0.0f);
+        Vector3f Rotation = Vector3f(0.0f, -90.0f, 0.0f);
     };
 
     struct PhysicsSphereColliderInfo : PhysicsColliderInfo
