@@ -10,12 +10,14 @@ CMakeFiles/
 .vscode/
 .vtune/
 .prof/
+venv/
 examples/quickstart/.settings
 
-lotus/docs/doxygen/
-lotus/docs/sphinx/
-lotus/docs/api/
-lotus/docs/.vscode/
+docs/.vscode
+docs/_build
+docs/doxygen/
+docs/sphinx/
+docs/api/
 
 CMakeLists.txt.user
 CMakeCache.txt
