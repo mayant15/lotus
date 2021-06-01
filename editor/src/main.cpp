@@ -9,6 +9,7 @@
 
 #include <chrono>
 
+
 /**
  * TODO: Handle engine vs runtime graphics API
  *   One way to do this would be to always run the engine and the game in OpenGL, but package with other APIs.
@@ -18,7 +19,14 @@
 int main(int argc, const char** argv)
 {
     // Validate input
-    std::filesystem::path projectRoot { argv[1] };
+    if (argc < 2)
+    {
+        LOG_ERROR("Please provide Project Directory.");
+        return EXIT_FAILURE;
+    }
+
+    std::filesystem::path projectRoot{ argv[1] };
+
     if (!projectRoot.is_absolute() || projectRoot.has_filename())
     {
         LOG_ERROR("Invalid project directory provided: {}", argv[1]);
@@ -32,7 +40,15 @@ int main(int argc, const char** argv)
     // a stub main function
     Window* window = CreateNewWindow();
 
-    Lotus::LoadConfig(projectRoot);
+    try
+    {
+        Lotus::LoadConfig(projectRoot);
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR(e.what());
+        return EXIT_FAILURE;
+    }
     Lotus::Engine::Initialize();
 
     // Renderer has been set up, setup ImGui panels

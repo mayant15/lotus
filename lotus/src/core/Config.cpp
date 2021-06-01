@@ -7,6 +7,7 @@
 #define BUILD_DIR "build"
 #define SETTING_FILENAME ".lproject"
 
+
 namespace Lotus
 {
     static ProjectConfig projectConfig {};
@@ -16,7 +17,7 @@ namespace Lotus
     void LoadConfig(const std::filesystem::path& path)
     {
         using namespace nlohmann;
-        std::ifstream file (path / std::filesystem::path { SETTING_FILENAME });
+        std::ifstream file(path / std::filesystem::path{ SETTING_FILENAME });
         json data;
         file >> data;
 
