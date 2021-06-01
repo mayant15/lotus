@@ -41,6 +41,16 @@ Basically, we want to run ``conan install`` in your ``CMAKE_BINARY_DIR``, which 
    Support for multiple build configurations is currently lacking, which is why Visual Studio needs this workaround and also why we passed
    the ``-s build_type=Debug`` flag to conan. The Debug build configuration is the only one that we're working with for now.
 
+
+Launching the Editor
+--------------------
+
+The ``editor.exe`` in your build directory launches the editor. It needs one argument, an absolute path to a Lotus project directory, which is a directory containing an ``.lproject`` file. For example, you can launch the Pong example with::
+
+    ./editor.exe abspath-to-repo/examples/pong/
+
+This argument is required, so if you use an IDE to run the executable look for an option to configure command line arguments.
+
 Editor Layout
 +++++++++++++
 
