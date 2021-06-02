@@ -3,6 +3,7 @@
 
 #include <lotus/lcommon.h>
 #include <lotus/ecs/Entity.h>
+#include <lotus/ecs/Event.h>
 
 #include "SceneTreeNode.h"
 

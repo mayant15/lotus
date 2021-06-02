@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Event.h"
 #include "lotus/internal/entt/entt.hpp"
 
 namespace Lotus
@@ -8,9 +7,7 @@ namespace Lotus
     /**
      * @brief An entity handle, essentially just an int.
     */
-    typedef entt::entity EntityID;
-
-    constexpr auto NULL_ENTITY = entt::null;
+    using EntityID = entt::entity;
 
     /**
     * @brief Lightweight wrapper class to represent entities.
@@ -56,6 +53,12 @@ namespace Lotus
             return _registry->emplace<Component>(_id, std::forward<Args>(args)...);
         }
 
+        template <class Component>
+        bool HasComponent()
+        {
+            return _registry->template has<Component>(_id);
+        }
+
         /**
          * @brief Get components from this entity
          * @tparam Components Types of the components to get
@@ -88,17 +91,5 @@ namespace Lotus
         {
             _registry->destroy(_id);
         }
-    };
-
-    template<typename T>
-    struct ComponentCreateEvent
-    {
-        EntityID entityID;
-    };
-
-    template<typename T>
-    struct ComponentDestroyEvent
-    {
-        EntityID entityID;
     };
 }

@@ -79,9 +79,10 @@ namespace Lotus::Physics
         {
             auto actor = (PxRigidActor*) activeActors[i];
             auto id = (EntityID) (long long) (actor->userData);
+            auto eid = (EntityID) event.entity;
 
             // Find the entity and remove it from the physics simulation
-            if (event.entityID == id)
+            if (eid == id)
             {
                 state.pActiveScene->removeActor(*actor);
                 break;
@@ -92,8 +93,8 @@ namespace Lotus::Physics
     // TODO: This should also happen on rigidbody or collider *changes*
     void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody>& event)
     {
-        auto* registry = state.pEngineScene->GetRegistry();
-        auto&&[rb, transform] = registry->get<CRigidBody, CTransform>(event.entityID);
+        Entity entity = event.entity;
+        auto&& [rb, transform] = entity.GetComponent<CRigidBody, CTransform>();
 
         PhysicsObjectInfo info;
         info.Gravity = rb.Gravity;
@@ -106,9 +107,9 @@ namespace Lotus::Physics
         PhysicsColliderInfo colliderInfo;
 
         info.Collider = &colliderInfo;
-        if (registry->has<CSphereCollider>(event.entityID))
+        if (entity.HasComponent<CSphereCollider>())
         {
-            auto collider = registry->get<CSphereCollider>(event.entityID);
+            auto collider = entity.GetComponent<CSphereCollider>();
             colliderInfo.Position = collider.Position + transform.Position;
             colliderInfo.Rotation = transform.Rotation;
 
@@ -122,12 +123,12 @@ namespace Lotus::Physics
             }
 
             // NOTE: Entity IDs are just uint16_t's, so I cast that as a void* and store it with the object
-            rb.detail.actor->userData = (void*) event.entityID;
+            rb.detail.actor->userData = (void*) (EntityID) entity;
             state.pActiveScene->addActor(*rb.detail.actor);
         }
-        else if (registry->has<CBoxCollider>(event.entityID))
+        else if (entity.HasComponent<CBoxCollider>())
         {
-            auto collider = registry->get<CBoxCollider>(event.entityID);
+            auto collider = entity.GetComponent<CBoxCollider>();
             colliderInfo.Position = collider.Position + transform.Position;
             colliderInfo.Rotation = transform.Rotation;
 
@@ -140,12 +141,12 @@ namespace Lotus::Physics
                 rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
             }
 
-            rb.detail.actor->userData = (void*) event.entityID;
+            rb.detail.actor->userData = (void*) (EntityID) entity;
             state.pActiveScene->addActor(*rb.detail.actor);
         }
-        else if (registry->has<CCapsuleCollider>(event.entityID))
+        else if (entity.HasComponent<CCapsuleCollider>())
         {
-            auto collider = registry->get<CCapsuleCollider>(event.entityID);
+            auto collider = entity.GetComponent<CCapsuleCollider>();
             colliderInfo.Position = collider.Position + transform.Position;
             colliderInfo.Rotation = transform.Rotation;
 
@@ -158,7 +159,7 @@ namespace Lotus::Physics
                 rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
             }
 
-            rb.detail.actor->userData = (void*) event.entityID;
+            rb.detail.actor->userData = (void*) (EntityID) entity;
             state.pActiveScene->addActor(*rb.detail.actor);
         }
         else
