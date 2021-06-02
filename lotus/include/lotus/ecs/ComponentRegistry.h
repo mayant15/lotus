@@ -1,9 +1,10 @@
 #pragma once
 
-#include <lotus/lcommon.h>
+#include "EventManager.h"
+#include "Entity.h"
+
 #include <lotus/serialization.h>
 
-#include <string>
 #include <unordered_map>
 #include <functional>
 
@@ -17,17 +18,37 @@ namespace Lotus
     extern LOTUS_API std::unordered_map<entt::id_type, ComponentInfo> component_info;
     extern LOTUS_API std::unordered_map<std::string, entt::id_type> str_to_id;
 
+    template<typename T>
+    struct ComponentCreateEvent
+    {
+        Entity entity;
+    };
+
+    template<typename T>
+    struct ComponentUpdateEvent
+    {
+        Entity entity;
+    };
+
+    template<typename T>
+    struct ComponentDestroyEvent
+    {
+        Entity entity;
+    };
+
     struct ComponentInfo
     {
         using AssignFn = std::function<void(const entt::entity, entt::registry&, const nlohmann::json& data)>;
         using DefaultAssignFn = std::function<void(const entt::entity, entt::registry&)>;
         using SerializeFn = std::function<void(Lotus::OutputArchive&)>;
+        using RegisterLifecycleFn = std::function<void(entt::registry&)>;
 
         entt::id_type id;
         std::string name;
         AssignFn assignFn;
         DefaultAssignFn defaultAssignFn;
         SerializeFn serializeFn;
+        RegisterLifecycleFn registerLifecycleFn;
     };
 
     template<class Component>
@@ -50,6 +71,22 @@ namespace Lotus
         {
             archive.template components<Component>();
         }
+
+        static void RegisterLifecycle(entt::registry& reg)
+        {
+            reg.on_construct<Component>().template connect<dispatchEntityEvent<ComponentCreateEvent<Component>>>();
+            reg.on_update<Component>().template connect<dispatchEntityEvent<ComponentUpdateEvent<Component>>>();
+            reg.on_destroy<Component>().template connect<dispatchEntityEvent<ComponentDestroyEvent<Component>>>();
+        }
+
+    private:
+        template<typename T>
+        static void dispatchEntityEvent(entt::registry& registry, entt::entity entity)
+        {
+            auto event = T {};
+            event.entity = Entity { entity, &registry };
+            EventManager::Get().Dispatch(event);
+        }
     };
 
     template<class T>
@@ -61,9 +98,18 @@ namespace Lotus
         meta.assignFn = &ComponentTraits<T>::Assign;
         meta.defaultAssignFn = &ComponentTraits<T>::DefaultAssign;
         meta.serializeFn = &ComponentTraits<T>::Serialize;
+        meta.registerLifecycleFn = &ComponentTraits<T>::RegisterLifecycle;
 
         component_info.insert({ meta.id, meta });
         str_to_id.insert({ meta.name, meta.id });
+    }
+
+    inline void RegisterLifecycleForComponents(entt::registry& reg)
+    {
+        for (const auto& kv : component_info)
+        {
+            kv.second.registerLifecycleFn(reg);
+        }
     }
 
     inline const ComponentInfo& GetComponentInfo(const std::string& name)

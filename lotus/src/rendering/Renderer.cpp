@@ -153,11 +153,11 @@ namespace Lotus::Renderer
 
     void OnMeshRendererCreate(const ComponentCreateEvent<CMeshRenderer>& event)
     {
-        auto registry = state.pEngineScene->GetRegistry();
-        auto&& [mr, tf] = registry->get<CMeshRenderer, CTransform>(event.entityID);
+        Entity entity = event.entity; // Take out the the const-ness
+        auto&& [mr, tf] = entity.GetComponent<CMeshRenderer, CTransform>();
 
         ModelInfo info;
-        info.id = event.entityID;
+        info.id = (EntityID) entity;
         info.MeshMaterial = mr.MeshMaterial;
 
         for (const auto& mesh : mr.MeshModel->Meshes)
