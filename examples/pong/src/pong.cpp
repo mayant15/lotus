@@ -28,9 +28,10 @@ void MovePaddleOnUpdate(const Lotus::UpdateEvent& e)
 
         auto scene = SceneManager::GetCurrentScene();
         auto paddle = scene->GetEntity("Player");
-        auto& tf = paddle.GetComponent<CTransform>();
 
-        tf.Position += GetRightVector(tf) * value;
+        paddle.PatchComponent<CTransform>([&](auto& tf) {
+            tf.Position += GetRightVector(tf) * value;
+        });
     }
 }
 

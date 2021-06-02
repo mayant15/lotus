@@ -68,6 +68,19 @@ namespace Lotus
         }
 
         /**
+         * @warning Patching a component that this entity doesn't have is undefined
+         * @tparam Component
+         * @tparam Func
+         * @param func
+         * @return
+         */
+        template<class Component, class Func>
+        decltype(auto) PatchComponent(Func func)
+        {
+            return _registry->template patch<Component>(_id, func);
+        }
+
+        /**
          * @brief Destroy this entity and remove it from the scene
         */
         // ReSharper disable once CppMemberFunctionMayBeConst
