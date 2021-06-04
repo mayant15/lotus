@@ -26,6 +26,7 @@ namespace Lotus::Physics
         // TODO: When the editor presses the play button, flip this to true
         bool isActive = false;
         Scene* pEngineScene = nullptr;
+        Observer preUpdateObserver {};
     };
 
     /** @brief Initialize physics systems and setup with project config */

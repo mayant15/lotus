@@ -32,6 +32,7 @@
 - Will be beneficial when I pass modified values across threads.
 - Component diffs are also required to pass changes across physics systems
 - Undo/Redo system for UI
+- Entity add/destroy events or just for components? Implementing components for now, defer entity ones till they're actually required.
 
 #### Options
 

@@ -9,6 +9,8 @@
 
 namespace Lotus
 {
+    using Observer = entt::observer;
+
     // TODO: Make this just the scene hierarchy
     struct LOTUS_API Scene
     {
@@ -49,6 +51,18 @@ namespace Lotus
 
         Entity CreateEntity(bool serialize = true);
         Entity CreateEntity(const std::string& path, bool serialize = true);
+
+        template <class Matcher>
+        void Observe(Observer& observer, const Matcher& matcher)
+        {
+            observer.connect(_registry, matcher);
+        }
+
+        template <class Matcher>
+        Observer Observe(const Matcher& matcher)
+        {
+            return Observer { _registry, matcher };
+        }
 
         // TODO: Wrapper over registry, view
         //   template<class ...Components>

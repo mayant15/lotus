@@ -238,6 +238,7 @@ namespace Lotus::Physics
         PhysicsSceneInfo info {};
         createScene(info);
         state.pEngineScene = event.pScene;
+        event.pScene->Observe(state.preUpdateObserver, entt::collector.update<CTransform>().where<CRigidBody>());
     }
 
     void OnSimulationBegin(const SimulationBeginEvent& event)
@@ -258,24 +259,25 @@ namespace Lotus::Physics
 
     void OnPreUpdate(const PreUpdateEvent& event)
     {
-        if (!state.isActive) return;
+        // This should happen even if moved from the editor
+        // if (!state.isActive) return;
 
-        // TODO: Copy only the changed information
         // Sync physics changes with the transform component in the scene
         auto* registry = state.pEngineScene->GetRegistry();
-        auto view = registry->view<CRigidBody>();
-        for (const auto& e : view)
+        for (const auto& e : state.preUpdateObserver)
         {
-            auto& rb = view.get(e);
-            auto& tf = registry->get<CTransform>(e);
+            auto&& [rb, tf] = registry->get<CRigidBody, CTransform>(e);
 
             // TODO: Set rotation and scale too
             // TODO: If statements for each collider shape, add those offsets to the transform
             PxTransform pt {};
             pt.p = toPxVec3(tf.Position);
             pt.q = rb.detail.actor->getGlobalPose().q;
+
+            // Set CRigidBody directly because we do not want changes to detail to trigger ComponentUpdateEvent
             rb.detail.actor->setGlobalPose(pt);
         }
+        state.preUpdateObserver.clear();
     }
 
     void OnUpdate(const UpdateEvent& event)
@@ -308,6 +310,8 @@ namespace Lotus::Physics
                 {
                     auto& transform = registry->get<CTransform>(id);
                     auto position = actor->getGlobalPose().p;
+
+                    // TODO: Should this trigger ComponentUpdateEvent?
                     transform.Position = toVector3f(position);
                 }
             }
