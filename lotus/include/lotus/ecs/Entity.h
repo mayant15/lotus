@@ -9,6 +9,8 @@ namespace Lotus
     */
     using EntityID = entt::entity;
 
+    using EntityRegistry = entt::registry;
+
     /**
     * @brief Lightweight wrapper class to represent entities.
     *
@@ -22,13 +24,13 @@ namespace Lotus
         EntityID _id = entt::null;
 
         // TODO: I probably don't need to keep this here? Use GetRegistry()
-        entt::registry* _registry = nullptr;
+        EntityRegistry* _registry = nullptr;
 
     public:
         Entity()
         {}
 
-        Entity(EntityID id, entt::registry* registry)
+        Entity(EntityID id, EntityRegistry* registry)
                 : _id(id), _registry(registry)
         {}
 
@@ -91,5 +93,42 @@ namespace Lotus
         {
             _registry->destroy(_id);
         }
+    };
+
+    struct Observer
+    {
+        Observer() = default;
+
+        template <class Collector>
+        Observer(EntityRegistry& registry, Collector collector)
+            : _pRegistry(&registry)
+        {
+            _observer.connect(registry, collector);
+        }
+
+        template <class Collector>
+        void Connect(EntityRegistry& registry, Collector collector)
+        {
+            _pRegistry = &registry;
+            _observer.connect(registry, collector);
+        }
+
+        /**
+         * Iterate over changes and clear them as you go
+         * @tparam Func
+         * @param func
+         */
+        template <class Callable>
+        void ForEach(Callable func)
+        {
+            // Wrap in Entity and call the supplied callback
+            _observer.each([&](const auto id) {
+                std::invoke(func, Entity { id, _pRegistry });
+            });
+        }
+
+    private:
+        entt::observer _observer {};
+        EntityRegistry* _pRegistry = nullptr;
     };
 }
