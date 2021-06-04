@@ -263,10 +263,8 @@ namespace Lotus::Physics
         // if (!state.isActive) return;
 
         // Sync physics changes with the transform component in the scene
-        auto* registry = state.pEngineScene->GetRegistry();
-        for (const auto& e : state.preUpdateObserver)
-        {
-            auto&& [rb, tf] = registry->get<CRigidBody, CTransform>(e);
+        state.preUpdateObserver.ForEach([](Entity entity) {
+            auto&& [rb, tf] = entity.GetComponent<CRigidBody, CTransform>();
 
             // TODO: Set rotation and scale too
             // TODO: If statements for each collider shape, add those offsets to the transform
@@ -276,8 +274,7 @@ namespace Lotus::Physics
 
             // Set CRigidBody directly because we do not want changes to detail to trigger ComponentUpdateEvent
             rb.detail.actor->setGlobalPose(pt);
-        }
-        state.preUpdateObserver.clear();
+        });
     }
 
     void OnUpdate(const UpdateEvent& event)
