@@ -9,6 +9,7 @@ namespace Lotus
 {
     std::unordered_map<entt::id_type, ComponentInfo> component_info;
     std::unordered_map<std::string, entt::id_type> str_to_id;
+    std::vector<ComponentUpdateCallbackFn> notify_on_any_component_change;
 
     void RegisterEngineComponents()
     {

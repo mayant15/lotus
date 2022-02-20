@@ -10,13 +10,17 @@
 
 #define GENERATED_BODY(COMPONENT, ...) \
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(COMPONENT, __VA_ARGS__); \
-    static std::string GetName() { return QUOTE(COMPONENT); }
+    static std::string GetName() { return QUOTE(COMPONENT); } \
+    static constexpr const char* GetNameConstChar() { return QUOTE(COMPONENT); }
 
 namespace Lotus
 {
+    using ComponentUpdateCallbackFn = std::function<void(Entity)>;
+
     struct ComponentInfo;
     extern LOTUS_API std::unordered_map<entt::id_type, ComponentInfo> component_info;
     extern LOTUS_API std::unordered_map<std::string, entt::id_type> str_to_id;
+    extern LOTUS_API std::vector<ComponentUpdateCallbackFn> notify_on_any_component_change;
 
     template<typename T>
     struct ComponentCreateEvent
@@ -77,6 +81,11 @@ namespace Lotus
             reg.on_construct<Component>().template connect<dispatchEntityEvent<ComponentCreateEvent<Component>>>();
             reg.on_update<Component>().template connect<dispatchEntityEvent<ComponentUpdateEvent<Component>>>();
             reg.on_destroy<Component>().template connect<dispatchEntityEvent<ComponentDestroyEvent<Component>>>();
+
+            // TODO: Should be under a toggle flag
+            reg.on_construct<Component>().template connect<dispatchAnyChange>();
+            reg.on_update<Component>().template connect<dispatchAnyChange>();
+            reg.on_destroy<Component>().template connect<dispatchAnyChange>();
         }
 
     private:
@@ -86,6 +95,14 @@ namespace Lotus
             auto event = T {};
             event.entity = Entity { entity, &registry };
             EventManager::Get().Dispatch(event);
+        }
+
+        static void dispatchAnyChange(entt::registry& registry, entt::entity entity)
+        {
+            for (auto func : notify_on_any_component_change)
+            {
+                std::invoke(func, Entity { entity, &registry });
+            }
         }
     };
 
@@ -144,6 +161,15 @@ namespace Lotus
         {
             info.second.serializeFn(archive);
         }
+    }
+
+    /**
+     * @warning Do this BEFORE you call RegisterLifecycleForComponents
+     * @param func
+     */
+    inline void NotifyAnyComponentChange(const ComponentUpdateCallbackFn& func)
+    {
+        notify_on_any_component_change.push_back(func);
     }
 
     struct CDisplayName
