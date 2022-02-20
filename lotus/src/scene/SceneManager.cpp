@@ -92,7 +92,28 @@ namespace Lotus::SceneManager
 
     void OnSimulationEnd(const SimulationEndEvent& event)
     {
+        // TODO: Don't read this from disk again? Keep in memory?
+        auto fullpath = ExpandPath(currentScene->detail.path);
+
+        std::ifstream infile (fullpath);
+        nlohmann::json data;
+        infile >> data;
+
         // Restore the scene with snapshot
+        for (const auto& change : currentScene->changes())
+        {
+            for (const auto& comp : data["components"][std::to_string(static_cast<size_t>(change))].items())
+            {
+                auto info = GetComponentInfo(comp.key());
+                info.assignFn(
+                        change,
+                        *currentScene->GetRegistry(),
+                        comp.value()
+                );
+            }
+        }
+
+        // TODO: currentScene->hasChanged = false
     }
 
     void SaveScene()

@@ -7,6 +7,12 @@ namespace Lotus
 {
     Scene::Scene()
     {
+        const auto callback = [&](Entity entity) {
+            _changedEntities.insert((EntityID) entity);
+            _hasChanged = true;
+        };
+
+        NotifyAnyComponentChange(callback);
         RegisterLifecycleForComponents(_registry);
     }
 

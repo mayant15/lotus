@@ -62,12 +62,19 @@ namespace Lotus
             return Observer { _registry, matcher };
         }
 
+        inline const std::unordered_set<EntityID>& changes()
+        {
+            return _changedEntities;
+        }
+
         // TODO: Wrapper over registry, view
         //   template<class ...Components>
         //   auto View() {}
 
     private:
-        EntityRegistry _registry;
+        EntityRegistry _registry {};
+        bool _hasChanged = false;
+        std::unordered_set<EntityID> _changedEntities {};
     };
 
     struct SceneLoadEvent
