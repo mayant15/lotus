@@ -3,12 +3,12 @@
 #include "utils.h"
 #include "EditorCamera.h"
 #include "ModuleLoader.h"
+#include "WindowManager.h"
 
 #include <lotus/lotus.h>
 #include <lotus/debug.h>
 
 #include <chrono>
-
 
 /**
  * TODO: Handle engine vs runtime graphics API
@@ -16,7 +16,7 @@
  *   Another thing we could do is have the editor run in OpenGL, but the "play" button will launch a new window with the game.
  *   Finally, we could run the editor and the game with the API mentioned in settings.
  */
-int main(int argc, const char** argv)
+int main(int argc, const char **argv)
 {
     // Validate input
     if (argc < 2)
@@ -25,11 +25,21 @@ int main(int argc, const char** argv)
         return EXIT_FAILURE;
     }
 
-    std::filesystem::path projectRoot{ argv[1] };
+    std::filesystem::path projectRoot{argv[1]};
 
     if (!projectRoot.is_absolute() || projectRoot.has_filename())
     {
         LOG_ERROR("Invalid project directory provided: {}", argv[1]);
+        return EXIT_FAILURE;
+    }
+
+    try
+    {
+        Lotus::LoadConfig(projectRoot);
+    }
+    catch (const std::exception &e)
+    {
+        LOG_ERROR(e.what());
         return EXIT_FAILURE;
     }
 
@@ -38,17 +48,11 @@ int main(int argc, const char** argv)
     // NOTE: Setting up the window context and loading the graphics API is the responsibility
     // of the client. The editor does this here, but when finally packaging the game we need to insert
     // a stub main function
-    Window* window = CreateNewWindow();
 
-    try
-    {
-        Lotus::LoadConfig(projectRoot);
-    }
-    catch (const std::exception& e)
-    {
-        LOG_ERROR(e.what());
-        return EXIT_FAILURE;
-    }
+    WindowManager window_manager;
+
+    Window *window = CreateNewWindow();
+
     Lotus::Engine::Initialize();
 
     // Renderer has been set up, setup ImGui panels
@@ -60,13 +64,13 @@ int main(int argc, const char** argv)
     {
         LoadModule("pong.dll");
     }
-    catch (const std::exception& e)
+    catch (const std::exception &e)
     {
         LOG_ERROR(e.what());
     }
 
     // TODO: Keep an empty scene always loaded
-    auto& em = Lotus::EventManager::Get();
+    auto &em = Lotus::EventManager::Get();
     em.Bind<Lotus::SceneLoadEvent, Editor::SetupEditorCamera>();
 
     Lotus::SceneManager::LoadScene(conf.StartScene);

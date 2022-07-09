@@ -9,6 +9,7 @@
 
 #include "lcommon.h"
 #include "filesystem.h"
+#include "utility.h"
 
 #include "physics/Vector.h"
 #include "physics/components.h"

@@ -1,13 +1,29 @@
 #pragma once
 
+#include <lotus/Config.h>
+
 namespace Editor
 {
-    using Window = void;
+    struct WindowOp
+    {
+        Lotus::ERenderAPI RenderBackend = Lotus::ERenderAPI::OPEN_GL;
+        bool EnableVSync = true;
+    };
 
-    Window* CreateNewWindow();
-    void DestroyWindow(Window* window);
+    class Window
+    {
+    public:
+        const void *get_raw_pointer() const;
+        bool should_close() const;
 
-    bool ShouldCloseWindow(Window* window);
-    void StartFrame(Window* window);
-    void EndFrame(Window* window);
+        void start_frame() const;
+        void end_frame() const;
+
+    private:
+        Window(const WindowOp &options);
+        ~Window();
+
+        void *m_window_instance = nullptr;
+        friend class WindowManager;
+    };
 }
