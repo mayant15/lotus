@@ -1,10 +1,10 @@
 # Build dependencies
 add_subdirectory(external/assimp)
 add_subdirectory(external/entt)
-# add_subdirectory(external/glm)
-# add_subdirectory(external/nlohmann)
+add_subdirectory(external/glm)
+add_subdirectory(external/nlohmann)
+add_subdirectory(external/stb_image)
 # add_subdirectory(external/physx)
-# add_subdirectory(external/std_image)
 
 # Other include directories
 
