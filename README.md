@@ -5,15 +5,13 @@ A cross-platform 3D game engine
 ## Build
 
 Requirements
-- Conan package manager
 - CMake
 - C++17 compatible compiler
 
 Clone with `git clone` and then in the root of the repo do
 ```shell script
 mkdir build && cd build
-conan install .. -s build_type=Debug
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ```
 More detailed documentation can be found [here](https://gds.sntiitk.in/lotus/manual/install.html).
