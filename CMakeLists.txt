@@ -4,9 +4,9 @@ project(lotus)
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 
-# conan
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
+include(FetchContent)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Clean, organized outputs
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -22,17 +22,13 @@ option(LOTUS_BUILD_EXAMPLE "Build an example demonstrating the usage of the engi
 # So I enabled this definition globally for all targets
 add_compile_definitions(ENGINE_RESOURCE_ROOT="${CMAKE_SOURCE_DIR}/lotus/resources/")
 
-# Build bundled dependencies
-add_subdirectory(common/glad)
-
-# Build the actual engine and editor
+add_subdirectory(common)
 add_subdirectory(lotus)
-add_subdirectory(editor)
+# add_subdirectory(editor)
+# add_subdirectory(tools)
 
-# Accompanying tools
-add_subdirectory(tools/buildtool)
-
-if (LOTUS_BUILD_EXAMPLE)
-    add_subdirectory(examples/quickstart)
-    add_subdirectory(examples/pong)
-endif()
+# if (LOTUS_BUILD_EXAMPLE)
+#     message(STATUS "Building examples...")
+#     add_subdirectory(examples/quickstart)
+#     add_subdirectory(examples/pong)
+# endif()
