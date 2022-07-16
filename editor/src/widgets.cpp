@@ -1,5 +1,9 @@
 #include "widgets.h"
 
+#include <glad/gl.h>
+
+#include <GLFW/glfw3.h>
+
 #include "IconsForkAwesome.h"
 #include "config.h"
 #include "utils.h"
@@ -7,9 +11,6 @@
 #include "window/backends/imgui_impl_opengl3.h"
 
 #include <lotus/rendering/RenderPass.h>
-
-#include <GLFW/glfw3.h>
-#include <glad/gl.h>
 
 namespace Editor::Widgets {
 static unsigned int colorBuffer;

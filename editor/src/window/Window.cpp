@@ -8,8 +8,8 @@
 #include <lotus/debug.h>
 #include <lotus/ecs/EventManager.h>
 
-#include <glad/glad.h>
-#include <imgui/imgui.h>
+#include <glad/gl.h>
+#include <imgui.h>
 
 #include <GLFW/glfw3.h>
 #include <stdexcept>

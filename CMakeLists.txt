@@ -24,7 +24,7 @@ add_compile_definitions(ENGINE_RESOURCE_ROOT="${CMAKE_SOURCE_DIR}/lotus/resource
 
 add_subdirectory(common)
 add_subdirectory(lotus)
-# add_subdirectory(editor)
+add_subdirectory(editor)
 # add_subdirectory(tools)
 
 # if (LOTUS_BUILD_EXAMPLE)

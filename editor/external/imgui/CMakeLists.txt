@@ -7,4 +7,4 @@ set(IMGUI_SOURCES
 )
 
 add_library(imgui STATIC ${IMGUI_SOURCES})
-target_inck
+target_include_directories(imgui PUBLIC include)
