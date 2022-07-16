@@ -1,353 +1,357 @@
 #include "Physics.h"
 
-#include <lotus/ecs/components/CTransform.h>
 #include <lotus/Config.h>
 #include <lotus/debug.h>
+#include <lotus/ecs/components/CTransform.h>
 
-#define PX_RELEASE(x) if(x) { (x)->release(); (x) = nullptr; }
+
+#define PX_RELEASE(x)                                                                                                  \
+    if (x) {                                                                                                           \
+        (x)->release();                                                                                                \
+        (x) = nullptr;                                                                                                 \
+    }
 #define PVD_HOST "127.0.0.1"
 
-namespace Lotus::Physics
+namespace Lotus::Physics {
+static Physics::State state{};
+
+// static Vector3f toVector3f(const physx::PxVec3& vec)
+// {
+//     return { vec.x, vec.y, vec.z };
+// }
+
+// static physx::PxVec3 toPxVec3(const Vector3f& vec)
+// {
+//     return { vec.x, vec.y, vec.z };
+// }
+
+// static PxQuat toPxQuat(const Vector3f& vec)
+// {
+//     // Copy pasting this for now. Please work, will improve later.
+//     // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
+//     // yaw (Z), pitch (Y), roll (X)
+//     // Abbreviations for the various angular functions
+//     const double yaw = glm::radians(vec.y);
+//     const double pitch = glm::radians(vec.x);
+//     const double roll = glm::radians(vec.z);
+
+//     const double cy = glm::cos(yaw * 0.5);
+//     const double sy = glm::sin(yaw * 0.5);
+//     const double cp = glm::cos(pitch * 0.5);
+//     const double sp = glm::sin(pitch * 0.5);
+//     const double cr = glm::cos(roll * 0.5);
+//     const double sr = glm::sin(roll * 0.5);
+
+//     PxQuat q;
+//     q.w = cr * cp * cy + sr * sp * sy;
+//     q.x = sr * cp * cy - cr * sp * sy;
+//     q.y = cr * sp * cy + sr * cp * sy;
+//     q.z = cr * cp * sy - sr * sp * cy;
+
+//     return q;
+// }
+
+// PxRigidActor* createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry)
+// {
+//     // TODO: Create physics materials
+//     const PxMaterial* mat = state.pPhysics->createMaterial(info.Material.StaticFriction,
+//                                                            info.Material.DynamicFriction,
+//                                                            info.Material.Restitution);
+//     PxShape* shape = state.pPhysics->createShape(geometry, *mat, true);
+
+//     // Position and rotation has already been set before this call
+//     const PxTransform transform {
+//         toPxVec3(info.Collider->Position),
+//         toPxQuat(info.Collider->Rotation)
+//     };
+//     if (info.IsKinematic)
+//     {
+//         return (PxRigidActor*) PxCreateStatic(*state.pPhysics, transform, *shape);
+//     }
+//     else
+//     {
+//         return (PxRigidActor*) PxCreateDynamic(*state.pPhysics, transform, *shape, info.Material.Density);
+//     }
+// }
+
+void OnRigidBodyDestroy(const ComponentDestroyEvent<CRigidBody> &event)
 {
-    static Physics::State state {};
+    // Sync physics changes with the transform component in the scene
+    // PxU32 nbActiveActors;
+    // PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
+    // for (PxU32 i = 0; i < nbActiveActors; i++)
+    // {
+    //     auto actor = (PxRigidActor*) activeActors[i];
+    //     auto id = (EntityID) (long long) (actor->userData);
+    //     auto eid = (EntityID) event.entity;
 
-    static Vector3f toVector3f(const physx::PxVec3& vec)
-    {
-        return { vec.x, vec.y, vec.z };
-    }
+    //     // Find the entity and remove it from the physics simulation
+    //     if (eid == id)
+    //     {
+    //         state.pActiveScene->removeActor(*actor);
+    //         break;
+    //     }
+    // }
+}
 
-    static physx::PxVec3 toPxVec3(const Vector3f& vec)
-    {
-        return { vec.x, vec.y, vec.z };
-    }
+// TODO: This should also happen on rigidbody or collider *changes*
+void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody> &event)
+{
+    // Entity entity = event.entity;
+    // auto&& [rb, transform] = entity.GetComponent<CRigidBody, CTransform>();
 
-    static PxQuat toPxQuat(const Vector3f& vec)
-    {
-        // Copy pasting this for now. Please work, will improve later.
-        // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
-        // yaw (Z), pitch (Y), roll (X)
-        // Abbreviations for the various angular functions
-        const double yaw = glm::radians(vec.y);
-        const double pitch = glm::radians(vec.x);
-        const double roll = glm::radians(vec.z);
+    // PhysicsObjectInfo info;
+    // info.Gravity = rb.Gravity;
+    // info.IsKinematic = rb.IsKinematic;
 
-        const double cy = glm::cos(yaw * 0.5);
-        const double sy = glm::sin(yaw * 0.5);
-        const double cp = glm::cos(pitch * 0.5);
-        const double sp = glm::sin(pitch * 0.5);
-        const double cr = glm::cos(roll * 0.5);
-        const double sr = glm::sin(roll * 0.5);
+    // // Material: Defaults are fine for now
+    // // TODO: Create a physics material asset and pass as an optional CRigidBody field
 
-        PxQuat q;
-        q.w = cr * cp * cy + sr * sp * sy;
-        q.x = sr * cp * cy - cr * sp * sy;
-        q.y = cr * sp * cy + sr * cp * sy;
-        q.z = cr * cp * sy - sr * sp * cy;
+    // // Setup the collider
+    // PhysicsColliderInfo colliderInfo;
 
-        return q;
-    }
+    // info.Collider = &colliderInfo;
+    // if (entity.HasComponent<CSphereCollider>())
+    // {
+    //     auto collider = entity.GetComponent<CSphereCollider>();
+    //     colliderInfo.Position = collider.Position + transform.Position;
+    //     colliderInfo.Rotation = transform.Rotation;
 
-    PxRigidActor* createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry)
-    {
-        // TODO: Create physics materials
-        const PxMaterial* mat = state.pPhysics->createMaterial(info.Material.StaticFriction,
-                                                               info.Material.DynamicFriction,
-                                                               info.Material.Restitution);
-        PxShape* shape = state.pPhysics->createShape(geometry, *mat, true);
+    //     const PxSphereGeometry geom(collider.Radius);
+    //     rb.detail.actor = createRigidBody(info, geom);
 
-        // Position and rotation has already been set before this call
-        const PxTransform transform {
-            toPxVec3(info.Collider->Position),
-            toPxQuat(info.Collider->Rotation)
-        };
-        if (info.IsKinematic)
-        {
-            return (PxRigidActor*) PxCreateStatic(*state.pPhysics, transform, *shape);
-        }
-        else
-        {
-            return (PxRigidActor*) PxCreateDynamic(*state.pPhysics, transform, *shape, info.Material.Density);
-        }
-    }
+    //     // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
+    //     if (info.Gravity < 0.2f)
+    //     {
+    //         rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+    //     }
 
-    void OnRigidBodyDestroy(const ComponentDestroyEvent<CRigidBody>& event)
-    {
-        // Sync physics changes with the transform component in the scene
-        PxU32 nbActiveActors;
-        PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
-        for (PxU32 i = 0; i < nbActiveActors; i++)
-        {
-            auto actor = (PxRigidActor*) activeActors[i];
-            auto id = (EntityID) (long long) (actor->userData);
-            auto eid = (EntityID) event.entity;
+    //     // NOTE: Entity IDs are just uint16_t's, so I cast that as a void* and store it with the object
+    //     rb.detail.actor->userData = (void*) (EntityID) entity;
+    //     state.pActiveScene->addActor(*rb.detail.actor);
+    // }
+    // else if (entity.HasComponent<CBoxCollider>())
+    // {
+    //     auto collider = entity.GetComponent<CBoxCollider>();
+    //     colliderInfo.Position = collider.Position + transform.Position;
+    //     colliderInfo.Rotation = transform.Rotation;
 
-            // Find the entity and remove it from the physics simulation
-            if (eid == id)
-            {
-                state.pActiveScene->removeActor(*actor);
-                break;
-            }
-        }
-    }
+    //     const PxBoxGeometry geom(collider.Dimensions.x, collider.Dimensions.y, collider.Dimensions.z);
+    //     rb.detail.actor = createRigidBody(info, geom);
 
-    // TODO: This should also happen on rigidbody or collider *changes*
-    void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody>& event)
-    {
-        Entity entity = event.entity;
-        auto&& [rb, transform] = entity.GetComponent<CRigidBody, CTransform>();
+    //     // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
+    //     if (info.Gravity < 0.2f)
+    //     {
+    //         rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+    //     }
 
-        PhysicsObjectInfo info;
-        info.Gravity = rb.Gravity;
-        info.IsKinematic = rb.IsKinematic;
+    //     rb.detail.actor->userData = (void*) (EntityID) entity;
+    //     state.pActiveScene->addActor(*rb.detail.actor);
+    // }
+    // else if (entity.HasComponent<CCapsuleCollider>())
+    // {
+    //     auto collider = entity.GetComponent<CCapsuleCollider>();
+    //     colliderInfo.Position = collider.Position + transform.Position;
+    //     colliderInfo.Rotation = transform.Rotation;
 
-        // Material: Defaults are fine for now
-        // TODO: Create a physics material asset and pass as an optional CRigidBody field
+    //     const PxCapsuleGeometry geom(collider.Radius, collider.Height);
+    //     rb.detail.actor = createRigidBody(info, geom);
 
-        // Setup the collider
-        PhysicsColliderInfo colliderInfo;
+    //     // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
+    //     if (info.Gravity < 0.2f)
+    //     {
+    //         rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+    //     }
 
-        info.Collider = &colliderInfo;
-        if (entity.HasComponent<CSphereCollider>())
-        {
-            auto collider = entity.GetComponent<CSphereCollider>();
-            colliderInfo.Position = collider.Position + transform.Position;
-            colliderInfo.Rotation = transform.Rotation;
+    //     rb.detail.actor->userData = (void*) (EntityID) entity;
+    //     state.pActiveScene->addActor(*rb.detail.actor);
+    // }
+    // else
+    // {
+    //     LOG_ERROR("Failed to add rigidbody to scene");
+    //     throw std::invalid_argument("Invalid physics collider component");
+    // }
+}
 
-            const PxSphereGeometry geom(collider.Radius);
-            rb.detail.actor = createRigidBody(info, geom);
+// PxFilterFlags SampleFilterShader(
+//         PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+//         PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+//         PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+// {
+//    // let triggers through
+//    if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+//    {
+//        pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+//        return PxFilterFlag::eDEFAULT;
+//    }
+//    // generate contacts for all that were not filtered above
+//    pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
-            // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
-            if (info.Gravity < 0.2f)
-            {
-                rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
-            }
+//    // trigger the contact callback for pairs (A,B) where
+//    // the filtermask of A contains the ID of B and vice versa.
+//    if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+//        pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 
-            // NOTE: Entity IDs are just uint16_t's, so I cast that as a void* and store it with the object
-            rb.detail.actor->userData = (void*) (EntityID) entity;
-            state.pActiveScene->addActor(*rb.detail.actor);
-        }
-        else if (entity.HasComponent<CBoxCollider>())
-        {
-            auto collider = entity.GetComponent<CBoxCollider>();
-            colliderInfo.Position = collider.Position + transform.Position;
-            colliderInfo.Rotation = transform.Rotation;
+//     pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND;
+//     return PxFilterFlag::eDEFAULT;
+// }
 
-            const PxBoxGeometry geom(collider.Dimensions.x, collider.Dimensions.y, collider.Dimensions.z);
-            rb.detail.actor = createRigidBody(info, geom);
+void createScene(const PhysicsSceneInfo &info)
+{
+    LOG_INFO("Creating physics scene");
 
-            // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
-            if (info.Gravity < 0.2f)
-            {
-                rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
-            }
+    // PxSceneDesc sceneDesc(state.pPhysics->getTolerancesScale());
+    // sceneDesc.gravity = PxVec3(info.Gravity.x, info.Gravity.y, info.Gravity.z);
 
-            rb.detail.actor->userData = (void*) (EntityID) entity;
-            state.pActiveScene->addActor(*rb.detail.actor);
-        }
-        else if (entity.HasComponent<CCapsuleCollider>())
-        {
-            auto collider = entity.GetComponent<CCapsuleCollider>();
-            colliderInfo.Position = collider.Position + transform.Position;
-            colliderInfo.Rotation = transform.Rotation;
+    // state.pDispatcher = PxDefaultCpuDispatcherCreate(2);
+    // sceneDesc.cpuDispatcher = state.pDispatcher;
+    // sceneDesc.filterShader = SampleFilterShader;
+    // sceneDesc.simulationEventCallback = &state.collisionCallbacks;
+    // sceneDesc.flags = PxSceneFlag::eENABLE_ACTIVE_ACTORS | PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS;
 
-            const PxCapsuleGeometry geom(collider.Radius, collider.Height);
-            rb.detail.actor = createRigidBody(info, geom);
+    // state.pActiveScene = state.pPhysics->createScene(sceneDesc);
 
-            // TODO: Enable/Disable can be handled here, but for a multiplier, I'll have to implement gravity myself
-            if (info.Gravity < 0.2f)
-            {
-                rb.detail.actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
-            }
+    // PxPvdSceneClient* pvdClient = state.pActiveScene->getScenePvdClient();
+    // if (state.pPVD && pvdClient)
+    // {
+    //     pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+    //     pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+    //     pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+    // }
+}
 
-            rb.detail.actor->userData = (void*) (EntityID) entity;
-            state.pActiveScene->addActor(*rb.detail.actor);
-        }
-        else
-        {
-            LOG_ERROR("Failed to add rigidbody to scene");
-            throw std::invalid_argument("Invalid physics collider component");
-        }
-    }
+void OnInit(const InitEvent &event)
+{
+    LOG_INFO("Creating physics world");
+    // state.pFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, state.allocator, state.errorCallback);
 
-    PxFilterFlags SampleFilterShader(
-            PxFilterObjectAttributes attributes0, PxFilterData filterData0,
-            PxFilterObjectAttributes attributes1, PxFilterData filterData1,
-            PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
-    {
-//        // let triggers through
-//        if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
-//        {
-//            pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
-//            return PxFilterFlag::eDEFAULT;
-//        }
-//        // generate contacts for all that were not filtered above
-//        pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-//
-//        // trigger the contact callback for pairs (A,B) where
-//        // the filtermask of A contains the ID of B and vice versa.
-//        if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-//            pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+    // auto& conf = GetBuildConfig();
+    // if (conf.IsDebug)
+    // {
+    //     state.pPVD = PxCreatePvd(*state.pFoundation);
+    //     PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+    //     state.pPVD->connect(*transport, PxPvdInstrumentationFlag::eALL);
+    // }
 
-        pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND;
-        return PxFilterFlag::eDEFAULT;
-    }
+    // state.pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *state.pFoundation, PxTolerancesScale(), true, state.pPVD);
+}
 
-    void createScene(const PhysicsSceneInfo& info)
-    {
-        LOG_INFO("Creating physics scene");
+void OnSceneLoad(const SceneLoadEvent &event)
+{
+    // TODO: Get from the SceneManager
+    PhysicsSceneInfo info{};
+    createScene(info);
+    state.pEngineScene = event.pScene;
+    event.pScene->Observe(state.preUpdateObserver, entt::collector.update<CTransform>().where<CRigidBody>());
+}
 
-        PxSceneDesc sceneDesc(state.pPhysics->getTolerancesScale());
-        sceneDesc.gravity = PxVec3(info.Gravity.x, info.Gravity.y, info.Gravity.z);
+void OnSimulationBegin(const SimulationBeginEvent &event)
+{
+    state.isActive = true;
+}
 
-        state.pDispatcher = PxDefaultCpuDispatcherCreate(2);
-        sceneDesc.cpuDispatcher = state.pDispatcher;
-        sceneDesc.filterShader = SampleFilterShader;
-        sceneDesc.simulationEventCallback = &state.collisionCallbacks;
-        sceneDesc.flags = PxSceneFlag::eENABLE_ACTIVE_ACTORS | PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS;
+void OnSimulationPause(const SimulationPauseEvent &event)
+{
+    state.isActive = false;
+}
 
-        state.pActiveScene = state.pPhysics->createScene(sceneDesc);
+void OnSimulationEnd(const SimulationEndEvent &event)
+{
+    state.isActive = false;
+    // TODO: Restore state here or in pre-update?
+}
 
-        PxPvdSceneClient* pvdClient = state.pActiveScene->getScenePvdClient();
-        if (state.pPVD && pvdClient)
-        {
-            pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-            pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-            pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-        }
-    }
+void OnPreUpdate(const PreUpdateEvent &event)
+{
+    // This should happen even if moved from the editor
+    // if (!state.isActive) return;
 
-    void OnInit(const InitEvent& event)
-    {
-        LOG_INFO("Creating physics world");
-        state.pFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, state.allocator, state.errorCallback);
+    // Sync physics changes with the transform component in the scene
+    // state.preUpdateObserver.ForEach([](Entity entity) {
+    //     auto&& [rb, tf] = entity.GetComponent<CRigidBody, CTransform>();
 
-        auto& conf = GetBuildConfig();
-        if (conf.IsDebug)
-        {
-            state.pPVD = PxCreatePvd(*state.pFoundation);
-            PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-            state.pPVD->connect(*transport, PxPvdInstrumentationFlag::eALL);
-        }
+    //     // TODO: Set rotation and scale too
+    //     // TODO: If statements for each collider shape, add those offsets to the transform
+    //     PxTransform pt {};
+    //     pt.p = toPxVec3(tf.Position);
+    //     pt.q = rb.detail.actor->getGlobalPose().q;
 
-        state.pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *state.pFoundation, PxTolerancesScale(), true, state.pPVD);
-    }
+    //     // Set CRigidBody directly because we do not want changes to detail to trigger ComponentUpdateEvent
+    //     rb.detail.actor->setGlobalPose(pt);
+    // });
+}
 
-    void OnSceneLoad(const SceneLoadEvent& event)
-    {
-        // TODO: Get from the SceneManager
-        PhysicsSceneInfo info {};
-        createScene(info);
-        state.pEngineScene = event.pScene;
-        event.pScene->Observe(state.preUpdateObserver, entt::collector.update<CTransform>().where<CRigidBody>());
-    }
-
-    void OnSimulationBegin(const SimulationBeginEvent& event)
-    {
-        state.isActive = true;
-    }
-
-    void OnSimulationPause(const SimulationPauseEvent& event)
-    {
-        state.isActive = false;
-    }
-
-    void OnSimulationEnd(const SimulationEndEvent& event)
-    {
-        state.isActive = false;
-        // TODO: Restore state here or in pre-update?
-    }
-
-    void OnPreUpdate(const PreUpdateEvent& event)
-    {
-        // This should happen even if moved from the editor
-        // if (!state.isActive) return;
-
-        // Sync physics changes with the transform component in the scene
-        state.preUpdateObserver.ForEach([](Entity entity) {
-            auto&& [rb, tf] = entity.GetComponent<CRigidBody, CTransform>();
-
-            // TODO: Set rotation and scale too
-            // TODO: If statements for each collider shape, add those offsets to the transform
-            PxTransform pt {};
-            pt.p = toPxVec3(tf.Position);
-            pt.q = rb.detail.actor->getGlobalPose().q;
-
-            // Set CRigidBody directly because we do not want changes to detail to trigger ComponentUpdateEvent
-            rb.detail.actor->setGlobalPose(pt);
-        });
-    }
-
-    void OnUpdate(const UpdateEvent& event)
-    {
-        if (state.isActive)
-        {
-            state.pActiveScene->simulate(event.DeltaTime);
-            state.pActiveScene->fetchResults(true);
-        }
-    }
-
-    void OnPostUpdate(const PostUpdateEvent& event)
-    {
-        if (!state.isActive) return;
-
-        // Sync physics changes with the transform component in the scene
-        PxU32 nbActiveActors;
-        PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
-        auto* registry = state.pEngineScene->GetRegistry();
-
-        for (PxU32 i = 0; i < nbActiveActors; i++)
-        {
-            try
-            {
-                auto actor = (PxRigidActor*) activeActors[i];
-                auto id = (EntityID) (long long) (actor->userData);
-
-                // TODO: Change CTransform to hold a 4x4 matrix
-                if (registry->valid(id))
-                {
-                    auto& transform = registry->get<CTransform>(id);
-                    auto position = actor->getGlobalPose().p;
-
-                    // TODO: Should this trigger ComponentUpdateEvent?
-                    transform.Position = toVector3f(position);
-                }
-            }
-            catch (const std::exception& e)
-            {
-                LOG_WARN("Failed to update physics state. {}", e.what());
-            }
-        }
-    }
-
-    void OnDestroy(const DestroyEvent& event)
-    {
-        LOG_INFO("Destroying Physics...");
-        PX_RELEASE(state.pActiveScene)
-        PX_RELEASE(state.pDispatcher)
-        PX_RELEASE(state.pPhysics)
-        if (state.pPVD)
-        {
-            PxPvdTransport* transport = state.pPVD->getTransport();
-            state.pPVD->release();
-            state.pPVD = nullptr;
-            PX_RELEASE(transport)
-        }
-        PX_RELEASE(state.pFoundation)
-    }
-
-    void ApplyForce(const CRigidBody& rb, Vector3f force, EForceType type)
-    {
-        using namespace physx;
-        auto* body = reinterpret_cast<PxRigidBody*>(rb.detail.actor);
-        auto pxforce = toPxVec3(force);
-        switch (type)
-        {
-            case EForceType::IMPULSE:
-                body->addForce(pxforce, PxForceMode::eIMPULSE);
-                break;
-            case EForceType::FORCE:
-                body->addForce(pxforce, PxForceMode::eFORCE);
-                break;
-        }
+void OnUpdate(const UpdateEvent &event)
+{
+    if (state.isActive) {
+        // state.pActiveScene->simulate(event.DeltaTime);
+        // state.pActiveScene->fetchResults(true);
     }
 }
+
+void OnPostUpdate(const PostUpdateEvent &event)
+{
+    if (!state.isActive)
+        return;
+
+    // Sync physics changes with the transform component in the scene
+    // PxU32 nbActiveActors;
+    // PxActor** activeActors(state.pActiveScene->getActiveActors(nbActiveActors));
+    // auto* registry = state.pEngineScene->GetRegistry();
+
+    // for (PxU32 i = 0; i < nbActiveActors; i++)
+    // {
+    //     try
+    //     {
+    //         auto actor = (PxRigidActor*) activeActors[i];
+    //         auto id = (EntityID) (long long) (actor->userData);
+
+    //         // TODO: Change CTransform to hold a 4x4 matrix
+    //         if (registry->valid(id))
+    //         {
+    //             auto& transform = registry->get<CTransform>(id);
+    //             auto position = actor->getGlobalPose().p;
+
+    //             // TODO: Should this trigger ComponentUpdateEvent?
+    //             transform.Position = toVector3f(position);
+    //         }
+    //     }
+    //     catch (const std::exception& e)
+    //     {
+    //         LOG_WARN("Failed to update physics state. {}", e.what());
+    //     }
+    // }
+}
+
+void OnDestroy(const DestroyEvent &event)
+{
+    LOG_INFO("Destroying Physics...");
+    // PX_RELEASE(state.pActiveScene)
+    // PX_RELEASE(state.pDispatcher)
+    // PX_RELEASE(state.pPhysics)
+    // if (state.pPVD)
+    // {
+    //     PxPvdTransport* transport = state.pPVD->getTransport();
+    //     state.pPVD->release();
+    //     state.pPVD = nullptr;
+    //     PX_RELEASE(transport)
+    // }
+    // PX_RELEASE(state.pFoundation)
+}
+
+void ApplyForce(const CRigidBody &rb, Vector3f force, EForceType type)
+{
+    // using namespace physx;
+    // auto* body = reinterpret_cast<PxRigidBody*>(rb.detail.actor);
+    // auto pxforce = toPxVec3(force);
+    // switch (type)
+    // {
+    //     case EForceType::IMPULSE:
+    //         body->addForce(pxforce, PxForceMode::eIMPULSE);
+    //         break;
+    //     case EForceType::FORCE:
+    //         body->addForce(pxforce, PxForceMode::eFORCE);
+    //         break;
+    // }
+}
+} // namespace Lotus::Physics
