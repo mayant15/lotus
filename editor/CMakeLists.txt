@@ -5,8 +5,6 @@ add_subdirectory(external/nativefiledialog)
 add_subdirectory(external/IconsForkAwesome)
 
 set(LOTUS_EDITOR_DEPS
-    glad
-    spdlog
     glfw
     imgui
     lotus
