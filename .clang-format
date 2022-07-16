@@ -1,0 +1,16 @@
+﻿---
+BasedOnStyle: Microsoft
+AlignAfterOpenBracket: AlwaysBreak
+AlignTrailingComments: 'true'
+BinPackArguments: 'false'
+BinPackParameters: 'false'
+BreakBeforeBraces: Mozilla
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+FixNamespaceComments: 'true'
+# IncludeBlocks: Regroup
+IndentCaseLabels: 'true'
+IndentWidth: '4'
+NamespaceIndentation: Inner
+SortIncludes: 'true'
+
+...

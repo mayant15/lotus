@@ -10,6 +10,7 @@ CMakeFiles/
 .vscode/
 .vtune/
 .prof/
+.cache/
 venv/
 examples/quickstart/.settings
 
