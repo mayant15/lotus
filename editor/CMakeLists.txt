@@ -1,22 +1,19 @@
-set(EDITOR_LINK_LIBS
+# Build external dependencies
+add_subdirectory(external/glfw)
+add_subdirectory(external/imgui)
+add_subdirectory(external/nativefiledialog)
+add_subdirectory(external/IconsForkAwesome)
+
+set(LOTUS_EDITOR_DEPS
     glad
-    CONAN_PKG::glfw
+    spdlog
+    glfw
+    imgui
+    lotus
+    icons_fork_awesome
 )
-
-set(EDITOR_INCLUDE_DIRS
-    external
-    external/nativefiledialog/include
-    src
-)
-
 
 set(LOTUS_EDITOR_SOURCES
-    external/imgui/imgui.cpp
-    external/imgui/imgui_demo.cpp
-    external/imgui/imgui_draw.cpp
-    external/imgui/imgui_widgets.cpp
-    external/imgui/imgui_tables.cpp
-
     src/main.cpp
     src/utils.cpp
     src/EditorCamera.cpp
@@ -39,17 +36,15 @@ set(LOTUS_EDITOR_SOURCES
 
 # TODO: Use NFD only on windows for now
 if (WIN32)
-    list(APPEND LOTUS_EDITOR_SOURCES external/nativefiledialog/nfd_common.c)
-    list(APPEND LOTUS_EDITOR_SOURCES external/nativefiledialog/nfd_win.cpp)
+    list(APPEND LOTUS_EDITOR_DEPS nfd)
 endif()
 
 # Define the target
-set(LOTUS_EDITOR_EXEC editor)
-add_executable(${LOTUS_EDITOR_EXEC} ${LOTUS_EDITOR_SOURCES})
-add_dependencies(${LOTUS_EDITOR_EXEC} lotus)
-target_include_directories(${LOTUS_EDITOR_EXEC} PRIVATE ${EDITOR_INCLUDE_DIRS})
-target_link_libraries(${LOTUS_EDITOR_EXEC} lotus ${EDITOR_LINK_LIBS})
-target_compile_definitions(${LOTUS_EDITOR_EXEC} PRIVATE
+add_executable(editor ${LOTUS_EDITOR_SOURCES})
+add_dependencies(editor ${LOTUS_EDITOR_DEPS})
+target_include_directories(editor PRIVATE src)
+target_link_libraries(editor PRIVATE ${LOTUS_EDITOR_DEPS})
+target_compile_definitions(editor PRIVATE
     ENTT_API_IMPORT
     EDITOR_RESOURCE_ROOT="${CMAKE_CURRENT_SOURCE_DIR}/resources/"
 )

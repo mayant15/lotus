@@ -7,22 +7,17 @@ add_subdirectory(external/stb_image)
 # add_subdirectory(external/physx)
 
 # Dependencies for this library target
-set(LOTUS_DEPS
-    glad
-    spdlog
-    assimp
+set(LOTUS_PUBLIC_DEPS
     entt
     glm
     nlohmann_json
-    stb_image
 )
 
-# Other include directories
-set(LOTUS_PUBLIC_INCLUDE_DIRS include)
-
-set(LOTUS_PRIVATE_INCLUDE_DIRS
-    src
-    external
+set(LOTUS_PRIVATE_DEPS
+    glad
+    spdlog
+    assimp
+    stb_image
 )
 
 # Set all source files
@@ -56,12 +51,12 @@ set(LOTUS_SOURCES
 )
 
 add_library(lotus SHARED ${LOTUS_SOURCES})
-add_dependencies(lotus ${LOTUS_DEPS})
+add_dependencies(lotus ${LOTUS_PUBLIC_DEPS} ${LOTUS_PRIVATE_DEPS})
 target_include_directories(lotus
     PUBLIC include
     PRIVATE src
 )
-target_link_libraries(lotus ${LOTUS_DEPS})
+target_link_libraries(lotus PUBLIC ${LOTUS_PUBLIC_DEPS} PRIVATE ${LOTUS_PRIVATE_DEPS})
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 
 # if (LOTUS_BUILD_TESTS)
