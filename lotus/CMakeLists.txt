@@ -4,7 +4,7 @@ add_subdirectory(external/entt)
 add_subdirectory(external/glm)
 add_subdirectory(external/nlohmann)
 add_subdirectory(external/stb_image)
-# add_subdirectory(external/physx)
+add_subdirectory(external/bullet)
 
 # Dependencies for this library target
 set(LOTUS_PUBLIC_DEPS
@@ -18,6 +18,12 @@ set(LOTUS_PUBLIC_DEPS
 set(LOTUS_PRIVATE_DEPS
     assimp
     stb_image
+    
+    # Bullet physics
+    LinearMath
+    Bullet3Common
+    BulletCollision
+    BulletDynamics
 )
 
 # Set all source files
