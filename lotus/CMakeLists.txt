@@ -11,11 +11,11 @@ set(LOTUS_PUBLIC_DEPS
     entt
     glm
     nlohmann_json
+    glad
+    spdlog
 )
 
 set(LOTUS_PRIVATE_DEPS
-    glad
-    spdlog
     assimp
     stb_image
 )
