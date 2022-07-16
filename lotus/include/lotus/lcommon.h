@@ -4,13 +4,14 @@
 
 #pragma once
 
-#include <memory>
-#include <fstream>
-#include <type_traits>
-
 #include "lotus_export.h"
-#include "lotus/internal/entt/entt.hpp"
-#include "lotus/internal/nlohmann/json.hpp"
+
+#include <entt/entt.hpp>
+#include <nlohmann/json.hpp>
+
+#include <fstream>
+#include <memory>
+#include <type_traits>
 
 #define Q(x) #x
 #define QUOTE(x) Q(x)
@@ -20,48 +21,43 @@
 
 #define GET(x) x::Get()
 
-namespace Lotus
+namespace Lotus {
+/**
+ * Alias to a unique pointer.
+ */
+template <typename T> using URef = std::unique_ptr<T>;
+
+/**
+ * Alias to a shared pointer.
+ */
+template <typename T> using SRef = std::shared_ptr<T>;
+
+template <typename T> using Handle = entt::resource_handle<T>;
+
+/**
+ * Base class that implements singleton behavior with CRTP.
+ * @tparam T Class that is to be defined as a singleton
+ */
+template <typename T> class LOTUS_API Singleton
 {
-    /**
-     * Alias to a unique pointer.
-     */
-    template<typename T>
-    using URef = std::unique_ptr<T>;
+  public:
+    Singleton(const Singleton &) = delete;
+
+    Singleton &operator=(const Singleton &) = delete;
 
     /**
-     * Alias to a shared pointer.
+     * Get an instance to the class, creating it if none exist.
+     * @return A reference to the active instance
      */
-    template<typename T>
-    using SRef = std::shared_ptr<T>;
-
-    template<typename T>
-    using Handle = entt::resource_handle<T>;
-
-    /**
-     * Base class that implements singleton behavior with CRTP.
-     * @tparam T Class that is to be defined as a singleton
-     */
-    template<typename T>
-    class LOTUS_API Singleton
+    static T &Get()
     {
-    public:
-        Singleton(const Singleton&) = delete;
+        static T instance;
+        return instance;
+    }
 
-        Singleton& operator=(const Singleton&) = delete;
+  protected:
+    Singleton() noexcept = default;
 
-        /**
-         * Get an instance to the class, creating it if none exist.
-         * @return A reference to the active instance
-         */
-        static T& Get()
-        {
-            static T instance;
-            return instance;
-        }
-
-    protected:
-        Singleton() noexcept = default;
-
-        virtual ~Singleton() = default;
-    };
-}
+    virtual ~Singleton() = default;
+};
+} // namespace Lotus
