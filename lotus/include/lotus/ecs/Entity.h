@@ -1,134 +1,124 @@
 #pragma once
 
-#include "lotus/internal/entt/entt.hpp"
+#include <entt/entt.hpp>
 
-namespace Lotus
+namespace Lotus {
+/**
+ * @brief An entity handle, essentially just an int.
+ */
+using EntityID = entt::entity;
+
+using EntityRegistry = entt::registry;
+
+/**
+ * @brief Lightweight wrapper class to represent entities.
+ *
+ * This class is the main interface through which the user should manipulate entities.
+ * It provides methods to manipulate components and destroy the entity. The class wraps
+ * an entity handle and a registry pointer, and is therefore lightweight enough to be passed
+ * around.
+ */
+class Entity
 {
-    /**
-     * @brief An entity handle, essentially just an int.
-    */
-    using EntityID = entt::entity;
+    EntityID _id = entt::null;
 
-    using EntityRegistry = entt::registry;
+    // TODO: I probably don't need to keep this here? Use GetRegistry()
+    EntityRegistry *_registry = nullptr;
 
-    /**
-    * @brief Lightweight wrapper class to represent entities.
-    *
-    * This class is the main interface through which the user should manipulate entities.
-    * It provides methods to manipulate components and destroy the entity. The class wraps
-    * an entity handle and a registry pointer, and is therefore lightweight enough to be passed
-    * around.
-   */
-    class Entity
+  public:
+    Entity()
     {
-        EntityID _id = entt::null;
+    }
 
-        // TODO: I probably don't need to keep this here? Use GetRegistry()
-        EntityRegistry* _registry = nullptr;
-
-    public:
-        Entity()
-        {}
-
-        Entity(EntityID id, EntityRegistry* registry)
-                : _id(id), _registry(registry)
-        {}
-
-        /**
-         * @brief Overload this operator to allow casts to EntityID.
-        */
-        explicit operator EntityID() const
-        {
-            return _id;
-        }
-
-        /**
-         * @brief Add a component to this entity
-         * @tparam Component Type of the component
-         * @tparam Args Types for optional parameters
-         * @param args Optional parameters, used to create the component in-place
-         * @return A reference to the newly created component
-        */
-        template<typename Component, typename ...Args>
-        Component& AddComponent(Args&& ...args)
-        {
-            return _registry->emplace<Component>(_id, std::forward<Args>(args)...);
-        }
-
-        template <class Component>
-        bool HasComponent()
-        {
-            return _registry->template has<Component>(_id);
-        }
-
-        /**
-         * @brief Get components from this entity
-         * @tparam Components Types of the components to get
-         * @return Tuple with all components
-        */
-        template<typename... Components>
-        decltype(auto) GetComponent()
-        {
-            return _registry->get<Components...>(_id);
-        }
-
-        /**
-         * @warning Patching a component that this entity doesn't have is undefined
-         * @tparam Component
-         * @tparam Func
-         * @param func
-         * @return
-         */
-        template<class Component, class Func>
-        decltype(auto) PatchComponent(Func func)
-        {
-            return _registry->template patch<Component>(_id, func);
-        }
-
-        /**
-         * @brief Destroy this entity and remove it from the scene
-        */
-        // ReSharper disable once CppMemberFunctionMayBeConst
-        void Destroy()
-        {
-            _registry->destroy(_id);
-        }
-    };
-
-    struct Observer
+    Entity(EntityID id, EntityRegistry *registry) : _id(id), _registry(registry)
     {
-        Observer() = default;
+    }
 
-        template <class Collector>
-        Observer(EntityRegistry& registry, Collector collector)
-            : _pRegistry(&registry)
-        {
-            _observer.connect(registry, collector);
-        }
+    /**
+     * @brief Overload this operator to allow casts to EntityID.
+     */
+    explicit operator EntityID() const
+    {
+        return _id;
+    }
 
-        template <class Collector>
-        void Connect(EntityRegistry& registry, Collector collector)
-        {
-            _pRegistry = &registry;
-            _observer.connect(registry, collector);
-        }
+    /**
+     * @brief Add a component to this entity
+     * @tparam Component Type of the component
+     * @tparam Args Types for optional parameters
+     * @param args Optional parameters, used to create the component in-place
+     * @return A reference to the newly created component
+     */
+    template <typename Component, typename... Args> Component &AddComponent(Args &&...args)
+    {
+        return _registry->emplace<Component>(_id, std::forward<Args>(args)...);
+    }
 
-        /**
-         * Iterate over changes and clear them as you go
-         * @tparam Func
-         * @param func
-         */
-        template <class Callable>
-        void ForEach(Callable func)
-        {
-            // Wrap in Entity and call the supplied callback
-            _observer.each([&](const auto id) {
-                std::invoke(func, Entity { id, _pRegistry });
-            });
-        }
+    template <class Component> bool HasComponent()
+    {
+        return _registry->template has<Component>(_id);
+    }
 
-    private:
-        entt::observer _observer {};
-        EntityRegistry* _pRegistry = nullptr;
-    };
-}
+    /**
+     * @brief Get components from this entity
+     * @tparam Components Types of the components to get
+     * @return Tuple with all components
+     */
+    template <typename... Components> decltype(auto) GetComponent()
+    {
+        return _registry->get<Components...>(_id);
+    }
+
+    /**
+     * @warning Patching a component that this entity doesn't have is undefined
+     * @tparam Component
+     * @tparam Func
+     * @param func
+     * @return
+     */
+    template <class Component, class Func> decltype(auto) PatchComponent(Func func)
+    {
+        return _registry->template patch<Component>(_id, func);
+    }
+
+    /**
+     * @brief Destroy this entity and remove it from the scene
+     */
+    // ReSharper disable once CppMemberFunctionMayBeConst
+    void Destroy()
+    {
+        _registry->destroy(_id);
+    }
+};
+
+struct Observer
+{
+    Observer() = default;
+
+    template <class Collector> Observer(EntityRegistry &registry, Collector collector) : _pRegistry(&registry)
+    {
+        _observer.connect(registry, collector);
+    }
+
+    template <class Collector> void Connect(EntityRegistry &registry, Collector collector)
+    {
+        _pRegistry = &registry;
+        _observer.connect(registry, collector);
+    }
+
+    /**
+     * Iterate over changes and clear them as you go
+     * @tparam Func
+     * @param func
+     */
+    template <class Callable> void ForEach(Callable func)
+    {
+        // Wrap in Entity and call the supplied callback
+        _observer.each([&](const auto id) { std::invoke(func, Entity{id, _pRegistry}); });
+    }
+
+  private:
+    entt::observer _observer{};
+    EntityRegistry *_pRegistry = nullptr;
+};
+} // namespace Lotus
