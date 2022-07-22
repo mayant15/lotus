@@ -4,52 +4,34 @@
 #include <lotus/debug.h>
 #include <lotus/ecs/components/CTransform.h>
 
-
-#define PX_RELEASE(x)                                                                                                  \
-    if (x) {                                                                                                           \
-        (x)->release();                                                                                                \
-        (x) = nullptr;                                                                                                 \
-    }
-#define PVD_HOST "127.0.0.1"
-
 namespace Lotus::Physics {
+
 static Physics::State state{};
 
-// static Vector3f toVector3f(const physx::PxVec3& vec)
-// {
-//     return { vec.x, vec.y, vec.z };
-// }
+static btQuaternion toBtQuaternion(const Vector3f &vec)
+{
+    // Copy pasting this for now. Please work, will improve later.
+    // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
+    // yaw (Z), pitch (Y), roll (X)
+    // Abbreviations for the various angular functions
+    const double yaw = glm::radians(vec.y);
+    const double pitch = glm::radians(vec.x);
+    const double roll = glm::radians(vec.z);
 
-// static physx::PxVec3 toPxVec3(const Vector3f& vec)
-// {
-//     return { vec.x, vec.y, vec.z };
-// }
+    const double cy = glm::cos(yaw * 0.5);
+    const double sy = glm::sin(yaw * 0.5);
+    const double cp = glm::cos(pitch * 0.5);
+    const double sp = glm::sin(pitch * 0.5);
+    const double cr = glm::cos(roll * 0.5);
+    const double sr = glm::sin(roll * 0.5);
 
-// static PxQuat toPxQuat(const Vector3f& vec)
-// {
-//     // Copy pasting this for now. Please work, will improve later.
-//     // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
-//     // yaw (Z), pitch (Y), roll (X)
-//     // Abbreviations for the various angular functions
-//     const double yaw = glm::radians(vec.y);
-//     const double pitch = glm::radians(vec.x);
-//     const double roll = glm::radians(vec.z);
+    const double w = cr * cp * cy + sr * sp * sy;
+    const double x = sr * cp * cy - cr * sp * sy;
+    const double y = cr * sp * cy + sr * cp * sy;
+    const double z = cr * cp * sy - sr * sp * cy;
 
-//     const double cy = glm::cos(yaw * 0.5);
-//     const double sy = glm::sin(yaw * 0.5);
-//     const double cp = glm::cos(pitch * 0.5);
-//     const double sp = glm::sin(pitch * 0.5);
-//     const double cr = glm::cos(roll * 0.5);
-//     const double sr = glm::sin(roll * 0.5);
-
-//     PxQuat q;
-//     q.w = cr * cp * cy + sr * sp * sy;
-//     q.x = sr * cp * cy - cr * sp * sy;
-//     q.y = cr * sp * cy + sr * cp * sy;
-//     q.z = cr * cp * sy - sr * sp * cy;
-
-//     return q;
-// }
+    return {x, y, z, w};
+}
 
 // PxRigidActor* createRigidBody(const PhysicsObjectInfo& info, const PxGeometry& geometry)
 // {
@@ -173,67 +155,16 @@ void OnRigidBodyCreate(const ComponentCreateEvent<CRigidBody> &event)
     // }
 }
 
-// PxFilterFlags SampleFilterShader(
-//         PxFilterObjectAttributes attributes0, PxFilterData filterData0,
-//         PxFilterObjectAttributes attributes1, PxFilterData filterData1,
-//         PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
-// {
-//    // let triggers through
-//    if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
-//    {
-//        pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
-//        return PxFilterFlag::eDEFAULT;
-//    }
-//    // generate contacts for all that were not filtered above
-//    pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-
-//    // trigger the contact callback for pairs (A,B) where
-//    // the filtermask of A contains the ID of B and vice versa.
-//    if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-//        pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
-
-//     pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND;
-//     return PxFilterFlag::eDEFAULT;
-// }
-
 void createScene(const PhysicsSceneInfo &info)
 {
     LOG_INFO("Creating physics scene");
-
-    // PxSceneDesc sceneDesc(state.pPhysics->getTolerancesScale());
-    // sceneDesc.gravity = PxVec3(info.Gravity.x, info.Gravity.y, info.Gravity.z);
-
-    // state.pDispatcher = PxDefaultCpuDispatcherCreate(2);
-    // sceneDesc.cpuDispatcher = state.pDispatcher;
-    // sceneDesc.filterShader = SampleFilterShader;
-    // sceneDesc.simulationEventCallback = &state.collisionCallbacks;
-    // sceneDesc.flags = PxSceneFlag::eENABLE_ACTIVE_ACTORS | PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS;
-
-    // state.pActiveScene = state.pPhysics->createScene(sceneDesc);
-
-    // PxPvdSceneClient* pvdClient = state.pActiveScene->getScenePvdClient();
-    // if (state.pPVD && pvdClient)
-    // {
-    //     pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-    //     pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-    //     pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-    // }
+    state.pActiveScene = new World();
+    state.pActiveScene->setGravity(info.Gravity);
 }
 
 void OnInit(const InitEvent &event)
 {
     LOG_INFO("Creating physics world");
-    // state.pFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, state.allocator, state.errorCallback);
-
-    // auto& conf = GetBuildConfig();
-    // if (conf.IsDebug)
-    // {
-    //     state.pPVD = PxCreatePvd(*state.pFoundation);
-    //     PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-    //     state.pPVD->connect(*transport, PxPvdInstrumentationFlag::eALL);
-    // }
-
-    // state.pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *state.pFoundation, PxTolerancesScale(), true, state.pPVD);
 }
 
 void OnSceneLoad(const SceneLoadEvent &event)
@@ -284,8 +215,7 @@ void OnPreUpdate(const PreUpdateEvent &event)
 void OnUpdate(const UpdateEvent &event)
 {
     if (state.isActive) {
-        // state.pActiveScene->simulate(event.DeltaTime);
-        // state.pActiveScene->fetchResults(true);
+        state.pActiveScene->step(event.DeltaTime);
     }
 }
 
@@ -326,17 +256,7 @@ void OnPostUpdate(const PostUpdateEvent &event)
 void OnDestroy(const DestroyEvent &event)
 {
     LOG_INFO("Destroying Physics...");
-    // PX_RELEASE(state.pActiveScene)
-    // PX_RELEASE(state.pDispatcher)
-    // PX_RELEASE(state.pPhysics)
-    // if (state.pPVD)
-    // {
-    //     PxPvdTransport* transport = state.pPVD->getTransport();
-    //     state.pPVD->release();
-    //     state.pPVD = nullptr;
-    //     PX_RELEASE(transport)
-    // }
-    // PX_RELEASE(state.pFoundation)
+    delete state.pActiveScene;
 }
 
 void ApplyForce(const CRigidBody &rb, Vector3f force, EForceType type)

@@ -18,12 +18,7 @@ set(LOTUS_PUBLIC_DEPS
 set(LOTUS_PRIVATE_DEPS
     assimp
     stb_image
-    
-    # Bullet physics
-    LinearMath
-    Bullet3Common
-    BulletCollision
-    BulletDynamics
+    Bullet
 )
 
 # Set all source files
@@ -35,7 +30,7 @@ set(LOTUS_SOURCES
     src/core/Config.cpp
     src/core/ComponentRegistry.cpp
 
-    src/physics/PxImpl.cpp
+    src/physics/BulletImpl.cpp
     src/physics/Physics.cpp
 
     src/rendering/opengl/GLShader.cpp

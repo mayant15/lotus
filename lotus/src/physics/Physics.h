@@ -1,6 +1,6 @@
 #pragma once
 
-// #include "PxImpl.h"
+#include "BulletImpl.h"
 #include "PhysicsInfo.h"
 
 #include <lotus/ecs/Entity.h>
@@ -13,15 +13,7 @@ namespace Lotus::Physics {
 /*** @brief Data for the physics system */
 struct State
 {
-    // ErrorCallback errorCallback {};
-    // SimulationEventCallback collisionCallbacks {};
-
-    // physx::PxDefaultAllocator allocator {};
-    // physx::PxFoundation* pFoundation = nullptr;
-    // physx::PxPhysics* pPhysics = nullptr;
-    // physx::PxDefaultCpuDispatcher* pDispatcher = nullptr;
-    // physx::PxPvd* pPVD = nullptr;
-    // physx::PxScene* pActiveScene = nullptr;
+    World *pActiveScene;
 
     // TODO: When the editor presses the play button, flip this to true
     bool isActive = false;
