@@ -4,12 +4,12 @@
 #include "utils.h"
 #include "widgets.h"
 
-
 #include <lotus/debug.h>
 #include <lotus/lotus.h>
 
-
 #include <chrono>
+#include <exception>
+
 
 /**
  * TODO: Handle engine vs runtime graphics API
@@ -17,7 +17,7 @@
  *   Another thing we could do is have the editor run in OpenGL, but the "play" button will launch a new window with the
  * game. Finally, we could run the editor and the game with the API mentioned in settings.
  */
-int main(int argc, const char **argv)
+int safe_main(int argc, const char **argv)
 {
     // Validate input
     if (argc < 2) {
@@ -39,12 +39,7 @@ int main(int argc, const char **argv)
     // a stub main function
     Window *window = CreateNewWindow();
 
-    try {
-        Lotus::LoadConfig(projectRoot);
-    } catch (const std::exception &e) {
-        LOG_ERROR(e.what());
-        return EXIT_FAILURE;
-    }
+    Lotus::LoadConfig(projectRoot);
     Lotus::Engine::Initialize();
 
     // Renderer has been set up, setup ImGui panels
@@ -52,17 +47,17 @@ int main(int argc, const char **argv)
     Editor::Gizmos::Initialize(window);
 
     auto conf = Lotus::GetProjectConfig();
-    try {
-        LoadModule("quickstart.dll");
-    } catch (const std::exception &e) {
-        LOG_ERROR(e.what());
-    }
+    LoadModule("quickstart.dll");
 
     // TODO: Keep an empty scene always loaded
     auto &em = Lotus::EventManager::Get();
     em.Bind<Lotus::SceneLoadEvent, Editor::SetupEditorCamera>();
 
+    LOG_INFO("Loading scene...");
     Lotus::SceneManager::LoadScene(conf.StartScene);
+    LOG_INFO("Loaded!");
+
+    LOG_INFO("Starting main loop...");
 
     auto currentTime = std::chrono::system_clock::now();
     auto lastTime = currentTime;
@@ -82,10 +77,27 @@ int main(int argc, const char **argv)
         EndFrame(window);
     }
 
+    LOG_INFO("Shutting down...");
+
     Editor::Gizmos::Shutdown();
     Editor::Widgets::Shutdown();
     Lotus::Engine::Shutdown();
     DestroyWindow(window);
 
     return 0;
+}
+
+int main(int argc, const char **argv)
+{
+    try {
+        if (safe_main(argc, argv) == 0) {
+            // All good!
+            return 0;
+        } else {
+            throw std::runtime_error("There was a problem");
+        }
+    } catch (const std::exception &e) {
+        LOG_ERROR("{}", e.what());
+        return EXIT_FAILURE;
+    }
 }
