@@ -1,5 +1,5 @@
 #include "GLShader.h"
-#include <glad/gl.h>
+#include <glad/glad.h>
 
 #include <lotus/debug.h>
 #include <lotus/resources/Material.h>

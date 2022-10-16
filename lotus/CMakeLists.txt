@@ -57,7 +57,10 @@ target_include_directories(lotus
     PUBLIC include
     PRIVATE src
 )
-target_link_libraries(lotus PUBLIC ${LOTUS_PUBLIC_DEPS} PRIVATE ${LOTUS_PRIVATE_DEPS})
+target_link_libraries(lotus
+    PUBLIC ${LOTUS_PUBLIC_DEPS}
+    PRIVATE ${LOTUS_PRIVATE_DEPS}
+)
 target_compile_definitions(lotus PRIVATE ENTT_API_EXPORT)
 
 # if (LOTUS_BUILD_TESTS)

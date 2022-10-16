@@ -8,10 +8,11 @@
 #include <lotus/debug.h>
 #include <lotus/ecs/EventManager.h>
 
-#include <glad/gl.h>
-#include <imgui.h>
+#include <glad/glad.h>
 
 #include <GLFW/glfw3.h>
+#include <imgui.h>
+
 #include <stdexcept>
 #include <string>
 
@@ -83,6 +84,11 @@ Window *CreateNewWindow()
     }
     glfwMakeContextCurrent(window);
 
+    // Load glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        throw std::runtime_error{"Failed to initalize GLAD"};
+    }
+
     // Enable vsync
     glfwSwapInterval(1);
 
@@ -90,11 +96,6 @@ Window *CreateNewWindow()
     glfwSetCursorPosCallback(window, cursorPosCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetKeyCallback(window, keyboardCallback);
-
-    // Load glad
-    if (gladLoadGL(glfwGetProcAddress) == 0) {
-        throw std::runtime_error{"Failed to initalize GLAD"};
-    }
 
     return window;
 }
